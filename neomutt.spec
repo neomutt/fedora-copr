@@ -13,7 +13,11 @@
 %bcond_with gdbm
 %bcond_without gpgme
 %bcond_without sidebar
+
+%if 0%{?rhel}
+# Notmuch doesn't exist on rhel, yet
 %bcond_without notmuch
+%endif
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %global _origname mutt
@@ -39,7 +43,7 @@ Patch10: mutt-1.6.0.neomutt.%{_date}.patch
 Url: http://www.neomutt.org/
 Requires: mailcap, urlview
 Conflicts: %{_origname}
-BuildRequires: ncurses-devel, gettext, automake, notmuch-devel
+BuildRequires: ncurses-devel, gettext, automake
 # manual generation
 BuildRequires: /usr/bin/xsltproc, docbook-style-xsl, perl
 # html manual -> txt manual conversion (lynx messes up the encoding)
@@ -63,6 +67,7 @@ BuildRequires: w3m
 
 %{?with_idn:BuildRequires: libidn-devel}
 %{?with_gpgme:BuildRequires: gpgme-devel}
+%{?with_notmuch:BuildRequires: notmuch-devel}
 
 
 %description
