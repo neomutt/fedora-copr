@@ -16,9 +16,9 @@
 
 # Notmuch doesn't exist on rhel, yet
 %if 0%{?rhel}
-%bcond_without notmuch
-%else
 %bcond_with notmuch
+%else
+%bcond_without notmuch
 %endif
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
