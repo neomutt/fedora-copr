@@ -14,9 +14,11 @@
 %bcond_without gpgme
 %bcond_without sidebar
 
-%if 0%{?rhel}
 # Notmuch doesn't exist on rhel, yet
+%if 0%{?rhel}
 %bcond_without notmuch
+%else
+%bcond_with notmuch
 %endif
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
