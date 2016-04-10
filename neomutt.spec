@@ -14,8 +14,10 @@
 %bcond_without gpgme
 %bcond_without sidebar
 
-%if 0%{?rhel}
 # Notmuch doesn't exist on rhel, yet
+%if 0%{?rhel}
+%bcond_with notmuch
+%else
 %bcond_without notmuch
 %endif
 
