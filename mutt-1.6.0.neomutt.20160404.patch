@@ -16800,10 +16800,10 @@ index 0000000..7c6a5b7
 +
 diff --git c/sidebar.h w/sidebar.h
 new file mode 100644
-index 0000000..b61f903
+index 0000000..b2be86c
 --- /dev/null
 +++ w/sidebar.h
-@@ -0,0 +1,37 @@
+@@ -0,0 +1,36 @@
 +/* Copyright (C) 2004 Justin Hibbits <jrh29@po.cwru.edu>
 + * Copyright (C) 2004 Thomer M. Gil <mutt@thomer.com>
 + * Copyright (C) 2015-2016 Richard Russon <rich@flatcap.org>
@@ -16826,8 +16826,7 @@ index 0000000..b61f903
 +#ifndef SIDEBAR_H
 +#define SIDEBAR_H
 +
-+typedef struct _context CONTEXT;
-+typedef struct buffy_t  BUFFY;
++#include "mutt.h"
 +
 +void         sb_change_mailbox (int op);
 +void         sb_draw (void);
