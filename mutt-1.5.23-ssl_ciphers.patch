@@ -1,0 +1,74 @@
+diff -rup mutt-17a4f92e4a95-orig/init.h mutt-17a4f92e4a95/init.h
+--- mutt-17a4f92e4a95-orig/init.h	2015-07-30 11:09:54.536930119 +0200
++++ mutt-17a4f92e4a95/init.h	2015-07-30 11:11:17.383772131 +0200
+@@ -3092,7 +3092,7 @@ struct option_t MuttVars[] = {
+   ** URL. You should only unset this for particular known hosts, using
+   ** the \fC$<account-hook>\fP function.
+   */
+-  { "ssl_ciphers", DT_STR, R_NONE, UL &SslCiphers, UL 0 },
++  { "ssl_ciphers", DT_STR, R_NONE, UL &SslCiphers, UL "@SYSTEM" },
+   /*
+   ** .pp
+   ** Contains a colon-seperated list of ciphers to use when using SSL.
+--- mutt-17a4f92e4a95/mutt_ssl_gnutls.c.ssl_ciphers	2015-08-20 13:19:24.990481900 +0200
++++ mutt-17a4f92e4a95/mutt_ssl_gnutls.c	2015-08-20 14:37:18.405928684 +0200
+@@ -286,32 +286,35 @@
+   else
+     safe_strcat (priority, priority_size, "NORMAL");
+ 
+-  if (! option(OPTTLSV1_2))
++  if (SslCiphers && strcmp(SslCiphers, "@SYSTEM"))
+   {
+-    nproto--;
+-    safe_strcat (priority, priority_size, ":-VERS-TLS1.2");
+-  }
+-  if (! option(OPTTLSV1_1))
+-  {
+-    nproto--;
+-    safe_strcat (priority, priority_size, ":-VERS-TLS1.1");
+-  }
+-  if (! option(OPTTLSV1))
+-  {
+-    nproto--;
+-    safe_strcat (priority, priority_size, ":-VERS-TLS1.0");
+-  }
+-  if (! option(OPTSSLV3))
+-  {
+-    nproto--;
+-    safe_strcat (priority, priority_size, ":-VERS-SSL3.0");
+-  }
++    if (! option(OPTTLSV1_2))
++    {
++      nproto--;
++      safe_strcat (priority, priority_size, ":-VERS-TLS1.2");
++    }
++    if (! option(OPTTLSV1_1))
++    {
++      nproto--;
++      safe_strcat (priority, priority_size, ":-VERS-TLS1.1");
++    }
++    if (! option(OPTTLSV1))
++    {
++      nproto--;
++      safe_strcat (priority, priority_size, ":-VERS-TLS1.0");
++    }
++    if (! option(OPTSSLV3))
++    {
++      nproto--;
++      safe_strcat (priority, priority_size, ":-VERS-SSL3.0");
++    }
+ 
+-  if (nproto == 0)
+-  {
+-    mutt_error (_("All available protocols for TLS/SSL connection disabled"));
+-    FREE (&priority);
+-    return -1;
++    if (nproto == 0)
++    {
++      mutt_error (_("All available protocols for TLS/SSL connection disabled"));
++      FREE (&priority);
++      return -1;
++    }
+   }
+ 
+   if ((err = gnutls_priority_set_direct (data->state, priority, NULL)) < 0)
