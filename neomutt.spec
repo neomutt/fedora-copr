@@ -39,7 +39,7 @@ Patch10: mutt-1.6.0.neomutt.%{_date}.patch
 Url: http://www.neomutt.org/
 Requires: mailcap, urlview
 Conflicts: %{_origname}
-BuildRequires: ncurses-devel, gettext, automake
+BuildRequires: ncurses-devel, gettext, automake, notmuch-devel
 # manual generation
 BuildRequires: /usr/bin/xsltproc, docbook-style-xsl, perl
 # html manual -> txt manual conversion (lynx messes up the encoding)
@@ -92,11 +92,9 @@ sed -i -r 's|USE_DOTLOCK|DO_NOT_USE_DOTLOCK|' configure*
 
 install -p -m644 %{SOURCE1} mutt_ldap_query
 
-%global neo_rel_date (201[0-9])([0-1][0-9])([0-3][0-9])
-if echo %{release} | grep -E -q '%{neo_rel_date}'; then
-  echo -n 'const char *ReleaseDate = ' > reldate.h
-  echo %{release} | sed -r 's/.*%{neo_rel_date}.*/"\1-\2-\3";/' >> reldate.h
-fi
+# Create a release date based on the rpm version
+echo -n 'const char *ReleaseDate = ' > reldate.h
+echo %{release} | sed -r 's/.*(201[0-9])([0-1][0-9])([0-3][0-9]).*/"\1-\2-\3";/' >> reldate.h
 
 # remove mutt_ssl.c to be sure it won't be used because it violates
 # Packaging:CryptoPolicies
