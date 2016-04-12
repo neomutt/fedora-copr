@@ -41,7 +41,7 @@ Patch1: mutt-1.5.18-muttrc.patch
 Patch2: mutt-1.5.21-cabundle.patch
 Patch8: mutt-1.5.23-system_certs.patch
 Patch9: mutt-1.5.23-ssl_ciphers.patch
-Patch10: mutt-1.6.0.neomutt.%{_date}.patch
+Patch10: mutt-1.6.0.neomutt.patch
 Url: http://www.neomutt.org/
 Requires: mailcap, urlview
 Conflicts: %{_origname}
