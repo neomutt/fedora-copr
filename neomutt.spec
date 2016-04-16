@@ -23,7 +23,7 @@
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %global _origname mutt
-%global _date 20160404
+%global _date 20160416
 
 Summary: A text mode mail user agent
 Name: neomutt
