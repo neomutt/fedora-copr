@@ -186,7 +186,7 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %files -f %{_origname}.lang
 %config(noreplace) %{_sysconfdir}/Muttrc
 %config(noreplace) %{_sysconfdir}/Muttrc.local
-%doc COPYRIGHT ChangeLog GPL NEWS README* UPDATING mutt_ldap_query
+%doc COPYRIGHT ChangeLog LICENSE.md NEWS README* UPDATING mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
 %doc doc/manual.html doc/manual.txt doc/smime-notes.txt
 %{_bindir}/mutt
