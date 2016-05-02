@@ -23,11 +23,11 @@
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %global _origname mutt
-%global _date 20160416
+%global _date 20160502
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 1.6.0
+Version: 1.6.1
 Release: %{_date}%{?dist}
 Epoch: 5
 # The entire source code is GPLv2+ except
@@ -41,7 +41,7 @@ Patch1: mutt-1.5.18-muttrc.patch
 Patch2: mutt-1.5.21-cabundle.patch
 Patch8: mutt-1.5.23-system_certs.patch
 Patch9: mutt-1.5.23-ssl_ciphers.patch
-Patch10: mutt-1.6.0.neomutt.patch
+Patch10: mutt-1.6.1.neomutt.patch
 Url: http://www.neomutt.org/
 Requires: mailcap, urlview
 Conflicts: %{_origname}
