@@ -1,7 +1,8 @@
-diff -up mutt-1.5.18/doc/Muttrc.head.muttrc mutt-1.5.18/doc/Muttrc.head
---- mutt-1.5.18/doc/Muttrc.head.muttrc	2008-01-30 05:26:50.000000000 +0100
-+++ mutt-1.5.18/doc/Muttrc.head	2008-05-19 10:58:21.000000000 +0200
-@@ -19,11 +19,15 @@ macro index,pager,attach,compose \cb "\
+diff --git c/doc/Muttrc.head w/doc/Muttrc.head
+index 69e27ca..040c6f6 100644
+--- c/doc/Muttrc.head
++++ w/doc/Muttrc.head
+@@ -24,11 +24,15 @@ macro index,pager,attach,compose \cb "\
  
  # Show documentation when pressing F1
  macro generic,pager <F1> "<shell-escape> less @docdir@/manual.txt<Enter>" "show Mutt documentation"
@@ -14,7 +15,6 @@ diff -up mutt-1.5.18/doc/Muttrc.head.muttrc mutt-1.5.18/doc/Muttrc.head
  
 +bind editor <delete> delete-char
 +
- # If Mutt is unable to determine your site's domain name correctly, you can
- # set the default here.
- #
-diff -up mutt-1.5.18/contrib/sample.muttrc mutt-1.5.18/contrib/sample
+ # Use folders which match on \\.gz$ as gzipped folders:
+ # open-hook \\.gz$ "gzip -cd %f > %t"
+ # close-hook \\.gz$ "gzip -c %t > %f"
