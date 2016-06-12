@@ -1,4 +1,4 @@
-%bcond_without debug
+%bcond_with debug
 %bcond_without imap
 %bcond_without pop
 %bcond_without smtp
