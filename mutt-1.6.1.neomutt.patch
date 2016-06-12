@@ -1,6 +1,6 @@
 diff -urN mutt-1.6.1/account.c mutt-1.6.1-neomutt/account.c
---- mutt-1.6.1/account.c	2016-05-30 14:49:21.082679675 +0100
-+++ mutt-1.6.1-neomutt/account.c	2016-05-30 14:49:21.339683693 +0100
+--- mutt-1.6.1/account.c	2016-06-12 18:43:00.395447481 +0100
++++ mutt-1.6.1-neomutt/account.c	2016-06-12 18:43:00.673451816 +0100
 @@ -51,8 +51,17 @@
      user = PopUser;
  #endif
@@ -59,8 +59,8 @@ diff -urN mutt-1.6.1/account.c mutt-1.6.1-neomutt/account.c
      return -1;
    else
 diff -urN mutt-1.6.1/account.h mutt-1.6.1-neomutt/account.h
---- mutt-1.6.1/account.h	2016-05-30 14:49:21.082679675 +0100
-+++ mutt-1.6.1-neomutt/account.h	2016-05-30 14:49:21.340683709 +0100
+--- mutt-1.6.1/account.h	2016-06-12 18:43:00.395447481 +0100
++++ mutt-1.6.1-neomutt/account.h	2016-06-12 18:43:00.673451816 +0100
 @@ -29,7 +29,8 @@
    M_ACCT_TYPE_NONE = 0,
    M_ACCT_TYPE_IMAP,
@@ -72,8 +72,8 @@ diff -urN mutt-1.6.1/account.h mutt-1.6.1-neomutt/account.h
  
  /* account flags */
 diff -urN mutt-1.6.1/alias.c mutt-1.6.1-neomutt/alias.c
---- mutt-1.6.1/alias.c	2016-05-30 14:49:21.082679675 +0100
-+++ mutt-1.6.1-neomutt/alias.c	2016-05-30 14:49:21.340683709 +0100
+--- mutt-1.6.1/alias.c	2016-06-12 18:43:00.396447497 +0100
++++ mutt-1.6.1-neomutt/alias.c	2016-06-12 18:43:00.673451816 +0100
 @@ -27,6 +27,7 @@
  
  #include <string.h>
@@ -96,8 +96,8 @@ diff -urN mutt-1.6.1/alias.c mutt-1.6.1-neomutt/alias.c
    else
      mutt_perror (buf);
 diff -urN mutt-1.6.1/attach.c mutt-1.6.1-neomutt/attach.c
---- mutt-1.6.1/attach.c	2016-05-30 14:49:21.082679675 +0100
-+++ mutt-1.6.1-neomutt/attach.c	2016-05-30 14:49:21.340683709 +0100
+--- mutt-1.6.1/attach.c	2016-06-12 18:43:00.396447497 +0100
++++ mutt-1.6.1-neomutt/attach.c	2016-06-12 18:43:00.673451816 +0100
 @@ -765,7 +765,7 @@
        fseeko ((s.fpin = fp), m->offset, 0);
        mutt_decode_attachment (m, &s);
@@ -149,8 +149,8 @@ diff -urN mutt-1.6.1/attach.c mutt-1.6.1-neomutt/attach.c
  
  /* Ok, the difference between send and receive:
 diff -urN mutt-1.6.1/attach.h mutt-1.6.1-neomutt/attach.h
---- mutt-1.6.1/attach.h	2016-05-30 14:49:21.082679675 +0100
-+++ mutt-1.6.1-neomutt/attach.h	2016-05-30 14:49:21.340683709 +0100
+--- mutt-1.6.1/attach.h	2016-06-12 18:43:00.396447497 +0100
++++ mutt-1.6.1-neomutt/attach.h	2016-06-12 18:43:00.674451832 +0100
 @@ -50,7 +50,7 @@
  
  void mutt_attach_bounce (FILE *, HEADER *, ATTACHPTR **, short, BODY *);
@@ -161,8 +161,8 @@ diff -urN mutt-1.6.1/attach.h mutt-1.6.1-neomutt/attach.h
  
  #endif /* _ATTACH_H_ */
 diff -urN mutt-1.6.1/browser.c mutt-1.6.1-neomutt/browser.c
---- mutt-1.6.1/browser.c	2016-05-30 14:49:21.083679691 +0100
-+++ mutt-1.6.1-neomutt/browser.c	2016-05-30 14:49:21.341683724 +0100
+--- mutt-1.6.1/browser.c	2016-06-12 18:43:00.396447497 +0100
++++ mutt-1.6.1-neomutt/browser.c	2016-06-12 18:43:00.674451832 +0100
 @@ -29,9 +29,16 @@
  #include "sort.h"
  #include "mailbox.h"
@@ -1066,8 +1066,8 @@ diff -urN mutt-1.6.1/browser.c mutt-1.6.1-neomutt/browser.c
    }
    
 diff -urN mutt-1.6.1/browser.h mutt-1.6.1-neomutt/browser.h
---- mutt-1.6.1/browser.h	2016-05-30 14:49:21.083679691 +0100
-+++ mutt-1.6.1-neomutt/browser.h	2016-05-30 14:49:21.341683724 +0100
+--- mutt-1.6.1/browser.h	2016-06-12 18:43:00.396447497 +0100
++++ mutt-1.6.1-neomutt/browser.h	2016-06-12 18:43:00.674451832 +0100
 @@ -19,6 +19,10 @@
  #ifndef _BROWSER_H
  #define _BROWSER_H 1
@@ -1099,8 +1099,8 @@ diff -urN mutt-1.6.1/browser.h mutt-1.6.1-neomutt/browser.h
  };
  
 diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
---- mutt-1.6.1/buffy.c	2016-05-30 14:49:21.083679691 +0100
-+++ mutt-1.6.1-neomutt/buffy.c	2016-05-30 14:49:21.341683724 +0100
+--- mutt-1.6.1/buffy.c	2016-06-12 18:43:00.397447512 +0100
++++ mutt-1.6.1-neomutt/buffy.c	2016-06-12 18:43:00.675451848 +0100
 @@ -27,10 +27,18 @@
  
  #include "mutt_curses.h"
@@ -1164,7 +1164,7 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
        {
          tmp1=(*tmp)->next;
 +#ifdef USE_SIDEBAR
-+	sb_notify_mailbox (*tmp, 0);
++	mutt_sb_notify_mailbox (*tmp, 0);
 +#endif
          buffy_free (tmp);
          *tmp=tmp1;
@@ -1188,7 +1188,7 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
        {
          tmp1=(*tmp)->next;
 +#ifdef USE_SIDEBAR
-+	sb_notify_mailbox (*tmp, 0);
++	mutt_sb_notify_mailbox (*tmp, 0);
 +#endif
          buffy_free (tmp);
          *tmp=tmp1;
@@ -1200,7 +1200,7 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
 +    if (!*tmp) {
        *tmp = buffy_new (buf);
 +#ifdef USE_SIDEBAR
-+      sb_notify_mailbox (*tmp, 1);
++      mutt_sb_notify_mailbox (*tmp, 1);
 +#endif
 +    }
  
@@ -1254,7 +1254,7 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
 +    {
 +      if (mutt_strcmp (buf, (*tmp)->path) == 0)
 +      {
-+	dprint(3,(debugfile,"vistual mailbox '%s' already registered as '%s'\n", buf, (*tmp)->path));
++	dprint(3,(debugfile,"virtual mailbox '%s' already registered as '%s'\n", buf, (*tmp)->path));
 +	break;
 +      }
 +    }
@@ -1275,7 +1275,7 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
  /* returns 1 if maildir has new mail */
  static int buffy_maildir_hasnew (BUFFY* mailbox)
  {
-@@ -357,6 +448,89 @@
+@@ -357,6 +448,92 @@
  
    return 0;
  }
@@ -1294,41 +1294,44 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
 +static void
 +buffy_maildir_update_dir (BUFFY *mailbox, const char *dir)
 +{
-+	char path[_POSIX_PATH_MAX] = "";
-+	DIR *dirp = NULL;
-+	struct dirent *de = NULL;
-+	char *p = NULL;
-+	int read;
++  char path[_POSIX_PATH_MAX] = "";
++  DIR *dirp = NULL;
++  struct dirent *de = NULL;
++  char *p = NULL;
++  int read;
 +
-+	snprintf (path, sizeof (path), "%s/%s", mailbox->path, dir);
++  snprintf (path, sizeof (path), "%s/%s", mailbox->path, dir);
 +
-+	dirp = opendir (path);
-+	if (!dirp) {
-+		mailbox->magic = 0;
-+		return;
-+	}
++  dirp = opendir (path);
++  if (!dirp)
++  {
++    mailbox->magic = 0;
++    return;
++  }
 +
-+	while ((de = readdir (dirp)) != NULL) {
-+		if (*de->d_name == '.')
-+			continue;
++  while ((de = readdir (dirp)) != NULL)
++  {
++    if (*de->d_name == '.')
++      continue;
 +
-+		/* Matches maildir_parse_flags logic */
-+		read = 0;
-+		mailbox->msg_count++;
-+		p = strstr (de->d_name, ":2,");
-+		if (p) {
-+			p += 3;
-+			if (strchr (p, 'S'))
-+				read = 1;
-+			if (strchr (p, 'F'))
-+				mailbox->msg_flagged++;
-+		}
-+		if (!read) {
-+			mailbox->msg_unread++;
-+		}
-+	}
++    /* Matches maildir_parse_flags logic */
++    read = 0;
++    mailbox->msg_count++;
++    p = strstr (de->d_name, ":2,");
++    if (p)
++    {
++      p += 3;
++      if (strchr (p, 'S'))
++        read = 1;
++      if (strchr (p, 'F'))
++        mailbox->msg_flagged++;
++    }
++    if (!read) {
++      mailbox->msg_unread++;
++    }
++  }
 +
-+	closedir (dirp);
++  closedir (dirp);
 +}
 +
 +/**
@@ -1357,7 +1360,7 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
 +	mailbox->sb_last_checked = time (NULL);
 +
 +	/* make sure the updates are actually put on screen */
-+	sb_draw();
++	mutt_sb_draw();
 +}
 +
 +#endif
@@ -1365,7 +1368,7 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
  /* returns 1 if mailbox has new mail */ 
  static int buffy_mbox_hasnew (BUFFY* mailbox, struct stat *sb)
  {
-@@ -368,7 +542,11 @@
+@@ -368,7 +545,11 @@
    else
      statcheck = sb->st_mtime > sb->st_atime
        || (mailbox->newly_created && sb->st_ctime == sb->st_mtime && sb->st_ctime == sb->st_atime);
@@ -1377,7 +1380,7 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
    {
      if (!option(OPTMAILCHECKRECENT) || sb->st_mtime > mailbox->last_visited)
      {
-@@ -388,48 +566,47 @@
+@@ -388,48 +569,48 @@
    return rc;
  }
  
@@ -1399,31 +1402,32 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
 -  struct stat sb;
 -  struct stat contex_sb;
 -  time_t t;
-+	CONTEXT *ctx = NULL;
++  CONTEXT *ctx = NULL;
  
 -  sb.st_size=0;
 -  contex_sb.st_dev=0;
 -  contex_sb.st_ino=0;
-+	if (!option (OPTSIDEBAR))
-+		return;
-+	if ((mailbox->sb_last_checked > sb->st_mtime) && (mailbox->msg_count != 0))
-+		return; /* no check necessary */
-+
-+	ctx = mx_open_mailbox (mailbox->path, M_READONLY | M_QUIET | M_NOSORT | M_PEEK, NULL);
-+	if (ctx) {
-+		mailbox->msg_count       = ctx->msgcount;
-+		mailbox->msg_unread      = ctx->unread;
-+		mailbox->msg_flagged     = ctx->flagged;
-+		mailbox->sb_last_checked = time (NULL);
-+		mx_close_mailbox (ctx, 0);
-+	}
++  if (!option (OPTSIDEBAR))
++    return;
++  if ((mailbox->sb_last_checked > sb->st_mtime) && (mailbox->msg_count != 0))
++    return; /* no check necessary */
  
 -#ifdef USE_IMAP
 -  /* update postponed count as well, on force */
 -  if (force)
 -    mutt_update_num_postponed ();
-+	/* make sure the updates are actually put on screen */
-+	sb_draw();
++  ctx = mx_open_mailbox (mailbox->path, M_READONLY | M_QUIET | M_NOSORT | M_PEEK, NULL);
++  if (ctx)
++  {
++    mailbox->msg_count       = ctx->msgcount;
++    mailbox->msg_unread      = ctx->unread;
++    mailbox->msg_flagged     = ctx->flagged;
++    mailbox->sb_last_checked = time (NULL);
++    mx_close_mailbox (ctx, 0);
++  }
++
++  /* make sure the updates are actually put on screen */
++  mutt_sb_draw();
 +}
  #endif
  
@@ -1460,7 +1464,7 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
      if (tmp->magic != M_IMAP)
      {
        tmp->new = 0;
-@@ -438,6 +615,16 @@
+@@ -438,6 +619,16 @@
  	tmp->magic = M_POP;
        else
  #endif
@@ -1477,7 +1481,7 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
        if (stat (tmp->path, &sb) != 0 || (S_ISREG(sb.st_mode) && sb.st_size == 0) ||
  	  (!tmp->magic && (tmp->magic = mx_get_magic (tmp->path)) <= 0))
        {
-@@ -446,35 +633,66 @@
+@@ -446,35 +637,66 @@
  	tmp->newly_created = 1;
  	tmp->magic = 0;
  	tmp->size = 0;
@@ -1540,14 +1544,14 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
 +	  tmp->new = 1;
 +	}
 +#ifdef USE_SIDEBAR
-+	sb_set_update_time();
++	mutt_sb_set_update_time();
 +#endif
 +	break;
 +#endif
        }
      }
      else if (option(OPTCHECKMBOXSIZE) && Context && Context->path)
-@@ -484,7 +702,69 @@
+@@ -484,8 +706,62 @@
        tmp->notified = 0;
      else if (!tmp->notified)
        BuffyNotify++;
@@ -1597,27 +1601,20 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
 +  {
 +    contex_sb.st_dev=0;
 +    contex_sb.st_ino=0;
-+  }
-+
-+#ifdef USE_SIDEBAR
-+  if (sb_should_refresh()) {
-+    for (tmp = Incoming; tmp; tmp = tmp->next)
-+      buffy_check(tmp, &contex_sb);
-+    sb_set_update_time();
    }
-+#else
+ 
 +  for (tmp = Incoming; tmp; tmp = tmp->next)
 +    buffy_check(tmp, &contex_sb);
-+#endif
 +
 +#ifdef USE_NOTMUCH
 +  for (tmp = VirtIncoming; tmp; tmp = tmp->next)
 +    buffy_check(tmp, &contex_sb);
 +#endif
- 
++
    BuffyDoneTime = BuffyTime;
    return (BuffyCount);
-@@ -600,6 +880,35 @@
+ }
+@@ -600,6 +876,35 @@
    *s = '\0';
  }
  
@@ -1654,8 +1651,8 @@ diff -urN mutt-1.6.1/buffy.c mutt-1.6.1-neomutt/buffy.c
  static BUFFY* buffy_get (const char *path)
  {
 diff -urN mutt-1.6.1/buffy.h mutt-1.6.1-neomutt/buffy.h
---- mutt-1.6.1/buffy.h	2016-05-30 14:49:21.083679691 +0100
-+++ mutt-1.6.1-neomutt/buffy.h	2016-05-30 14:49:21.341683724 +0100
+--- mutt-1.6.1/buffy.h	2016-06-12 18:43:00.397447512 +0100
++++ mutt-1.6.1-neomutt/buffy.h	2016-06-12 18:43:00.675451848 +0100
 @@ -16,6 +16,9 @@
   *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   */
@@ -1713,10 +1710,31 @@ diff -urN mutt-1.6.1/buffy.h mutt-1.6.1-neomutt/buffy.h
 +#endif /* _BUFFY_H */
 diff -urN mutt-1.6.1/ChangeLog.neomutt mutt-1.6.1-neomutt/ChangeLog.neomutt
 --- mutt-1.6.1/ChangeLog.neomutt	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/ChangeLog.neomutt	2016-05-30 14:49:21.330683553 +0100
-@@ -0,0 +1,76 @@
-+* Mon May 23 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160523
-+- New Features:
++++ mutt-1.6.1-neomutt/ChangeLog.neomutt	2016-06-12 18:43:00.662451645 +0100
+@@ -0,0 +1,97 @@
++2016-06-11  Richard Russon  <rich@flatcap.org>
++* Change in behaviour
++  - Temporarily disable $sidebar_refresh_time
++    Unfortunately, this was causing too many problems.
++    It will be fixed and re-enabled as soon as possible.
++* Bug Fixes
++  - Fix several crashes, on startup, in Keywords
++  - Reflow text now works as it should
++  - Lots of typos fixed
++  - Compress config bug prevented it working
++  - Some minor bug-fixes from mutt/default
++  - Single quote at line beginning misinterpreted by groff
++  - Setting $sidebar_width to more than 128 would cause bad things to happen.
++  - Fix alignment in the compose menu.
++  - Fix sidebar buffy stats updating on mailbox close.
++* Build Changes
++  - Sync whitespace to mutt/default
++  - Alter ChangeLog date format to simplify Makefiles
++  - Use the new notmuch functions that return a status
++  - Rename sidebar functions sb_* -> mutt_sb_*
++
++2016-05-23  Richard Russon  <rich@flatcap.org>
++* New Features:
 +  - Keywords: Email Label/Keywords/Tagging
 +  - Compress: Compressed mailboxes support
 +  - NNTP: Talk to a usenet news server
@@ -1724,17 +1742,17 @@ diff -urN mutt-1.6.1/ChangeLog.neomutt mutt-1.6.1-neomutt/ChangeLog.neomutt
 +  - New configure option: --enable-quick-build
 +  - Various build fixes
 +
-+* Mon May 02 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160502
-+- Update for Mutt-1.6.0
-+- Bug Fixes:
++2016-05-02  Richard Russon  <rich@flatcap.org>
++* Update for Mutt-1.6.0
++* Bug Fixes:
 +  - Build for Notmuch works if Sidebar is disabled
 +  - Sidebar functions work even if the Sidebar is hidden
 +  - sidebar-next-new, etc, only find *new* mail, as documented
 +  - Notmuch supports *very* long queries
 +
-+* Sat Apr 16 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160416
-+- Big Bugfix Release
-+- Bug Fixes:
++2016-04-16  Richard Russon  <rich@flatcap.org>
++* Big Bugfix Release
++* Bug Fixes:
 +  - Fix crash caused by sidebar_folder_indent
 +  - Allow the user to change mailboxes again
 +  - Correct sidebar's messages counts
@@ -1744,39 +1762,39 @@ diff -urN mutt-1.6.1/ChangeLog.neomutt mutt-1.6.1-neomutt/ChangeLog.neomutt
 +  - Conditional include if sys/syscall.h
 +  - Build fix for old compilers
 +  - Try harder to keep track of the open mailbox
-+- Changes to Features
++* Changes to Features
 +  - Allow sidebar_divider_char to be longer
 +    (it was limited to one character)
 +  - Ignore case when sorting the sidebar alphabetically
-+- Other Changes
++* Other Changes
 +  - Numerous small tweaks to the docs
 +  - Lots of minor code tidy-ups
 +  - Enabling NotMuch now forcibly enables Sidebar
 +    (it is dependent on it, for now)
 +  - A couple of bug fixes from mutt/stable
 +
-+* Mon Apr 04 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160404
-+- Update for Mutt-1.6.0
-+- No other changes in this release
++2016-04-04  Richard Russon  <rich@flatcap.org>
++* Update for Mutt-1.6.0
++* No other changes in this release
 +
-+* Mon Mar 28 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160328
-+- New Features
++2016-03-28  Richard Russon  <rich@flatcap.org>
++* New Features
 +  - skip-quoted          - skip quoted text
 +  - limit-current-thread - limit index view to current thread
-+- Sidebar Intro - A Gentle Introduction to the Sidebar (with pictures).
++* Sidebar Intro - A Gentle Introduction to the Sidebar (with pictures).
 +
-+* Sun Mar 20 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160320
-+- Numerous small bugfixes
-+- TravisCI integration
++2016-03-20  Richard Russon  <rich@flatcap.org>
++* Numerous small bugfixes
++* TravisCI integration
 +
-+* Thu Mar 17 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160317
-+- New Features
++2016-03-17  Richard Russon  <rich@flatcap.org>
++* New Features
 +  - notmuch - email search support
 +  - ifdef   - improvements
 +
-+* Mon Mar 07 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160307
-+- First NeoMutt release
-+- List of Features:
++2016-03-07  Richard Russon  <rich@flatcap.org>
++* First NeoMutt release
++* List of Features:
 +  - bug-fixes    - various bug fixes
 +  - cond-date    - use rules to choose date format
 +  - fmemopen     - use memory buffers instead of files
@@ -1793,7 +1811,7 @@ diff -urN mutt-1.6.1/ChangeLog.neomutt mutt-1.6.1-neomutt/ChangeLog.neomutt
 +
 diff -urN mutt-1.6.1/ChangeLog.nntp mutt-1.6.1-neomutt/ChangeLog.nntp
 --- mutt-1.6.1/ChangeLog.nntp	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/ChangeLog.nntp	2016-05-30 14:49:21.330683553 +0100
++++ mutt-1.6.1-neomutt/ChangeLog.nntp	2016-06-12 18:43:00.662451645 +0100
 @@ -0,0 +1,416 @@
 +* Wed Apr  6 2016 Vsevolod Volkov <vvv@mutt.org.ua>
 +- update to 1.6.0
@@ -2212,8 +2230,8 @@ diff -urN mutt-1.6.1/ChangeLog.nntp mutt-1.6.1-neomutt/ChangeLog.nntp
 +* Fri Jan 28 2000 Vsevolod Volkov <vvv@mutt.kiev.ua>
 +- update to 1.1.2
 diff -urN mutt-1.6.1/color.c mutt-1.6.1-neomutt/color.c
---- mutt-1.6.1/color.c	2016-05-30 14:49:21.083679691 +0100
-+++ mutt-1.6.1-neomutt/color.c	2016-05-30 14:49:21.342683740 +0100
+--- mutt-1.6.1/color.c	2016-06-12 18:43:00.397447512 +0100
++++ mutt-1.6.1-neomutt/color.c	2016-06-12 18:43:00.675451848 +0100
 @@ -34,7 +34,14 @@
  int ColorDefs[MT_COLOR_MAX];
  COLOR_LINE *ColorHdrList = NULL;
@@ -2474,7 +2492,7 @@ diff -urN mutt-1.6.1/color.c mutt-1.6.1-neomutt/color.c
 -    r = add_pattern (&ColorBodyList, buf->data, 1, fg, bg, attr, err, 0);
 +    r = add_pattern (&ColorBodyList, buf->data, 1, fg, bg, attr, err, 0, match);
 +  else if ((object == MT_COLOR_STATUS) && MoreArgs (s)) {
-+    /* 'color status fg bg' can have upto 2 arguments:
++    /* 'color status fg bg' can have up to 2 arguments:
 +     * 0 arguments: sets the default status color (handled below by else part)
 +     * 1 argument : colorize pattern on match
 +     * 2 arguments: colorize nth submatch of pattern
@@ -2540,8 +2558,8 @@ diff -urN mutt-1.6.1/color.c mutt-1.6.1-neomutt/color.c
    return (r);
  }
 diff -urN mutt-1.6.1/commands.c mutt-1.6.1-neomutt/commands.c
---- mutt-1.6.1/commands.c	2016-05-30 14:49:21.083679691 +0100
-+++ mutt-1.6.1-neomutt/commands.c	2016-05-30 14:49:21.342683740 +0100
+--- mutt-1.6.1/commands.c	2016-06-12 18:43:00.397447512 +0100
++++ mutt-1.6.1-neomutt/commands.c	2016-06-12 18:43:00.676451863 +0100
 @@ -40,6 +40,10 @@
  #include "imap.h"
  #endif
@@ -2634,8 +2652,8 @@ diff -urN mutt-1.6.1/commands.c mutt-1.6.1-neomutt/commands.c
  
      need_buffy_cleanup = (ctx.magic == M_MBOX || ctx.magic == M_MMDF);
 diff -urN mutt-1.6.1/complete.c mutt-1.6.1-neomutt/complete.c
---- mutt-1.6.1/complete.c	2016-05-30 14:49:21.084679706 +0100
-+++ mutt-1.6.1-neomutt/complete.c	2016-05-30 14:49:21.342683740 +0100
+--- mutt-1.6.1/complete.c	2016-06-12 18:43:00.397447512 +0100
++++ mutt-1.6.1-neomutt/complete.c	2016-06-12 18:43:00.676451863 +0100
 @@ -25,6 +25,9 @@
  #include "mailbox.h"
  #include "imap.h"
@@ -2718,8 +2736,8 @@ diff -urN mutt-1.6.1/complete.c mutt-1.6.1-neomutt/complete.c
    if (*s == '=' || *s == '+' || *s == '!')
    {
 diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
---- mutt-1.6.1/compose.c	2016-05-30 14:49:21.084679706 +0100
-+++ mutt-1.6.1-neomutt/compose.c	2016-05-30 14:49:21.343683756 +0100
+--- mutt-1.6.1/compose.c	2016-06-12 18:43:00.398447528 +0100
++++ mutt-1.6.1-neomutt/compose.c	2016-06-12 18:43:00.676451863 +0100
 @@ -32,11 +32,19 @@
  #include "mailbox.h"
  #include "sort.h"
@@ -2845,16 +2863,17 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
  		NONULL(SmimeCryptAlg));
    }
  }
-@@ -175,7 +220,7 @@
+@@ -175,7 +220,8 @@
    int c;
    char *t;
  
 -  mvaddstr (HDR_MIX, 0,     "     Mix: ");
-+  mvprintw (HDR_MIX, SidebarWidth, TITLE_FMT, "Mix: ");
++  /* L10N: "Mix" refers to the MixMaster chain for anonymous email */
++  mvprintw (HDR_MIX, SidebarWidth, TITLE_FMT, _("Mix: "));
  
    if (!chain)
    {
-@@ -190,7 +235,7 @@
+@@ -190,7 +236,7 @@
      if (t && t[0] == '0' && t[1] == '\0')
        t = "<random>";
      
@@ -2863,7 +2882,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
        break;
  
      addstr (NONULL(t));
-@@ -242,20 +287,42 @@
+@@ -242,20 +288,42 @@
  
    buf[0] = 0;
    rfc822_write_address (buf, sizeof (buf), addr, 1);
@@ -2875,7 +2894,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
  static void draw_envelope (HEADER *msg, char *fcc)
  {
 +#ifdef USE_SIDEBAR
-+  sb_draw();
++  mutt_sb_draw();
 +#endif
    draw_envelope_addr (HDR_FROM, msg->env->from);
 +#ifdef USE_NNTP
@@ -2909,7 +2928,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
    mutt_paddstr (W, fcc);
  
    if (WithCrypto)
-@@ -266,7 +333,7 @@
+@@ -266,7 +334,7 @@
  #endif
  
    SETCOLOR (MT_COLOR_STATUS);
@@ -2918,7 +2937,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
    clrtoeol ();
  
    NORMAL_COLOR;
-@@ -302,7 +369,7 @@
+@@ -302,7 +370,7 @@
    /* redraw the expanded list so the user can see the result */
    buf[0] = 0;
    rfc822_write_address (buf, sizeof (buf), *addr, 1);
@@ -2927,7 +2946,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
    mutt_paddstr (W, buf);
    
    return 0;
-@@ -504,6 +571,12 @@
+@@ -504,6 +572,12 @@
    /* Sort, SortAux could be changed in mutt_index_menu() */
    int oldSort, oldSortAux;
    struct stat st;
@@ -2940,7 +2959,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
  
    mutt_attach_init (msg->content);
    idx = mutt_gen_attach_list (msg->content, -1, idx, &idxlen, &idxmax, 0, 1);
-@@ -514,10 +587,18 @@
+@@ -514,10 +588,18 @@
    menu->make_entry = snd_entry;
    menu->tag = mutt_tag_attach;
    menu->data = idx;
@@ -2950,7 +2969,8 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
 +  else
 +#endif
    menu->help = mutt_compile_help (helpstr, sizeof (helpstr), MENU_COMPOSE, ComposeHelp);
-   
+-  
++
    while (loop)
    {
 +#ifdef USE_NNTP
@@ -2959,7 +2979,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
      switch (op = mutt_menuLoop (menu))
      {
        case OP_REDRAW:
-@@ -530,6 +611,10 @@
+@@ -530,6 +612,10 @@
          mutt_message_hook (NULL, msg, M_SEND2HOOK);
  	break;
        case OP_COMPOSE_EDIT_TO:
@@ -2970,7 +2990,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
  	menu->redraw = edit_address_list (HDR_TO, &msg->env->to);
  	if (option (OPTCRYPTOPPORTUNISTICENCRYPT))
  	{
-@@ -539,6 +624,10 @@
+@@ -539,6 +625,10 @@
          mutt_message_hook (NULL, msg, M_SEND2HOOK);
          break;
        case OP_COMPOSE_EDIT_BCC:
@@ -2981,7 +3001,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
  	menu->redraw = edit_address_list (HDR_BCC, &msg->env->bcc);
  	if (option (OPTCRYPTOPPORTUNISTICENCRYPT))
  	{
-@@ -548,6 +637,10 @@
+@@ -548,6 +638,10 @@
          mutt_message_hook (NULL, msg, M_SEND2HOOK);
  	break;
        case OP_COMPOSE_EDIT_CC:
@@ -2992,7 +3012,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
  	menu->redraw = edit_address_list (HDR_CC, &msg->env->cc);
  	if (option (OPTCRYPTOPPORTUNISTICENCRYPT))
  	{
-@@ -556,6 +649,62 @@
+@@ -556,6 +650,62 @@
  	}
          mutt_message_hook (NULL, msg, M_SEND2HOOK);	
          break;
@@ -3055,7 +3075,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
        case OP_COMPOSE_EDIT_SUBJECT:
  	if (msg->env->subject)
  	  strfcpy (buf, msg->env->subject, sizeof (buf));
-@@ -564,7 +713,7 @@
+@@ -564,7 +714,7 @@
  	if (mutt_get_field ("Subject: ", buf, sizeof (buf), 0) == 0)
  	{
  	  mutt_str_replace (&msg->env->subject, buf);
@@ -3064,7 +3084,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
  	  if (msg->env->subject)
  	    mutt_paddstr (W, msg->env->subject);
  	  else
-@@ -582,7 +731,7 @@
+@@ -582,7 +732,7 @@
  	{
  	  strfcpy (fcc, buf, fcclen);
  	  mutt_pretty_mailbox (fcc, fcclen);
@@ -3073,7 +3093,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
  	  mutt_paddstr (W, fcc);
  	  fccSet = 1;
  	}
-@@ -686,7 +835,8 @@
+@@ -686,7 +836,8 @@
  	  numfiles = 0;
  	  files = NULL;
  
@@ -3083,7 +3103,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
  	      *fname == '\0')
  	    break;
  
-@@ -724,6 +874,9 @@
+@@ -724,6 +875,9 @@
          break;
  
        case OP_COMPOSE_ATTACH_MESSAGE:
@@ -3093,7 +3113,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
  	{
  	  char *prompt;
  	  HEADER *h;
-@@ -731,7 +884,22 @@
+@@ -731,7 +885,22 @@
  	  fname[0] = 0;
  	  prompt = _("Open mailbox to attach message from");
  
@@ -3116,7 +3136,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
  	  {
  	    strfcpy (fname, NONULL (Context->path), sizeof (fname));
  	    mutt_pretty_mailbox (fname, sizeof (fname));
-@@ -740,6 +908,11 @@
+@@ -740,6 +909,11 @@
  	  if (mutt_enter_fname (prompt, fname, sizeof (fname), &menu->redraw, 1) == -1 || !fname[0])
  	    break;
  
@@ -3128,7 +3148,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
  	  mutt_expand_path (fname, sizeof (fname));
  #ifdef USE_IMAP
            if (!mx_is_imap (fname))
-@@ -747,6 +920,9 @@
+@@ -747,6 +921,9 @@
  #ifdef USE_POP
            if (!mx_is_pop (fname))
  #endif
@@ -3138,7 +3158,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
  	  /* check to make sure the file exists and is readable */
  	  if (access (fname, R_OK) == -1)
  	  {
-@@ -1231,7 +1407,7 @@
+@@ -1231,7 +1408,7 @@
           if (msg->content->next)
             msg->content = mutt_make_multipart (msg->content);
  
@@ -3149,7 +3169,7 @@ diff -urN mutt-1.6.1/compose.c mutt-1.6.1-neomutt/compose.c
             mutt_message _("Message written.");
 diff -urN mutt-1.6.1/compress.c mutt-1.6.1-neomutt/compress.c
 --- mutt-1.6.1/compress.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/compress.c	2016-05-30 14:49:21.343683756 +0100
++++ mutt-1.6.1-neomutt/compress.c	2016-06-12 18:43:00.677451879 +0100
 @@ -0,0 +1,826 @@
 +/* Copyright (C) 1997 Alain Penders <Alain@Finale-Dev.com>
 + * Copyright (C) 2016 Richard Russon <rich@flatcap.org>
@@ -3619,7 +3639,7 @@ diff -urN mutt-1.6.1/compress.c mutt-1.6.1-neomutt/compress.c
 +	if (!cmd)
 +		return 0;
 +
-+	return (strstr (cmd, "%f") && strstr (cmd, "%t")) ? 0 : -1;
++	return (strstr (cmd, "%f") && strstr (cmd, "%t")) ? 1 : 0;
 +}
 +
 +/**
@@ -3979,7 +3999,7 @@ diff -urN mutt-1.6.1/compress.c mutt-1.6.1-neomutt/compress.c
 +
 diff -urN mutt-1.6.1/compress.h mutt-1.6.1-neomutt/compress.h
 --- mutt-1.6.1/compress.h	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/compress.h	2016-05-30 14:49:21.343683756 +0100
++++ mutt-1.6.1-neomutt/compress.h	2016-06-12 18:43:00.677451879 +0100
 @@ -0,0 +1,32 @@
 +/* Copyright (C) 1997 Alain Penders <Alain@Finale-Dev.com>
 + * Copyright (C) 2016 Richard Russon <rich@flatcap.org>
@@ -4014,20 +4034,19 @@ diff -urN mutt-1.6.1/compress.h mutt-1.6.1-neomutt/compress.h
 +
 +#endif /* _COMPRESS_H_ */
 diff -urN mutt-1.6.1/configure.ac mutt-1.6.1-neomutt/configure.ac
---- mutt-1.6.1/configure.ac	2016-05-30 14:49:21.084679706 +0100
-+++ mutt-1.6.1-neomutt/configure.ac	2016-05-30 14:49:21.343683756 +0100
-@@ -175,6 +175,48 @@
+--- mutt-1.6.1/configure.ac	2016-06-12 18:43:00.398447528 +0100
++++ mutt-1.6.1-neomutt/configure.ac	2016-06-12 18:43:00.677451879 +0100
+@@ -175,6 +175,47 @@
  	SMIMEAUX_TARGET="smime_keys"
  fi
  
 +AC_ARG_ENABLE(sidebar, AC_HELP_STRING([--enable-sidebar], [Enable Sidebar support]),
 +[       if test x$enableval = xyes ; then
-+		AC_DEFINE(USE_SIDEBAR,1,[ Define if you want support for the sidebar. ])
++		AC_DEFINE(USE_SIDEBAR, 1, [Define if you want support for the sidebar.])
 +		OPS="$OPS \$(srcdir)/OPS.SIDEBAR"
-+		need_sidebar="yes"
++                MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS sidebar.o"
 +        fi
 +])
-+AM_CONDITIONAL(BUILD_SIDEBAR, test x$need_sidebar = xyes)
 +
 +AC_ARG_ENABLE(notmuch, AC_HELP_STRING([--enable-notmuch], [Enable NOTMUCH support]),
 +[       if test x$enableval = xyes ; then
@@ -4056,8 +4075,8 @@ diff -urN mutt-1.6.1/configure.ac mutt-1.6.1-neomutt/configure.ac
 +
 +AC_ARG_ENABLE(compressed, AC_HELP_STRING([--enable-compressed], [Enable compressed folders support]),
 +[       if test x$enableval = xyes ; then
-+                AC_DEFINE(USE_COMPRESSED,1, [ Define to enable compressed folders support. ])
-+		need_compress="yes"
++                AC_DEFINE(USE_COMPRESSED, 1, [Define to enable compressed folders support.])
++                MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS compress.o"
 +        fi
 +])
 +AM_CONDITIONAL(BUILD_COMPRESS, test x$need_compress = xyes)
@@ -4065,7 +4084,7 @@ diff -urN mutt-1.6.1/configure.ac mutt-1.6.1-neomutt/configure.ac
  AC_ARG_WITH(mixmaster, AS_HELP_STRING([--with-mixmaster@<:@=PATH@:>@],[Include Mixmaster support]),
    [if test "$withval" != no
     then
-@@ -309,10 +351,11 @@
+@@ -309,10 +350,11 @@
  AC_HEADER_STDC
  
  AC_CHECK_HEADERS(stdarg.h sys/ioctl.h ioctl.h sysexits.h)
@@ -4078,7 +4097,7 @@ diff -urN mutt-1.6.1/configure.ac mutt-1.6.1-neomutt/configure.ac
  
  AC_MSG_CHECKING(for sig_atomic_t in signal.h)
  AC_EGREP_HEADER(sig_atomic_t,signal.h,
-@@ -354,7 +397,7 @@
+@@ -354,7 +396,7 @@
  
  AC_CHECK_FUNCS(fgetpos memmove setegid srand48 strerror)
  
@@ -4087,7 +4106,7 @@ diff -urN mutt-1.6.1/configure.ac mutt-1.6.1-neomutt/configure.ac
  AC_REPLACE_FUNCS([strcasestr mkdtemp])
  
  AC_CHECK_FUNC(getopt)
-@@ -600,6 +643,15 @@
+@@ -600,6 +642,15 @@
  ])
  AM_CONDITIONAL(BUILD_IMAP, test x$need_imap = xyes)
  
@@ -4103,7 +4122,7 @@ diff -urN mutt-1.6.1/configure.ac mutt-1.6.1-neomutt/configure.ac
  AC_ARG_ENABLE(smtp, AS_HELP_STRING([--enable-smtp],[include internal SMTP relay support]),
  	[if test $enableval = yes; then
  		AC_DEFINE(USE_SMTP, 1, [Include internal SMTP relay support])
-@@ -607,7 +659,7 @@
+@@ -607,7 +658,7 @@
  		need_socket="yes"
  	fi])
  
@@ -4112,7 +4131,7 @@ diff -urN mutt-1.6.1/configure.ac mutt-1.6.1-neomutt/configure.ac
    MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS bcache.o"
  fi
  
-@@ -1065,6 +1117,7 @@
+@@ -1065,6 +1116,7 @@
  AC_SUBST(MUTT_LIB_OBJECTS)
  AC_SUBST(LIBIMAP)
  AC_SUBST(LIBIMAPDEPS)
@@ -4120,7 +4139,7 @@ diff -urN mutt-1.6.1/configure.ac mutt-1.6.1-neomutt/configure.ac
  
  dnl -- iconv/gettext --
  
-@@ -1076,6 +1129,13 @@
+@@ -1076,6 +1128,13 @@
  
  MUTT_AM_GNU_GETTEXT
  
@@ -4134,7 +4153,7 @@ diff -urN mutt-1.6.1/configure.ac mutt-1.6.1-neomutt/configure.ac
  if test "$am_cv_func_iconv" != "yes"
  then
    AC_MSG_WARN([Configuring without iconv support. See INSTALL for details])
-@@ -1308,6 +1368,8 @@
+@@ -1308,6 +1367,8 @@
    AC_DEFINE(HAVE_LANGINFO_YESEXPR,1,[ Define if you have <langinfo.h> and nl_langinfo(YESEXPR). ])
  fi
  
@@ -4144,8 +4163,8 @@ diff -urN mutt-1.6.1/configure.ac mutt-1.6.1-neomutt/configure.ac
  have_openjade="no"
  AC_PATH_PROG([OSPCAT], [ospcat], [none])
 diff -urN mutt-1.6.1/copy.c mutt-1.6.1-neomutt/copy.c
---- mutt-1.6.1/copy.c	2016-05-30 14:49:21.085679722 +0100
-+++ mutt-1.6.1-neomutt/copy.c	2016-05-30 14:49:21.349683850 +0100
+--- mutt-1.6.1/copy.c	2016-06-12 18:43:00.398447528 +0100
++++ mutt-1.6.1-neomutt/copy.c	2016-06-12 18:43:00.683451972 +0100
 @@ -30,6 +30,10 @@
  #include "mutt_idna.h"
  #include "mutt_curses.h"
@@ -4173,16 +4192,17 @@ diff -urN mutt-1.6.1/copy.c mutt-1.6.1-neomutt/copy.c
        if (!ignore && fputs (buf, out) == EOF)
  	return (-1);
      }
-@@ -288,7 +301,7 @@
+@@ -288,7 +301,8 @@
        if (flags & (CH_DECODE|CH_PREFIX))
        {
  	if (mutt_write_one_header (out, 0, headers[x], 
 -				   flags & CH_PREFIX ? prefix : 0, mutt_term_width (Wrap), flags) == -1)
-+				   flags & CH_PREFIX ? prefix : 0, mutt_term_width (Wrap) - SidebarWidth, flags) == -1)
++				   flags & CH_PREFIX ? prefix : 0,
++                                   mutt_term_width (Wrap), flags) == -1)
  	{
  	  error = TRUE;
  	  break;
-@@ -334,6 +347,7 @@
+@@ -334,6 +348,7 @@
  	CH_NOQFROM      ignore ">From " line
  	CH_UPDATE_IRT	update the In-Reply-To: header
  	CH_UPDATE_REFS	update the References: header
@@ -4190,7 +4210,7 @@ diff -urN mutt-1.6.1/copy.c mutt-1.6.1-neomutt/copy.c
  
     prefix
     	string to use if CH_PREFIX is set
-@@ -347,7 +361,7 @@
+@@ -347,7 +362,7 @@
    if (h->env)
      flags |= (h->env->irt_changed ? CH_UPDATE_IRT : 0)
        | (h->env->refs_changed ? CH_UPDATE_REFS : 0);
@@ -4199,7 +4219,7 @@ diff -urN mutt-1.6.1/copy.c mutt-1.6.1-neomutt/copy.c
    if (mutt_copy_hdr (in, out, h->offset, h->content->offset, flags, prefix) == -1)
      return -1;
  
-@@ -413,6 +427,70 @@
+@@ -413,6 +428,70 @@
        fprintf (out, "Lines: %d\n", h->lines);
    }
  
@@ -4270,7 +4290,7 @@ diff -urN mutt-1.6.1/copy.c mutt-1.6.1-neomutt/copy.c
    if ((flags & CH_NONEWLINE) == 0)
    {
      if (flags & CH_PREFIX)
-@@ -493,6 +571,9 @@
+@@ -493,6 +572,9 @@
        _mutt_make_string (prefix, sizeof (prefix), NONULL (Prefix), Context, hdr, 0);
    }
  
@@ -4280,7 +4300,7 @@ diff -urN mutt-1.6.1/copy.c mutt-1.6.1-neomutt/copy.c
    if ((flags & M_CM_NOHEADER) == 0)
    {
      if (flags & M_CM_PREFIX)
-@@ -682,7 +763,7 @@
+@@ -682,7 +764,7 @@
  {
    MESSAGE *msg;
    int r;
@@ -4289,7 +4309,7 @@ diff -urN mutt-1.6.1/copy.c mutt-1.6.1-neomutt/copy.c
    if ((msg = mx_open_message (src, hdr->msgno)) == NULL)
      return -1;
    if ((r = _mutt_copy_message (fpout, msg->fp, hdr, hdr->content, flags, chflags)) == 0 
-@@ -717,7 +798,7 @@
+@@ -717,7 +799,7 @@
    fseeko (fpin, hdr->offset, 0);
    if (fgets (buf, sizeof (buf), fpin) == NULL)
      return -1;
@@ -4298,7 +4318,7 @@ diff -urN mutt-1.6.1/copy.c mutt-1.6.1-neomutt/copy.c
    if ((msg = mx_open_new_message (dest, hdr, is_from (buf, NULL, 0, NULL) ? 0 : M_ADD_FROM)) == NULL)
      return -1;
    if (dest->magic == M_MBOX || dest->magic == M_MMDF)
-@@ -727,6 +808,11 @@
+@@ -727,6 +809,11 @@
    if (mx_commit_message (msg, dest) != 0)
      r = -1;
  
@@ -4311,8 +4331,8 @@ diff -urN mutt-1.6.1/copy.c mutt-1.6.1-neomutt/copy.c
    return r;
  }
 diff -urN mutt-1.6.1/copy.h mutt-1.6.1-neomutt/copy.h
---- mutt-1.6.1/copy.h	2016-05-30 14:49:21.085679722 +0100
-+++ mutt-1.6.1-neomutt/copy.h	2016-05-30 14:49:21.349683850 +0100
+--- mutt-1.6.1/copy.h	2016-06-12 18:43:00.398447528 +0100
++++ mutt-1.6.1-neomutt/copy.h	2016-06-12 18:43:00.683451972 +0100
 @@ -53,6 +53,8 @@
  #define CH_UPDATE_IRT     (1<<16) /* update In-Reply-To: */
  #define CH_UPDATE_REFS    (1<<17) /* update References: */
@@ -4323,8 +4343,8 @@ diff -urN mutt-1.6.1/copy.h mutt-1.6.1-neomutt/copy.h
  
  int mutt_copy_hdr (FILE *, FILE *, LOFF_T, LOFF_T, int, const char *);
 diff -urN mutt-1.6.1/curs_lib.c mutt-1.6.1-neomutt/curs_lib.c
---- mutt-1.6.1/curs_lib.c	2016-05-30 14:49:21.085679722 +0100
-+++ mutt-1.6.1-neomutt/curs_lib.c	2016-05-30 14:49:21.351683881 +0100
+--- mutt-1.6.1/curs_lib.c	2016-06-12 18:43:00.399447544 +0100
++++ mutt-1.6.1-neomutt/curs_lib.c	2016-06-12 18:43:00.686452019 +0100
 @@ -44,6 +44,10 @@
  #include <langinfo.h>
  #endif
@@ -4486,8 +4506,8 @@ diff -urN mutt-1.6.1/curs_lib.c mutt-1.6.1-neomutt/curs_lib.c
      {
        k = (k == (size_t)(-1)) ? 1 : n;
 diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
---- mutt-1.6.1/curs_main.c	2016-05-30 14:49:21.086679738 +0100
-+++ mutt-1.6.1-neomutt/curs_main.c	2016-05-30 14:49:21.351683881 +0100
+--- mutt-1.6.1/curs_main.c	2016-06-12 18:43:00.399447544 +0100
++++ mutt-1.6.1-neomutt/curs_main.c	2016-06-12 18:43:00.686452019 +0100
 @@ -22,12 +22,18 @@
  
  #include "mutt.h"
@@ -4657,7 +4677,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
 +#endif
 +  mutt_expand_path (buf, bufsz);
 +#ifdef USE_SIDEBAR
-+  sb_set_open_buffy (buf);
++  mutt_sb_set_open_buffy (buf);
 +#endif
 +  if (mx_get_magic (buf) <= 0)
 +  {
@@ -4797,13 +4817,13 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
      {
        menu_redraw_full (menu);
 +#ifdef USE_SIDEBAR
-+      sb_draw();
++      mutt_sb_draw();
 +#endif
        mutt_show_error ();
      }
 +#ifdef USE_SIDEBAR
 +    else if (menu->redraw & REDRAW_SIDEBAR) {
-+      sb_draw();
++      mutt_sb_draw();
 +      menu->redraw &= ~REDRAW_SIDEBAR;
 +    }
 +#endif
@@ -4827,7 +4847,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
  	SETCOLOR (MT_COLOR_STATUS);
 -	mutt_paddstr (COLS, buf);
 +#ifdef USE_SIDEBAR
-+	sb_set_buffystats (Context);
++	mutt_sb_set_buffystats (Context);
 +#endif
 +	mutt_draw_statusline (COLS, buf);
  	NORMAL_COLOR;
@@ -5286,7 +5306,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
  
 +#ifdef USE_SIDEBAR
 +	  if (op == OP_SIDEBAR_OPEN) {
-+	    const char *path = sb_get_highlight();
++	    const char *path = mutt_sb_get_highlight();
 +	    if (!path)
 +	      break;
 +	    strncpy (buf, path, sizeof (buf));
@@ -5295,11 +5315,17 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
  	  if (mutt_enter_fname (cp, buf, sizeof (buf), &menu->redraw, 1) == -1)
  	  {
  	    if (menu->menu == MENU_PAGER)
-@@ -1198,61 +1828,12 @@
+@@ -1198,61 +1828,16 @@
  	  }
  	}
  
--	mutt_expand_path (buf, sizeof (buf));
++	main_change_folder(menu, op, buf, sizeof (buf), &oldcount, &index_hint, flags);
++#ifdef USE_NNTP
++	/* mutt_buffy_check() must be done with mail-reader mode! */
++	menu->help = mutt_compile_help (helpstr, sizeof (helpstr), MENU_MAIN,
++	  (Context && (Context->magic == M_NNTP)) ? IndexNewsHelp : IndexHelp);
++#endif
+ 	mutt_expand_path (buf, sizeof (buf));
 -	if (mx_get_magic (buf) <= 0)
 -	{
 -	  mutt_error (_("%s is not a mailbox."), buf);
@@ -5354,16 +5380,13 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
 -			      the folder */
 -	menu->redraw = REDRAW_FULL;
 -	set_option (OPTSEARCHINVALID);
-+	main_change_folder(menu, op, buf, sizeof (buf), &oldcount, &index_hint, flags);
-+#ifdef USE_NNTP
-+	/* mutt_buffy_check() must be done with mail-reader mode! */
-+	menu->help = mutt_compile_help (helpstr, sizeof (helpstr), MENU_MAIN,
-+	  (Context && (Context->magic == M_NNTP)) ? IndexNewsHelp : IndexHelp);
++#ifdef USE_SIDEBAR
++	mutt_sb_set_open_buffy (buf);
 +#endif
  	break;
  
        case OP_DISPLAY_MESSAGE:
-@@ -1316,6 +1897,7 @@
+@@ -1316,6 +1901,7 @@
  	CHECK_MSGCOUNT;
          CHECK_VISIBLE;
  	CHECK_READONLY;
@@ -5371,7 +5394,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
  
          if ((Sort & SORT_MASK) != SORT_THREADS)
  	  mutt_error _("Threading is not enabled.");
-@@ -1351,7 +1933,7 @@
+@@ -1351,7 +1937,7 @@
          CHECK_VISIBLE;
  	CHECK_READONLY;
          /* L10N: CHECK_ACL */
@@ -5380,7 +5403,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
  
          if ((Sort & SORT_MASK) != SORT_THREADS)
  	  mutt_error _("Threading is not enabled.");
-@@ -1919,6 +2501,7 @@
+@@ -1919,6 +2505,7 @@
  	MAYBE_REDRAW (menu->redraw);
  	break;
  
@@ -5388,7 +5411,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
        case OP_DELETE:
  
  	CHECK_MSGCOUNT;
-@@ -1930,6 +2513,7 @@
+@@ -1930,6 +2517,7 @@
  	if (tag)
  	{
  	  mutt_tag_set_flag (M_DELETE, 1);
@@ -5396,7 +5419,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
  	  if (option (OPTDELETEUNTAG))
  	    mutt_tag_set_flag (M_TAG, 0);
  	  menu->redraw = REDRAW_INDEX;
-@@ -1937,6 +2521,8 @@
+@@ -1937,6 +2525,8 @@
  	else
  	{
  	  mutt_set_flag (Context, CURHDR, M_DELETE, 1);
@@ -5405,7 +5428,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
  	  if (option (OPTDELETEUNTAG))
  	    mutt_set_flag (Context, CURHDR, M_TAG, 0);
  	  if (option (OPTRESOLVE))
-@@ -1984,6 +2570,20 @@
+@@ -1984,6 +2574,20 @@
  	}
  	break;
  
@@ -5426,7 +5449,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
        case OP_DISPLAY_ADDRESS:
  
  	CHECK_MSGCOUNT;
-@@ -2045,6 +2645,21 @@
+@@ -2045,6 +2649,21 @@
  	menu->redraw = REDRAW_FULL;
  	break;
  
@@ -5448,7 +5471,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
        case OP_LIST_REPLY:
  
  	CHECK_ATTACH;
-@@ -2190,6 +2805,39 @@
+@@ -2190,6 +2809,39 @@
          menu->redraw = REDRAW_FULL;
          break;
  
@@ -5488,7 +5511,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
        case OP_REPLY:
  
  	CHECK_ATTACH;
-@@ -2242,11 +2890,13 @@
+@@ -2242,11 +2894,13 @@
  	if (tag)
  	{
  	  mutt_tag_set_flag (M_DELETE, 0);
@@ -5502,7 +5525,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
  	  if (option (OPTRESOLVE) && menu->current < Context->vcount - 1)
  	  {
  	    menu->current++;
-@@ -2268,9 +2918,11 @@
+@@ -2268,9 +2922,11 @@
  	CHECK_ACL(M_ACL_DELETE, _("Cannot undelete message(s)"));
  
  	rc = mutt_thread_set_flag (CURHDR, M_DELETE, 0,
@@ -5516,7 +5539,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
  	{
  	  if (option (OPTRESOLVE))
  	  {
-@@ -2310,11 +2962,35 @@
+@@ -2310,11 +2966,35 @@
  	mutt_what_key();
  	break;
  
@@ -5527,7 +5550,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
 +      case OP_SIDEBAR_PAGE_UP:
 +      case OP_SIDEBAR_PREV:
 +      case OP_SIDEBAR_PREV_NEW:
-+        sb_change_mailbox (op);
++        mutt_sb_change_mailbox (op);
 +        break;
 +
 +      case OP_SIDEBAR_TOGGLE_VISIBLE:
@@ -5536,7 +5559,7 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
 +	break;
 +
 +      case OP_SIDEBAR_TOGGLE_VIRTUAL:
-+	sb_toggle_virtual();
++	mutt_sb_toggle_virtual();
 +	break;
 +#endif
        default:
@@ -5552,9 +5575,22 @@ diff -urN mutt-1.6.1/curs_main.c mutt-1.6.1-neomutt/curs_main.c
      if (menu->menu == MENU_PAGER)
      {
        menu->menu = MENU_MAIN;
+diff -urN mutt-1.6.1/doc/gen-map-doc mutt-1.6.1-neomutt/doc/gen-map-doc
+--- mutt-1.6.1/doc/gen-map-doc	2016-06-12 18:43:00.400447559 +0100
++++ mutt-1.6.1-neomutt/doc/gen-map-doc	2016-06-12 18:43:00.688452050 +0100
+@@ -34,7 +34,8 @@
+     $binding =~ s/^\\(0\d+)$/'^'.chr(64+oct($1))/e;
+     $binding =~ s/^\\(0\d+)(.)/'^'.chr(64+oct($1)) ." $2"/e;
+     $binding =~ s/\\t/&lt;Tab&gt;/;
+-    $binding =~ s/M_ENTER_S/&lt;Return&gt;/;
++    $binding =~ s/\\r/&lt;Return&gt;/;
++    $binding =~ s/\\n/&lt;Enter&gt;/;
+     $binding =~ s/NULL//;
+     die "unknown key $binding" if $binding =~ /\\[^\\]|<|>/;
+     die "unknown OP $op" unless $OPS{$op};
 diff -urN mutt-1.6.1/doc/Makefile.am mutt-1.6.1-neomutt/doc/Makefile.am
---- mutt-1.6.1/doc/Makefile.am	2016-05-30 14:49:21.086679738 +0100
-+++ mutt-1.6.1-neomutt/doc/Makefile.am	2016-05-30 14:49:21.352683896 +0100
+--- mutt-1.6.1/doc/Makefile.am	2016-06-12 18:43:00.399447544 +0100
++++ mutt-1.6.1-neomutt/doc/Makefile.am	2016-06-12 18:43:00.687452035 +0100
 @@ -37,7 +37,8 @@
  
  CHUNKED_DOCFILES = index.html intro.html gettingstarted.html \
@@ -5565,19 +5601,20 @@ diff -urN mutt-1.6.1/doc/Makefile.am mutt-1.6.1-neomutt/doc/Makefile.am
  
  HTML_DOCFILES = manual.html $(CHUNKED_DOCFILES)
  
-@@ -190,7 +191,8 @@
+@@ -189,8 +190,8 @@
+ 
  stamp-doc-xml: makedoc$(EXEEXT) $(top_srcdir)/init.h \
                 manual.xml.head $(top_srcdir)/functions.h $(top_srcdir)/OPS* manual.xml.tail \
-                $(srcdir)/gen-map-doc $(top_srcdir)/VERSION $(top_srcdir)/ChangeLog
+-               $(srcdir)/gen-map-doc $(top_srcdir)/VERSION $(top_srcdir)/ChangeLog
 -	( date=`head -n 1 $(top_srcdir)/ChangeLog | LC_ALL=C cut -d ' ' -f 1` && \
-+	( date=`head -n 1 $(top_srcdir)/ChangeLog.neomutt | LC_ALL=C cut -d ' ' -f 3-5` && \
-+	  date=`date -d "$$date" "+%Y-%m-%d"` && \
++               $(srcdir)/gen-map-doc $(top_srcdir)/VERSION $(top_srcdir)/ChangeLog.neomutt
++	( date=`head -n 1 $(top_srcdir)/ChangeLog.neomutt | LC_ALL=C cut -b 1-10` && \
  	  sed -e "s/@VERSION\@/`cat $(top_srcdir)/VERSION` ($$date)/" $(srcdir)/manual.xml.head && \
  	  $(MAKEDOC_CPP) $(top_srcdir)/init.h | ./makedoc$(EXEEXT) -s && \
  	  $(MAKEDOC_CPP) $(top_srcdir)/functions.h | \
 diff -urN mutt-1.6.1/doc/manual.xml.head mutt-1.6.1-neomutt/doc/manual.xml.head
---- mutt-1.6.1/doc/manual.xml.head	2016-05-30 14:49:21.089679784 +0100
-+++ mutt-1.6.1-neomutt/doc/manual.xml.head	2016-05-30 14:49:21.356683959 +0100
+--- mutt-1.6.1/doc/manual.xml.head	2016-06-12 18:43:00.402447590 +0100
++++ mutt-1.6.1-neomutt/doc/manual.xml.head	2016-06-12 18:43:00.692452113 +0100
 @@ -405,6 +405,623 @@
  
  </sect2>
@@ -6970,7 +7007,7 @@ diff -urN mutt-1.6.1/doc/manual.xml.head mutt-1.6.1-neomutt/doc/manual.xml.head
 +# First, highlight anything (*/*)</emphasis>
 +color status brightred default '\([^)]+/[^)]+\)'
 + 
-+<emphasis role="comment"># Then override the color for one specfic case</emphasis>
++<emphasis role="comment"># Then override the color for one specific case</emphasis>
 +color status default   default '\(threads/last-date-received\)'
 + 
 +<emphasis role="comment"># 2 extra parameters
@@ -10296,7 +10333,7 @@ diff -urN mutt-1.6.1/doc/manual.xml.head mutt-1.6.1-neomutt/doc/manual.xml.head
  
  <listitem>
  <cmdsynopsis>
-+<command>sidebar_whitelist</command>
++<command><link linkend="sidebar-whitelist">sidebar_whitelist</link></command>
 +<arg choice="plain">
 +<replaceable class="parameter">item</replaceable>
 +</arg>
@@ -10311,8 +10348,8 @@ diff -urN mutt-1.6.1/doc/manual.xml.head mutt-1.6.1-neomutt/doc/manual.xml.head
  <arg choice="plain">
  <replaceable class="parameter">filename</replaceable>
 diff -urN mutt-1.6.1/doc/mutt.css mutt-1.6.1-neomutt/doc/mutt.css
---- mutt-1.6.1/doc/mutt.css	2016-05-30 14:49:21.089679784 +0100
-+++ mutt-1.6.1-neomutt/doc/mutt.css	2016-05-30 14:49:21.356683959 +0100
+--- mutt-1.6.1/doc/mutt.css	2016-06-12 18:43:00.402447590 +0100
++++ mutt-1.6.1-neomutt/doc/mutt.css	2016-06-12 18:43:00.692452113 +0100
 @@ -9,17 +9,24 @@
  div.table-contents table th, div.informaltable table th {
      font-family:sans-serif;
@@ -10344,8 +10381,8 @@ diff -urN mutt-1.6.1/doc/mutt.css mutt-1.6.1-neomutt/doc/mutt.css
 +span.highlight { background: #404040; color: #ffffff; }
 +span.reverse { background: #ffffff; color: #000000; }
 diff -urN mutt-1.6.1/doc/mutt.man mutt-1.6.1-neomutt/doc/mutt.man
---- mutt-1.6.1/doc/mutt.man	2016-05-30 14:49:21.089679784 +0100
-+++ mutt-1.6.1-neomutt/doc/mutt.man	2016-05-30 14:49:21.356683959 +0100
+--- mutt-1.6.1/doc/mutt.man	2016-06-12 18:43:00.403447606 +0100
++++ mutt-1.6.1-neomutt/doc/mutt.man	2016-06-12 18:43:00.692452113 +0100
 @@ -23,8 +23,8 @@
  .SH SYNOPSIS
  .PP
@@ -10370,7 +10407,7 @@ diff -urN mutt-1.6.1/doc/mutt.man mutt-1.6.1-neomutt/doc/mutt.man
  .IP "-H \fIdraft\fP"
 diff -urN mutt-1.6.1/doc/muttrc.compress mutt-1.6.1-neomutt/doc/muttrc.compress
 --- mutt-1.6.1/doc/muttrc.compress	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/muttrc.compress	2016-05-30 14:49:21.357683974 +0100
++++ mutt-1.6.1-neomutt/doc/muttrc.compress	2016-06-12 18:43:00.697452191 +0100
 @@ -0,0 +1,38 @@
 +# Example Mutt config file for the 'compressed folders' feature.
 +
@@ -10412,7 +10449,7 @@ diff -urN mutt-1.6.1/doc/muttrc.compress mutt-1.6.1-neomutt/doc/muttrc.compress
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.1/doc/muttrc.cond-date mutt-1.6.1-neomutt/doc/muttrc.cond-date
 --- mutt-1.6.1/doc/muttrc.cond-date	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/muttrc.cond-date	2016-05-30 14:49:21.357683974 +0100
++++ mutt-1.6.1-neomutt/doc/muttrc.cond-date	2016-06-12 18:43:00.697452191 +0100
 @@ -0,0 +1,16 @@
 +# Example Mutt config file for the 'index-color' feature.
 +#
@@ -10431,8 +10468,8 @@ diff -urN mutt-1.6.1/doc/muttrc.cond-date mutt-1.6.1-neomutt/doc/muttrc.cond-dat
 +
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.1/doc/Muttrc.head mutt-1.6.1-neomutt/doc/Muttrc.head
---- mutt-1.6.1/doc/Muttrc.head	2016-05-30 14:49:21.086679738 +0100
-+++ mutt-1.6.1-neomutt/doc/Muttrc.head	2016-05-30 14:49:21.352683896 +0100
+--- mutt-1.6.1/doc/Muttrc.head	2016-06-12 18:43:00.400447559 +0100
++++ mutt-1.6.1-neomutt/doc/Muttrc.head	2016-06-12 18:43:00.687452035 +0100
 @@ -29,6 +29,11 @@
  macro index,pager y "<change-folder>?<toggle-mailboxes>" "show incoming mailboxes list"
  bind browser y exit
@@ -10447,7 +10484,7 @@ diff -urN mutt-1.6.1/doc/Muttrc.head mutt-1.6.1-neomutt/doc/Muttrc.head
  #
 diff -urN mutt-1.6.1/doc/muttrc.ifdef mutt-1.6.1-neomutt/doc/muttrc.ifdef
 --- mutt-1.6.1/doc/muttrc.ifdef	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/muttrc.ifdef	2016-05-30 14:49:21.357683974 +0100
++++ mutt-1.6.1-neomutt/doc/muttrc.ifdef	2016-06-12 18:43:00.697452191 +0100
 @@ -0,0 +1,32 @@
 +# Example Mutt config file for the 'ifdef' feature.
 +
@@ -10483,7 +10520,7 @@ diff -urN mutt-1.6.1/doc/muttrc.ifdef mutt-1.6.1-neomutt/doc/muttrc.ifdef
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.1/doc/muttrc.index-color mutt-1.6.1-neomutt/doc/muttrc.index-color
 --- mutt-1.6.1/doc/muttrc.index-color	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/muttrc.index-color	2016-05-30 14:49:21.357683974 +0100
++++ mutt-1.6.1-neomutt/doc/muttrc.index-color	2016-06-12 18:43:00.697452191 +0100
 @@ -0,0 +1,37 @@
 +# Example Mutt config file for the 'index-color' feature.
 +
@@ -10524,7 +10561,7 @@ diff -urN mutt-1.6.1/doc/muttrc.index-color mutt-1.6.1-neomutt/doc/muttrc.index-
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.1/doc/muttrc.initials mutt-1.6.1-neomutt/doc/muttrc.initials
 --- mutt-1.6.1/doc/muttrc.initials	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/muttrc.initials	2016-05-30 14:49:21.357683974 +0100
++++ mutt-1.6.1-neomutt/doc/muttrc.initials	2016-06-12 18:43:00.697452191 +0100
 @@ -0,0 +1,27 @@
 +# Example Mutt config file for the 'initials' patch.
 +
@@ -10555,7 +10592,7 @@ diff -urN mutt-1.6.1/doc/muttrc.initials mutt-1.6.1-neomutt/doc/muttrc.initials
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.1/doc/muttrc.limit-current-thread mutt-1.6.1-neomutt/doc/muttrc.limit-current-thread
 --- mutt-1.6.1/doc/muttrc.limit-current-thread	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/muttrc.limit-current-thread	2016-05-30 14:49:21.357683974 +0100
++++ mutt-1.6.1-neomutt/doc/muttrc.limit-current-thread	2016-06-12 18:43:00.697452191 +0100
 @@ -0,0 +1,6 @@
 +# Example Mutt config file for the 'limit-current-thread' patch.
 + 
@@ -10564,8 +10601,8 @@ diff -urN mutt-1.6.1/doc/muttrc.limit-current-thread mutt-1.6.1-neomutt/doc/mutt
 + 
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.1/doc/muttrc.man.head mutt-1.6.1-neomutt/doc/muttrc.man.head
---- mutt-1.6.1/doc/muttrc.man.head	2016-05-30 14:49:21.090679800 +0100
-+++ mutt-1.6.1-neomutt/doc/muttrc.man.head	2016-05-30 14:49:21.357683974 +0100
+--- mutt-1.6.1/doc/muttrc.man.head	2016-06-12 18:43:00.403447606 +0100
++++ mutt-1.6.1-neomutt/doc/muttrc.man.head	2016-06-12 18:43:00.698452206 +0100
 @@ -358,7 +358,24 @@
  \fBcrypt-hook\fPs with the same \fIregexp\fP; multiple matching
  \fBcrypt-hook\fPs result in the use of multiple \fIkey-id\fPs for
@@ -10594,7 +10631,7 @@ diff -urN mutt-1.6.1/doc/muttrc.man.head mutt-1.6.1-neomutt/doc/muttrc.man.head
  This command adds the named \fIstring\fP to the keyboard buffer.
 diff -urN mutt-1.6.1/doc/muttrc.nested-if mutt-1.6.1-neomutt/doc/muttrc.nested-if
 --- mutt-1.6.1/doc/muttrc.nested-if	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/muttrc.nested-if	2016-05-30 14:49:21.357683974 +0100
++++ mutt-1.6.1-neomutt/doc/muttrc.nested-if	2016-06-12 18:43:00.698452206 +0100
 @@ -0,0 +1,24 @@
 +# Example Mutt config file for the 'nested-if' feature.
 +
@@ -10622,7 +10659,7 @@ diff -urN mutt-1.6.1/doc/muttrc.nested-if mutt-1.6.1-neomutt/doc/muttrc.nested-i
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.1/doc/muttrc.progress mutt-1.6.1-neomutt/doc/muttrc.progress
 --- mutt-1.6.1/doc/muttrc.progress	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/muttrc.progress	2016-05-30 14:49:21.357683974 +0100
++++ mutt-1.6.1-neomutt/doc/muttrc.progress	2016-06-12 18:43:00.698452206 +0100
 @@ -0,0 +1,10 @@
 +# Example Mutt config file for the 'progress' patch.
 +
@@ -10636,7 +10673,7 @@ diff -urN mutt-1.6.1/doc/muttrc.progress mutt-1.6.1-neomutt/doc/muttrc.progress
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.1/doc/muttrc.quasi-delete mutt-1.6.1-neomutt/doc/muttrc.quasi-delete
 --- mutt-1.6.1/doc/muttrc.quasi-delete	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/muttrc.quasi-delete	2016-05-30 14:49:21.357683974 +0100
++++ mutt-1.6.1-neomutt/doc/muttrc.quasi-delete	2016-06-12 18:43:00.698452206 +0100
 @@ -0,0 +1,7 @@
 +# Example Mutt config file for the 'quasi-delete' feature.
 +
@@ -10647,7 +10684,7 @@ diff -urN mutt-1.6.1/doc/muttrc.quasi-delete mutt-1.6.1-neomutt/doc/muttrc.quasi
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.1/doc/muttrc.sidebar mutt-1.6.1-neomutt/doc/muttrc.sidebar
 --- mutt-1.6.1/doc/muttrc.sidebar	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/muttrc.sidebar	2016-05-30 14:49:21.358683990 +0100
++++ mutt-1.6.1-neomutt/doc/muttrc.sidebar	2016-06-12 18:43:00.698452206 +0100
 @@ -0,0 +1,116 @@
 +# This is a complete list of sidebar-related configuration.
 +
@@ -10767,7 +10804,7 @@ diff -urN mutt-1.6.1/doc/muttrc.sidebar mutt-1.6.1-neomutt/doc/muttrc.sidebar
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.1/doc/muttrc.skip-quoted mutt-1.6.1-neomutt/doc/muttrc.skip-quoted
 --- mutt-1.6.1/doc/muttrc.skip-quoted	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/muttrc.skip-quoted	2016-05-30 14:49:21.358683990 +0100
++++ mutt-1.6.1-neomutt/doc/muttrc.skip-quoted	2016-06-12 18:43:00.698452206 +0100
 @@ -0,0 +1,10 @@
 +# Example Mutt config file for the 'skip-quoted' patch.
 + 
@@ -10781,7 +10818,7 @@ diff -urN mutt-1.6.1/doc/muttrc.skip-quoted mutt-1.6.1-neomutt/doc/muttrc.skip-q
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.1/doc/muttrc.status-color mutt-1.6.1-neomutt/doc/muttrc.status-color
 --- mutt-1.6.1/doc/muttrc.status-color	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/muttrc.status-color	2016-05-30 14:49:21.358683990 +0100
++++ mutt-1.6.1-neomutt/doc/muttrc.status-color	2016-06-12 18:43:00.698452206 +0100
 @@ -0,0 +1,49 @@
 +# Example Mutt config file for the 'status-color' patch.
 +
@@ -10813,7 +10850,7 @@ diff -urN mutt-1.6.1/doc/muttrc.status-color mutt-1.6.1-neomutt/doc/muttrc.statu
 +# First, highlight anything (*/*)
 +color status brightred default '\([^)]+/[^)]+\)'
 +
-+# Then override the color for one specfic case
++# Then override the color for one specific case
 +color status default   default '\(threads/last-date-received\)'
 +
 +# 2 extra parameters
@@ -10834,7 +10871,7 @@ diff -urN mutt-1.6.1/doc/muttrc.status-color mutt-1.6.1-neomutt/doc/muttrc.statu
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.1/doc/muttrc.trash mutt-1.6.1-neomutt/doc/muttrc.trash
 --- mutt-1.6.1/doc/muttrc.trash	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/muttrc.trash	2016-05-30 14:49:21.358683990 +0100
++++ mutt-1.6.1-neomutt/doc/muttrc.trash	2016-06-12 18:43:00.698452206 +0100
 @@ -0,0 +1,16 @@
 +# Example Mutt config file for the 'trash' feature.
 +
@@ -10854,7 +10891,7 @@ diff -urN mutt-1.6.1/doc/muttrc.trash mutt-1.6.1-neomutt/doc/muttrc.trash
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.1/doc/vimrc-compress mutt-1.6.1-neomutt/doc/vimrc-compress
 --- mutt-1.6.1/doc/vimrc-compress	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/vimrc-compress	2016-05-30 14:49:21.358683990 +0100
++++ mutt-1.6.1-neomutt/doc/vimrc-compress	2016-06-12 18:43:00.699452222 +0100
 @@ -0,0 +1,7 @@
 +" Vim syntax file for the mutt compress patch
 +
@@ -10865,7 +10902,7 @@ diff -urN mutt-1.6.1/doc/vimrc-compress mutt-1.6.1-neomutt/doc/vimrc-compress
 +" vim: syntax=vim
 diff -urN mutt-1.6.1/doc/vimrc.ifdef mutt-1.6.1-neomutt/doc/vimrc.ifdef
 --- mutt-1.6.1/doc/vimrc.ifdef	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/vimrc.ifdef	2016-05-30 14:49:21.358683990 +0100
++++ mutt-1.6.1-neomutt/doc/vimrc.ifdef	2016-06-12 18:43:00.699452222 +0100
 @@ -0,0 +1,7 @@
 +" Vim syntax file for the mutt ifdef patch
 +
@@ -10876,7 +10913,7 @@ diff -urN mutt-1.6.1/doc/vimrc.ifdef mutt-1.6.1-neomutt/doc/vimrc.ifdef
 +" vim: syntax=vim
 diff -urN mutt-1.6.1/doc/vimrc.index-color mutt-1.6.1-neomutt/doc/vimrc.index-color
 --- mutt-1.6.1/doc/vimrc.index-color	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/vimrc.index-color	2016-05-30 14:49:21.358683990 +0100
++++ mutt-1.6.1-neomutt/doc/vimrc.index-color	2016-06-12 18:43:00.699452222 +0100
 @@ -0,0 +1,13 @@
 +" Vim syntax file for the mutt index-color patch
 +
@@ -10893,7 +10930,7 @@ diff -urN mutt-1.6.1/doc/vimrc.index-color mutt-1.6.1-neomutt/doc/vimrc.index-co
 +" vim: syntax=vim
 diff -urN mutt-1.6.1/doc/vimrc-keywords mutt-1.6.1-neomutt/doc/vimrc-keywords
 --- mutt-1.6.1/doc/vimrc-keywords	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/vimrc-keywords	2016-05-30 14:49:21.358683990 +0100
++++ mutt-1.6.1-neomutt/doc/vimrc-keywords	2016-06-12 18:43:00.699452222 +0100
 @@ -0,0 +1,10 @@
 +" Vim syntax file for the mutt keywords patch
 +
@@ -10907,7 +10944,7 @@ diff -urN mutt-1.6.1/doc/vimrc-keywords mutt-1.6.1-neomutt/doc/vimrc-keywords
 +" vim: syntax=vim
 diff -urN mutt-1.6.1/doc/vimrc-nntp mutt-1.6.1-neomutt/doc/vimrc-nntp
 --- mutt-1.6.1/doc/vimrc-nntp	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/vimrc-nntp	2016-05-30 14:49:21.358683990 +0100
++++ mutt-1.6.1-neomutt/doc/vimrc-nntp	2016-06-12 18:43:00.699452222 +0100
 @@ -0,0 +1,50 @@
 +" Vim syntax file for the mutt nntp patch
 +
@@ -10961,7 +10998,7 @@ diff -urN mutt-1.6.1/doc/vimrc-nntp mutt-1.6.1-neomutt/doc/vimrc-nntp
 +" vim: syntax=vim
 diff -urN mutt-1.6.1/doc/vimrc.progress mutt-1.6.1-neomutt/doc/vimrc.progress
 --- mutt-1.6.1/doc/vimrc.progress	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/vimrc.progress	2016-05-30 14:49:21.358683990 +0100
++++ mutt-1.6.1-neomutt/doc/vimrc.progress	2016-06-12 18:43:00.699452222 +0100
 @@ -0,0 +1,5 @@
 +" Vim syntax file for the mutt progress patch
 +
@@ -10970,7 +11007,7 @@ diff -urN mutt-1.6.1/doc/vimrc.progress mutt-1.6.1-neomutt/doc/vimrc.progress
 +" vim: syntax=vim
 diff -urN mutt-1.6.1/doc/vimrc.quasi-delete mutt-1.6.1-neomutt/doc/vimrc.quasi-delete
 --- mutt-1.6.1/doc/vimrc.quasi-delete	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/vimrc.quasi-delete	2016-05-30 14:49:21.358683990 +0100
++++ mutt-1.6.1-neomutt/doc/vimrc.quasi-delete	2016-06-12 18:43:00.699452222 +0100
 @@ -0,0 +1,5 @@
 +" Vim syntax file for the mutt quasi-delete patch
 +
@@ -10979,7 +11016,7 @@ diff -urN mutt-1.6.1/doc/vimrc.quasi-delete mutt-1.6.1-neomutt/doc/vimrc.quasi-d
 +" vim: syntax=vim
 diff -urN mutt-1.6.1/doc/vimrc.sidebar mutt-1.6.1-neomutt/doc/vimrc.sidebar
 --- mutt-1.6.1/doc/vimrc.sidebar	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/vimrc.sidebar	2016-05-30 14:49:21.358683990 +0100
++++ mutt-1.6.1-neomutt/doc/vimrc.sidebar	2016-06-12 18:43:00.699452222 +0100
 @@ -0,0 +1,35 @@
 +" Vim syntax file for the mutt sidebar patch
 +
@@ -11018,7 +11055,7 @@ diff -urN mutt-1.6.1/doc/vimrc.sidebar mutt-1.6.1-neomutt/doc/vimrc.sidebar
 +" vim: syntax=vim
 diff -urN mutt-1.6.1/doc/vimrc.trash mutt-1.6.1-neomutt/doc/vimrc.trash
 --- mutt-1.6.1/doc/vimrc.trash	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/doc/vimrc.trash	2016-05-30 14:49:21.358683990 +0100
++++ mutt-1.6.1-neomutt/doc/vimrc.trash	2016-06-12 18:43:00.699452222 +0100
 @@ -0,0 +1,7 @@
 +" Vim syntax file for the mutt trash patch
 +
@@ -11028,8 +11065,8 @@ diff -urN mutt-1.6.1/doc/vimrc.trash mutt-1.6.1-neomutt/doc/vimrc.trash
 +
 +" vim: syntax=vim
 diff -urN mutt-1.6.1/enter.c mutt-1.6.1-neomutt/enter.c
---- mutt-1.6.1/enter.c	2016-05-30 14:49:21.090679800 +0100
-+++ mutt-1.6.1-neomutt/enter.c	2016-05-30 14:49:21.359684006 +0100
+--- mutt-1.6.1/enter.c	2016-06-12 18:43:00.403447606 +0100
++++ mutt-1.6.1-neomutt/enter.c	2016-06-12 18:43:00.700452238 +0100
 @@ -565,6 +565,49 @@
  	    }
  	    break;
@@ -11122,8 +11159,8 @@ diff -urN mutt-1.6.1/enter.c mutt-1.6.1-neomutt/enter.c
        if (ch & ~0xff)
  	continue;
 diff -urN mutt-1.6.1/filter.c mutt-1.6.1-neomutt/filter.c
---- mutt-1.6.1/filter.c	2016-05-30 14:49:21.090679800 +0100
-+++ mutt-1.6.1-neomutt/filter.c	2016-05-30 14:49:21.359684006 +0100
+--- mutt-1.6.1/filter.c	2016-06-12 18:43:00.403447606 +0100
++++ mutt-1.6.1-neomutt/filter.c	2016-06-12 18:43:00.700452238 +0100
 @@ -21,6 +21,7 @@
  #endif
  
@@ -11151,8 +11188,8 @@ diff -urN mutt-1.6.1/filter.c mutt-1.6.1-neomutt/filter.c
      _exit (127);
    }
 diff -urN mutt-1.6.1/flags.c mutt-1.6.1-neomutt/flags.c
---- mutt-1.6.1/flags.c	2016-05-30 14:49:21.090679800 +0100
-+++ mutt-1.6.1-neomutt/flags.c	2016-05-30 14:49:21.359684006 +0100
+--- mutt-1.6.1/flags.c	2016-06-12 18:43:00.403447606 +0100
++++ mutt-1.6.1-neomutt/flags.c	2016-06-12 18:43:00.700452238 +0100
 @@ -25,6 +25,10 @@
  #include "sort.h"
  #include "mx.h"
@@ -11212,15 +11249,35 @@ diff -urN mutt-1.6.1/flags.c mutt-1.6.1-neomutt/flags.c
    if (h->searched && (changed != h->changed || deleted != ctx->deleted || tagged != ctx->tagged || flagged != ctx->flagged))
      h->searched = 0;
 +#ifdef USE_SIDEBAR
-+  sb_draw();
++  mutt_sb_draw();
 +#endif
  }
  
  void mutt_tag_set_flag (int flag, int bf)
 diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
---- mutt-1.6.1/functions.h	2016-05-30 14:49:21.090679800 +0100
-+++ mutt-1.6.1-neomutt/functions.h	2016-05-30 14:49:21.360684022 +0100
-@@ -88,6 +88,10 @@
+--- mutt-1.6.1/functions.h	2016-06-12 18:43:00.403447606 +0100
++++ mutt-1.6.1-neomutt/functions.h	2016-06-12 18:43:00.701452253 +0100
+@@ -22,9 +22,6 @@
+  *
+  * Notes:
+  *
+- * - If you want to bind \n or \r, use M_ENTER_S so that it will work
+- * correctly under both ncurses and S-Lang
+- *
+  * - If you need to bind a control char, use the octal value because the \cX
+  * construct does not work at this level.
+  *
+@@ -70,7 +67,8 @@
+   { "tag-prefix-cond",	OP_TAG_PREFIX_COND,	NULL },
+   { "end-cond",		OP_END_COND,		NULL },
+   { "shell-escape",	OP_SHELL_ESCAPE,	"!" },
+-  { "select-entry",	OP_GENERIC_SELECT_ENTRY,M_ENTER_S },
++  { "select-entry",	OP_GENERIC_SELECT_ENTRY,"\n" },
++  { "select-entry",	OP_GENERIC_SELECT_ENTRY,"\r" },
+   { "search",		OP_SEARCH,		"/" },
+   { "search-reverse",	OP_SEARCH_REVERSE,	"\033/" },
+   { "search-opposite",	OP_SEARCH_OPPOSITE,	NULL },
+@@ -88,6 +86,10 @@
    { "break-thread",		OP_MAIN_BREAK_THREAD,		"#" },
    { "change-folder",		OP_MAIN_CHANGE_FOLDER,		"c" },
    { "change-folder-readonly",	OP_MAIN_CHANGE_FOLDER_READONLY,	"\033c" },
@@ -11231,7 +11288,7 @@ diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
    { "next-unread-mailbox",	OP_MAIN_NEXT_UNREAD_MAILBOX,    NULL },
    { "collapse-thread",		OP_MAIN_COLLAPSE_THREAD,	"\033v" },
    { "collapse-all",		OP_MAIN_COLLAPSE_ALL,		"\033V" },
-@@ -99,9 +103,18 @@
+@@ -99,9 +101,18 @@
    { "delete-thread",		OP_DELETE_THREAD,		"\004" },
    { "delete-subthread",		OP_DELETE_SUBTHREAD,		"\033d" },
    { "edit",			OP_EDIT_MESSAGE,		"e" },
@@ -11251,7 +11308,7 @@ diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
    { "group-reply",		OP_GROUP_REPLY,			"g" },
  #ifdef USE_POP
    { "fetch-mail",		OP_MAIN_FETCH_MAIL,		"G" },
-@@ -114,6 +127,7 @@
+@@ -114,6 +125,7 @@
    { "next-undeleted",		OP_MAIN_NEXT_UNDELETED,		"j" },
    { "previous-undeleted",	OP_MAIN_PREV_UNDELETED,		"k" },
    { "limit",			OP_MAIN_LIMIT,			"l" },
@@ -11259,7 +11316,7 @@ diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
    { "link-threads",		OP_MAIN_LINK_THREADS,		"&" },
    { "list-reply",		OP_LIST_REPLY,			"L" },
    { "mail",			OP_MAIL,			"m" },
-@@ -121,6 +135,7 @@
+@@ -121,6 +133,7 @@
    { "toggle-write",		OP_TOGGLE_WRITE,		"%" },
    { "next-thread",		OP_MAIN_NEXT_THREAD,		"\016" },
    { "next-subthread",		OP_MAIN_NEXT_SUBTHREAD,		"\033n" },
@@ -11267,7 +11324,7 @@ diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
    { "query",			OP_QUERY,			"Q" },
    { "quit",			OP_QUIT,			"q" },
    { "reply",			OP_REPLY,			"r" },
-@@ -128,6 +143,9 @@
+@@ -128,6 +141,9 @@
    { "sort-mailbox",		OP_SORT,			"o" },
    { "sort-reverse",		OP_SORT_REVERSE,		"O" },
    { "print-message",		OP_PRINT,			"p" },
@@ -11277,18 +11334,21 @@ diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
    { "previous-thread",		OP_MAIN_PREV_THREAD,		"\020" },
    { "previous-subthread",	OP_MAIN_PREV_SUBTHREAD,		"\033p" },
    { "recall-message",		OP_RECALL_MESSAGE,		"R" },
-@@ -147,6 +165,10 @@
+@@ -147,7 +163,12 @@
    { "show-version",		OP_VERSION,			"V" },
    { "set-flag",			OP_MAIN_SET_FLAG,		"w" },
    { "clear-flag",		OP_MAIN_CLEAR_FLAG,		"W" },
+-  { "display-message",		OP_DISPLAY_MESSAGE,		M_ENTER_S },
 +  { "toggle-read",		OP_TOGGLE_READ,			"X" },
 +#ifdef USE_NNTP
 +  { "catchup",			OP_CATCHUP,			"y" },
 +#endif
-   { "display-message",		OP_DISPLAY_MESSAGE,		M_ENTER_S },
++  { "display-message",		OP_DISPLAY_MESSAGE,		"\n" },
++  { "display-message",		OP_DISPLAY_MESSAGE,		"\r" },
    { "buffy-list",		OP_BUFFY_LIST,			"." },
    { "sync-mailbox",		OP_MAIN_SYNC_FOLDER,		"$" },
-@@ -158,7 +180,7 @@
+   { "display-address",		OP_DISPLAY_ADDRESS,		"@" },
+@@ -158,7 +179,7 @@
    { "previous-new-then-unread",	OP_MAIN_PREV_NEW_THEN_UNREAD,	"\033\t" },
    { "next-unread",		OP_MAIN_NEXT_UNREAD,		NULL },
    { "previous-unread",		OP_MAIN_PREV_UNREAD,		NULL },
@@ -11297,7 +11357,7 @@ diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
  
  
    { "extract-keys",		OP_EXTRACT_KEYS,		"\013" },
-@@ -167,8 +189,27 @@
+@@ -167,8 +188,27 @@
    { "mail-key",			OP_MAIL_KEY,			"\033k" },
    { "decrypt-copy",		OP_DECRYPT_COPY,		NULL },
    { "decrypt-save",		OP_DECRYPT_SAVE,		NULL },
@@ -11325,7 +11385,7 @@ diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
    { NULL,			0,				NULL }
  };
  
-@@ -178,6 +219,10 @@
+@@ -178,6 +218,10 @@
    { "bounce-message",	OP_BOUNCE_MESSAGE,		"b" },
    { "change-folder",	OP_MAIN_CHANGE_FOLDER,		"c" },
    { "change-folder-readonly",	OP_MAIN_CHANGE_FOLDER_READONLY,	"\033c" },
@@ -11336,7 +11396,7 @@ diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
    { "next-unread-mailbox",	OP_MAIN_NEXT_UNREAD_MAILBOX, NULL },
    { "copy-message",	OP_COPY_MESSAGE,		"C" },
    { "decode-copy",	OP_DECODE_COPY,			"\033C" },
-@@ -187,9 +232,14 @@
+@@ -187,9 +231,14 @@
    { "set-flag",  	OP_MAIN_SET_FLAG,		"w" },
    { "clear-flag",       OP_MAIN_CLEAR_FLAG,		"W" },
    { "edit",		OP_EDIT_MESSAGE,		"e" },
@@ -11352,7 +11412,7 @@ diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
    { "group-reply",	OP_GROUP_REPLY,			"g" },
  #ifdef USE_IMAP
    { "imap-fetch-mail",  OP_MAIN_IMAP_FETCH,		NULL },
-@@ -211,8 +261,12 @@
+@@ -211,8 +260,12 @@
    { "sort-mailbox",	OP_SORT,			"o" },
    { "sort-reverse",	OP_SORT_REVERSE,		"O" },
    { "print-message",	OP_PRINT,			"p" },
@@ -11365,6 +11425,16 @@ diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
    { "quit",		OP_QUIT,			"Q" },
    { "exit",		OP_EXIT,			"q" },
    { "reply",		OP_REPLY,			"r" },
+@@ -247,7 +300,8 @@
+   { "search",		OP_SEARCH,			"/" },
+   { "search-reverse",	OP_SEARCH_REVERSE,		"\033/" },
+   { "search-opposite",	OP_SEARCH_OPPOSITE,		NULL },
+-  { "next-line",	OP_NEXT_LINE,			M_ENTER_S },
++  { "next-line",	OP_NEXT_LINE,			"\n" },
++  { "next-line",	OP_NEXT_LINE,			"\r" },
+   { "jump",		OP_JUMP,			NULL },
+   { "next-unread",	OP_MAIN_NEXT_UNREAD,		NULL },
+   { "previous-new",	OP_MAIN_PREV_NEW,		NULL },
 @@ -258,7 +312,7 @@
    { "half-down",	OP_HALF_DOWN,			NULL },
    { "previous-line",	OP_PREV_LINE,			NULL },
@@ -11413,7 +11483,17 @@ diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
    { "print-entry",	OP_PRINT,			"p" },
    { "save-entry",	OP_SAVE,			"s" },
    { "pipe-entry",	OP_PIPE,			"|" },
-@@ -304,6 +383,7 @@
+@@ -289,7 +368,8 @@
+   { "list-reply",	OP_LIST_REPLY,			"L" },
+   { "forward-message",	OP_FORWARD_MESSAGE,		"f" },
+   { "view-text",	OP_ATTACH_VIEW_TEXT,		"T" },
+-  { "view-attach",	OP_VIEW_ATTACH,			M_ENTER_S },
++  { "view-attach",	OP_VIEW_ATTACH,			"\n" },
++  { "view-attach",	OP_VIEW_ATTACH,			"\r" },
+   { "delete-entry",	OP_DELETE,			"d" },
+   { "undelete-entry",	OP_UNDELETE,			"u" },
+   { "collapse-parts",	OP_ATTACH_COLLAPSE,		"v" },
+@@ -304,6 +384,7 @@
  const struct binding_t OpCompose[] = { /* map: compose */
    { "attach-file",	OP_COMPOSE_ATTACH_FILE,		"a" },
    { "attach-message",	OP_COMPOSE_ATTACH_MESSAGE,	"A" },
@@ -11421,7 +11501,7 @@ diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
    { "edit-bcc",		OP_COMPOSE_EDIT_BCC,		"b" },
    { "edit-cc",		OP_COMPOSE_EDIT_CC,		"c" },
    { "copy-file",	OP_SAVE,			"C" },
-@@ -323,6 +403,11 @@
+@@ -323,6 +404,11 @@
    { "print-entry",	OP_PRINT,			"l" },
    { "edit-mime",	OP_COMPOSE_EDIT_MIME,		"m" },
    { "new-mime",		OP_COMPOSE_NEW_MIME,		"n" },
@@ -11433,7 +11513,17 @@ diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
    { "postpone-message",	OP_COMPOSE_POSTPONE_MESSAGE,	"P" },
    { "edit-reply-to",	OP_COMPOSE_EDIT_REPLY_TO,	"r" },
    { "rename-file",	OP_COMPOSE_RENAME_FILE,		"R" },
-@@ -374,14 +459,25 @@
+@@ -333,7 +419,8 @@
+   { "toggle-unlink",	OP_COMPOSE_TOGGLE_UNLINK,	"u" },
+   { "toggle-recode",    OP_COMPOSE_TOGGLE_RECODE,	NULL },
+   { "update-encoding",	OP_COMPOSE_UPDATE_ENCODING,	"U" },
+-  { "view-attach",	OP_VIEW_ATTACH,			M_ENTER_S },
++  { "view-attach",	OP_VIEW_ATTACH,			"\n" },
++  { "view-attach",	OP_VIEW_ATTACH,			"\r" },
+   { "send-message",	OP_COMPOSE_SEND_MESSAGE,	"y" },
+   { "pipe-entry",	OP_PIPE,			"|" },
+ 
+@@ -374,14 +461,25 @@
    { "select-new",	OP_BROWSER_NEW_FILE,	"N" },
    { "check-new",	OP_CHECK_NEW,		NULL },
    { "toggle-mailboxes", OP_TOGGLE_MAILBOXES, 	"\t" },
@@ -11459,9 +11549,19 @@ diff -urN mutt-1.6.1/functions.h mutt-1.6.1-neomutt/functions.h
    { "toggle-subscribed", OP_BROWSER_TOGGLE_LSUB, "T" },
  #endif
    { NULL,		0,			NULL }
+@@ -446,7 +544,8 @@
+ 
+ #ifdef MIXMASTER
+ const struct binding_t OpMix[] = { /* map: mixmaster */
+-  { "accept",		OP_MIX_USE,	M_ENTER_S },
++  { "accept",		OP_MIX_USE,	"\n" },
++  { "accept",		OP_MIX_USE,	"\r" },
+   { "append",		OP_MIX_APPEND,	"a"       },
+   { "insert",		OP_MIX_INSERT,	"i"       },
+   { "delete",		OP_MIX_DELETE,  "d"	  },
 diff -urN mutt-1.6.1/globals.h mutt-1.6.1-neomutt/globals.h
---- mutt-1.6.1/globals.h	2016-05-30 14:49:21.090679800 +0100
-+++ mutt-1.6.1-neomutt/globals.h	2016-05-30 14:49:21.360684022 +0100
+--- mutt-1.6.1/globals.h	2016-06-12 18:43:00.403447606 +0100
++++ mutt-1.6.1-neomutt/globals.h	2016-06-12 18:43:00.701452253 +0100
 @@ -66,10 +66,11 @@
  #endif
  WHERE char *Inbox;
@@ -11587,8 +11687,8 @@ diff -urN mutt-1.6.1/globals.h mutt-1.6.1-neomutt/globals.h
  
  
 diff -urN mutt-1.6.1/GPL mutt-1.6.1-neomutt/GPL
---- mutt-1.6.1/GPL	2016-05-30 14:49:21.076679581 +0100
-+++ mutt-1.6.1-neomutt/GPL	2016-05-30 14:49:21.330683553 +0100
+--- mutt-1.6.1/GPL	2016-06-12 18:43:00.389447388 +0100
++++ mutt-1.6.1-neomutt/GPL	2016-06-12 18:43:00.663451660 +0100
 @@ -1,73 +1,74 @@
 -		    GNU GENERAL PUBLIC LICENSE
 -		       Version 2, June 1991
@@ -11968,8 +12068,8 @@ diff -urN mutt-1.6.1/GPL mutt-1.6.1-neomutt/GPL
 +library.  If this is what you want to do, use the GNU Lesser General
  Public License instead of this License.
 diff -urN mutt-1.6.1/handler.c mutt-1.6.1-neomutt/handler.c
---- mutt-1.6.1/handler.c	2016-05-30 14:49:21.091679816 +0100
-+++ mutt-1.6.1-neomutt/handler.c	2016-05-30 14:49:21.361684037 +0100
+--- mutt-1.6.1/handler.c	2016-06-12 18:43:00.404447621 +0100
++++ mutt-1.6.1-neomutt/handler.c	2016-06-12 18:43:00.701452253 +0100
 @@ -1595,7 +1595,9 @@
    int origType;
    char *savePrefix = NULL;
@@ -12049,8 +12149,8 @@ diff -urN mutt-1.6.1/handler.c mutt-1.6.1-neomutt/handler.c
      }
    }
 diff -urN mutt-1.6.1/hash.c mutt-1.6.1-neomutt/hash.c
---- mutt-1.6.1/hash.c	2016-05-30 14:49:21.091679816 +0100
-+++ mutt-1.6.1-neomutt/hash.c	2016-05-30 14:49:21.361684037 +0100
+--- mutt-1.6.1/hash.c	2016-06-12 18:43:00.404447621 +0100
++++ mutt-1.6.1-neomutt/hash.c	2016-06-12 18:43:00.702452269 +0100
 @@ -57,6 +57,7 @@
    if (nelem == 0)
      nelem = 2;
@@ -12145,8 +12245,8 @@ diff -urN mutt-1.6.1/hash.c mutt-1.6.1-neomutt/hash.c
 +}
 +
 diff -urN mutt-1.6.1/hash.h mutt-1.6.1-neomutt/hash.h
---- mutt-1.6.1/hash.h	2016-05-30 14:49:21.091679816 +0100
-+++ mutt-1.6.1-neomutt/hash.h	2016-05-30 14:49:21.361684037 +0100
+--- mutt-1.6.1/hash.h	2016-06-12 18:43:00.404447621 +0100
++++ mutt-1.6.1-neomutt/hash.h	2016-06-12 18:43:00.702452269 +0100
 @@ -28,7 +28,7 @@
  
  typedef struct
@@ -12175,8 +12275,8 @@ diff -urN mutt-1.6.1/hash.h mutt-1.6.1-neomutt/hash.h
 +
  #endif
 diff -urN mutt-1.6.1/hcache.c mutt-1.6.1-neomutt/hcache.c
---- mutt-1.6.1/hcache.c	2016-05-30 14:49:21.091679816 +0100
-+++ mutt-1.6.1-neomutt/hcache.c	2016-05-30 14:49:21.361684037 +0100
+--- mutt-1.6.1/hcache.c	2016-06-12 18:43:00.404447621 +0100
++++ mutt-1.6.1-neomutt/hcache.c	2016-06-12 18:43:00.702452269 +0100
 @@ -439,13 +439,19 @@
    d = dump_char(e->message_id, d, off, 0);
    d = dump_char(e->supersedes, d, off, 0);
@@ -12220,8 +12320,8 @@ diff -urN mutt-1.6.1/hcache.c mutt-1.6.1-neomutt/hcache.c
  
  static int
 diff -urN mutt-1.6.1/hdrline.c mutt-1.6.1-neomutt/hdrline.c
---- mutt-1.6.1/hdrline.c	2016-05-30 14:49:21.091679816 +0100
-+++ mutt-1.6.1-neomutt/hdrline.c	2016-05-30 14:49:21.362684053 +0100
+--- mutt-1.6.1/hdrline.c	2016-06-12 18:43:00.404447621 +0100
++++ mutt-1.6.1-neomutt/hdrline.c	2016-06-12 18:43:00.702452269 +0100
 @@ -36,6 +36,10 @@
  #include <alloca.h>
  #endif
@@ -12769,8 +12869,8 @@ diff -urN mutt-1.6.1/hdrline.c mutt-1.6.1-neomutt/hdrline.c
      default:
        snprintf (dest, destlen, "%%%s%c", prefix, op);
 diff -urN mutt-1.6.1/headers.c mutt-1.6.1-neomutt/headers.c
---- mutt-1.6.1/headers.c	2016-05-30 14:49:21.091679816 +0100
-+++ mutt-1.6.1-neomutt/headers.c	2016-05-30 14:49:21.362684053 +0100
+--- mutt-1.6.1/headers.c	2016-06-12 18:43:00.405447637 +0100
++++ mutt-1.6.1-neomutt/headers.c	2016-06-12 18:43:00.702452269 +0100
 @@ -114,6 +114,9 @@
       $edit_headers set, we remove References: as they're likely invalid;
       we can simply compare strings as we don't generate References for
@@ -12781,7 +12881,7 @@ diff -urN mutt-1.6.1/headers.c mutt-1.6.1-neomutt/headers.c
    if (msg->env->in_reply_to &&
        (!n->in_reply_to || mutt_strcmp (n->in_reply_to->data,
  				       msg->env->in_reply_to->data) != 0))
-@@ -211,3 +214,190 @@
+@@ -211,3 +214,199 @@
      }
    }
  }
@@ -12790,6 +12890,9 @@ diff -urN mutt-1.6.1/headers.c mutt-1.6.1-neomutt/headers.c
 +{
 +  uintptr_t count;
 +  LIST *label;
++
++  if (!env || !env->labels || !Labels)
++    return;
 +
 +  for (label = env->labels; label; label = label->next)
 +  {
@@ -12811,6 +12914,9 @@ diff -urN mutt-1.6.1/headers.c mutt-1.6.1-neomutt/headers.c
 +{
 +  uintptr_t count;
 +  LIST *label;
++
++  if (!env || !env->labels || !Labels)
++    return;
 +
 +  for (label = env->labels; label; label = label->next)
 +  {
@@ -12931,6 +13037,9 @@ diff -urN mutt-1.6.1/headers.c mutt-1.6.1-neomutt/headers.c
 +{
 +  int i;
 +
++  if (!ctx)
++    return;
++
 +  for (i = 0; i < ctx->msgcount; i++)
 +    if (ctx->hdrs[i]->env->labels)
 +      mutt_label_ref_inc(ctx->hdrs[i]->env);
@@ -12973,8 +13082,8 @@ diff -urN mutt-1.6.1/headers.c mutt-1.6.1-neomutt/headers.c
 +  return dst;
 +}
 diff -urN mutt-1.6.1/hook.c mutt-1.6.1-neomutt/hook.c
---- mutt-1.6.1/hook.c	2016-05-30 14:49:21.092679831 +0100
-+++ mutt-1.6.1-neomutt/hook.c	2016-05-30 14:49:21.362684053 +0100
+--- mutt-1.6.1/hook.c	2016-06-12 18:43:00.405447637 +0100
++++ mutt-1.6.1-neomutt/hook.c	2016-06-12 18:43:00.703452284 +0100
 @@ -24,6 +24,10 @@
  #include "mailbox.h"
  #include "mutt_crypt.h"
@@ -13011,8 +13120,8 @@ diff -urN mutt-1.6.1/hook.c mutt-1.6.1-neomutt/hook.c
  	  FREE (&token.data);
  	  mutt_error ("%s", err.data);
 diff -urN mutt-1.6.1/imap/command.c mutt-1.6.1-neomutt/imap/command.c
---- mutt-1.6.1/imap/command.c	2016-05-30 14:49:21.092679831 +0100
-+++ mutt-1.6.1-neomutt/imap/command.c	2016-05-30 14:49:21.364684084 +0100
+--- mutt-1.6.1/imap/command.c	2016-06-12 18:43:00.405447637 +0100
++++ mutt-1.6.1-neomutt/imap/command.c	2016-06-12 18:43:00.705452315 +0100
 @@ -1016,6 +1016,14 @@
  	     opened */
  	  status->uidnext = oldun;
@@ -13029,8 +13138,8 @@ diff -urN mutt-1.6.1/imap/command.c mutt-1.6.1-neomutt/imap/command.c
          return;
        }
 diff -urN mutt-1.6.1/imap/imap.c mutt-1.6.1-neomutt/imap/imap.c
---- mutt-1.6.1/imap/imap.c	2016-05-30 14:49:21.092679831 +0100
-+++ mutt-1.6.1-neomutt/imap/imap.c	2016-05-30 14:49:21.364684084 +0100
+--- mutt-1.6.1/imap/imap.c	2016-06-12 18:43:00.405447637 +0100
++++ mutt-1.6.1-neomutt/imap/imap.c	2016-06-12 18:43:00.705452315 +0100
 @@ -888,6 +888,12 @@
            if (hdrs[n]->deleted != HEADER_DATA(hdrs[n])->deleted)
              match = invert ^ hdrs[n]->deleted;
@@ -13128,8 +13237,8 @@ diff -urN mutt-1.6.1/imap/imap.c mutt-1.6.1-neomutt/imap/imap.c
 +	return 1;
 +}
 diff -urN mutt-1.6.1/imap/imap.h mutt-1.6.1-neomutt/imap/imap.h
---- mutt-1.6.1/imap/imap.h	2016-05-30 14:49:21.092679831 +0100
-+++ mutt-1.6.1-neomutt/imap/imap.h	2016-05-30 14:49:21.364684084 +0100
+--- mutt-1.6.1/imap/imap.h	2016-06-12 18:43:00.405447637 +0100
++++ mutt-1.6.1-neomutt/imap/imap.h	2016-06-12 18:43:00.705452315 +0100
 @@ -72,4 +72,7 @@
  
  int imap_account_match (const ACCOUNT* a1, const ACCOUNT* a2);
@@ -13139,8 +13248,8 @@ diff -urN mutt-1.6.1/imap/imap.h mutt-1.6.1-neomutt/imap/imap.h
 +
  #endif
 diff -urN mutt-1.6.1/imap/message.c mutt-1.6.1-neomutt/imap/message.c
---- mutt-1.6.1/imap/message.c	2016-05-30 14:49:21.093679847 +0100
-+++ mutt-1.6.1-neomutt/imap/message.c	2016-05-30 14:49:21.365684100 +0100
+--- mutt-1.6.1/imap/message.c	2016-06-12 18:43:00.406447652 +0100
++++ mutt-1.6.1-neomutt/imap/message.c	2016-06-12 18:43:00.705452315 +0100
 @@ -69,7 +69,7 @@
    int rc, mfhrc, oldmsgcount;
    int fetchlast = 0;
@@ -13175,8 +13284,8 @@ diff -urN mutt-1.6.1/imap/message.c mutt-1.6.1-neomutt/imap/message.c
          mutt_set_flag (ctx, h, M_TAG, 0);
      }
 diff -urN mutt-1.6.1/init.c mutt-1.6.1-neomutt/init.c
---- mutt-1.6.1/init.c	2016-05-30 14:49:21.093679847 +0100
-+++ mutt-1.6.1-neomutt/init.c	2016-05-30 14:49:21.366684115 +0100
+--- mutt-1.6.1/init.c	2016-06-12 18:43:00.406447652 +0100
++++ mutt-1.6.1-neomutt/init.c	2016-06-12 18:43:00.707452347 +0100
 @@ -32,12 +32,15 @@
  #include "mutt_crypt.h"
  #include "mutt_idna.h"
@@ -13813,8 +13922,8 @@ diff -urN mutt-1.6.1/init.c mutt-1.6.1-neomutt/init.c
 +}
 +
 diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
---- mutt-1.6.1/init.h	2016-05-30 14:49:21.095679878 +0100
-+++ mutt-1.6.1-neomutt/init.h	2016-05-30 14:49:21.367684131 +0100
+--- mutt-1.6.1/init.h	2016-06-12 18:43:00.408447684 +0100
++++ mutt-1.6.1-neomutt/init.h	2016-06-12 18:43:00.708452362 +0100
 @@ -42,11 +42,12 @@
  #define DTYPE(x) ((x) & DT_MASK)
  
@@ -14096,7 +14205,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
 +  /*
 +  ** .pp
 +  ** Your login name on the NNTP server.  If \fIunset\fP and NNTP server requires
-+  ** authentification, Mutt will prompt you for your account name when you
++  ** authentication, Mutt will prompt you for your account name when you
 +  ** connect to news server.
 +  */
 +  { "nntp_pass",	DT_STR, R_NONE, UL &NntpPass, UL "" },
@@ -14187,7 +14296,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
    { "postpone",		DT_QUAD, R_NONE, OPT_POSTPONE, M_ASKYES },
    /*
    ** .pp
-@@ -2665,6 +2940,168 @@
+@@ -2665,6 +2940,169 @@
    ** Command to use when spawning a subshell.  By default, the user's login
    ** shell from \fC/etc/passwd\fP is used.
    */
@@ -14231,6 +14340,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
 +  ** .ts
 +  ** set sidebar_delim_chars='/'
 +  ** .te
++  ** .pp
 +  ** IMAP mailboxes are often named: `folder1.folder2.mailbox'.
 +  ** .ts
 +  ** set sidebar_delim_chars='.'
@@ -14299,7 +14409,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
 +  /*
 +  ** .pp
 +  ** Set sidebar_refresh_time to the minimum number of seconds between refreshes.
-+  ** This will reduced network traffic.
++  ** This will reduce network traffic.
 +  ** .pp
 +  ** \fBNote:\fP Set to 0 to disable refreshing.
 +  */
@@ -14356,7 +14466,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
    { "sig_dashes",	DT_BOOL, R_NONE, OPTSIGDASHES, 1 },
    /*
    ** .pp
-@@ -2703,6 +3140,12 @@
+@@ -2703,6 +3141,12 @@
    ** replacing ``%s'' with the supplied string.
    ** For the default value, ``joe'' would be expanded to: ``~f joe | ~s joe''.
    */
@@ -14364,12 +14474,12 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
 +  /*
 +  ** .pp
 +  ** Lines of quoted text that are displayed before the unquoted text after
-+  ** 'skip to quoted' command (S)
++  ** "skip to quoted" command (S)
 +  */
    { "sleep_time",	DT_NUM, R_NONE, UL &SleepTime, 1 },
    /*
    ** .pp
-@@ -3046,7 +3489,10 @@
+@@ -3046,7 +3490,10 @@
    ** entries are sorted alphabetically.  Valid values:
    ** .il
    ** .dd alpha (alphabetically)
@@ -14380,7 +14490,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
    ** .dd size
    ** .dd unsorted
    ** .ie
-@@ -3057,14 +3503,15 @@
+@@ -3057,14 +3504,15 @@
    { "sort_re",		DT_BOOL, R_INDEX|R_RESORT|R_RESORT_INIT, OPTSORTRE, 1 },
    /*
    ** .pp
@@ -14404,7 +14514,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
    */
    { "spam_separator",   DT_STR, R_NONE, UL &SpamSep, UL "," },
    /*
-@@ -3419,6 +3866,16 @@
+@@ -3419,6 +3867,16 @@
    ** provided that ``$$ts_enabled'' has been set. This string is identical in
    ** formatting to the one used by ``$$status_format''.
    */
@@ -14421,7 +14531,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
  #ifdef USE_SOCKET
    { "tunnel",            DT_STR, R_NONE, UL &Tunnel, UL 0 },
    /*
-@@ -3507,6 +3964,31 @@
+@@ -3507,6 +3965,31 @@
    ** Specifies the visual editor to invoke when the ``\fC~v\fP'' command is
    ** given in the built-in editor.
    */
@@ -14453,7 +14563,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
    { "wait_key",		DT_BOOL, R_NONE, OPTWAITKEY, 1 },
    /*
    ** .pp
-@@ -3590,6 +4072,28 @@
+@@ -3590,6 +4073,28 @@
    {"xterm_set_titles",	DT_SYN,  R_NONE, UL "ts_enabled", 0 },
    /*
    */
@@ -14482,7 +14592,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
    /*--*/
    { NULL, 0, 0, 0, 0 }
  };
-@@ -3606,6 +4110,7 @@
+@@ -3606,6 +4111,7 @@
    { "to",		SORT_TO },
    { "score",		SORT_SCORE },
    { "spam",		SORT_SPAM },
@@ -14490,7 +14600,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
    { NULL,               0 }
  };
  
-@@ -3625,13 +4130,17 @@
+@@ -3625,13 +4131,17 @@
    { "to",		SORT_TO },
    { "score",		SORT_SCORE },
    { "spam",		SORT_SPAM },
@@ -14508,7 +14618,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
    { "size",	SORT_SIZE },
    { "unsorted",	SORT_ORDER },
    { NULL,       0 }
-@@ -3652,6 +4161,19 @@
+@@ -3652,6 +4162,19 @@
    { NULL,       0 }
  };
  
@@ -14528,7 +14638,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
  
  /* functions used to parse commands in a rc file */
  
-@@ -3665,6 +4187,8 @@
+@@ -3665,6 +4188,8 @@
  static int parse_unlists (BUFFER *, BUFFER *, unsigned long, BUFFER *);
  static int parse_alias (BUFFER *, BUFFER *, unsigned long, BUFFER *);
  static int parse_unalias (BUFFER *, BUFFER *, unsigned long, BUFFER *);
@@ -14537,7 +14647,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
  static int parse_ignore (BUFFER *, BUFFER *, unsigned long, BUFFER *);
  static int parse_unignore (BUFFER *, BUFFER *, unsigned long, BUFFER *);
  static int parse_source (BUFFER *, BUFFER *, unsigned long, BUFFER *);
-@@ -3676,13 +4200,16 @@
+@@ -3676,13 +4201,16 @@
  static int parse_attachments (BUFFER *, BUFFER *, unsigned long, BUFFER *);
  static int parse_unattachments (BUFFER *, BUFFER *, unsigned long, BUFFER *);
  
@@ -14555,7 +14665,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
  
  struct command_t
  {
-@@ -3712,9 +4239,17 @@
+@@ -3712,9 +4240,17 @@
    { "fcc-hook",		mutt_parse_hook,	M_FCCHOOK },
    { "fcc-save-hook",	mutt_parse_hook,	M_FCCHOOK | M_SAVEHOOK },
    { "folder-hook",	mutt_parse_hook,	M_FOLDERHOOK },
@@ -14573,7 +14683,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
  #ifdef HAVE_ICONV
    { "iconv-hook",	mutt_parse_hook,	M_ICONVHOOK },
  #endif
-@@ -3723,6 +4258,11 @@
+@@ -3723,6 +4259,11 @@
    { "macro",		mutt_parse_macro,	0 },
    { "mailboxes",	mutt_parse_mailboxes,	M_MAILBOXES },
    { "unmailboxes",	mutt_parse_mailboxes,	M_UNMAILBOXES },
@@ -14585,7 +14695,7 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
    { "mailto_allow",	parse_list,		UL &MailtoAllow },
    { "unmailto_allow",	parse_unlist,		UL &MailtoAllow },
    { "message-hook",	mutt_parse_hook,	M_MESSAGEHOOK },
-@@ -3741,6 +4281,9 @@
+@@ -3741,6 +4282,9 @@
    { "send-hook",	mutt_parse_hook,	M_SENDHOOK },
    { "send2-hook",	mutt_parse_hook,	M_SEND2HOOK },
    { "set",		parse_set,		0 },
@@ -14596,8 +14706,8 @@ diff -urN mutt-1.6.1/init.h mutt-1.6.1-neomutt/init.h
    { "spam",		parse_spam_list,	M_SPAM },
    { "nospam",		parse_spam_list,	M_NOSPAM },
 diff -urN mutt-1.6.1/keymap.c mutt-1.6.1-neomutt/keymap.c
---- mutt-1.6.1/keymap.c	2016-05-30 14:49:21.096679894 +0100
-+++ mutt-1.6.1-neomutt/keymap.c	2016-05-30 14:49:21.371684193 +0100
+--- mutt-1.6.1/keymap.c	2016-06-12 18:43:00.408447684 +0100
++++ mutt-1.6.1-neomutt/keymap.c	2016-06-12 18:43:00.712452424 +0100
 @@ -76,10 +76,8 @@
    { "<Insert>",	KEY_IC },
    { "<Home>",	KEY_HOME },
@@ -14659,8 +14769,8 @@ diff -urN mutt-1.6.1/keymap.c mutt-1.6.1-neomutt/keymap.c
  
    /* edit-to (default "t") hides generic tag-entry in Compose menu
 diff -urN mutt-1.6.1/lib.c mutt-1.6.1-neomutt/lib.c
---- mutt-1.6.1/lib.c	2016-05-30 14:49:21.096679894 +0100
-+++ mutt-1.6.1-neomutt/lib.c	2016-05-30 14:49:21.371684193 +0100
+--- mutt-1.6.1/lib.c	2016-06-12 18:43:00.408447684 +0100
++++ mutt-1.6.1-neomutt/lib.c	2016-06-12 18:43:00.712452424 +0100
 @@ -219,8 +219,10 @@
    {
      if (fflush (*f) || fsync (fileno (*f)))
@@ -14690,7 +14800,7 @@ diff -urN mutt-1.6.1/lib.c mutt-1.6.1-neomutt/lib.c
  
 diff -urN mutt-1.6.1/LICENSE.md mutt-1.6.1-neomutt/LICENSE.md
 --- mutt-1.6.1/LICENSE.md	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/LICENSE.md	2016-05-30 14:49:21.330683553 +0100
++++ mutt-1.6.1-neomutt/LICENSE.md	2016-06-12 18:43:00.663451660 +0100
 @@ -0,0 +1,336 @@
 +GNU General Public License
 +==========================
@@ -15029,8 +15139,8 @@ diff -urN mutt-1.6.1/LICENSE.md mutt-1.6.1-neomutt/LICENSE.md
 +library.  If this is what you want to do, use the GNU Lesser General
 +Public License instead of this License.
 diff -urN mutt-1.6.1/mailbox.h mutt-1.6.1-neomutt/mailbox.h
---- mutt-1.6.1/mailbox.h	2016-05-30 14:49:21.096679894 +0100
-+++ mutt-1.6.1-neomutt/mailbox.h	2016-05-30 14:49:21.372684209 +0100
+--- mutt-1.6.1/mailbox.h	2016-06-12 18:43:00.408447684 +0100
++++ mutt-1.6.1-neomutt/mailbox.h	2016-06-12 18:43:00.714452456 +0100
 @@ -27,6 +27,9 @@
  #define M_NEWFOLDER	(1<<4) /* create a new folder - same as M_APPEND, but uses
  				* safe_fopen() for mbox-style folders.
@@ -15060,8 +15170,8 @@ diff -urN mutt-1.6.1/mailbox.h mutt-1.6.1-neomutt/mailbox.h
  int mx_access (const char*, int);
  int mx_check_empty (const char *);
 diff -urN mutt-1.6.1/main.c mutt-1.6.1-neomutt/main.c
---- mutt-1.6.1/main.c	2016-05-30 14:49:21.096679894 +0100
-+++ mutt-1.6.1-neomutt/main.c	2016-05-30 14:49:21.372684209 +0100
+--- mutt-1.6.1/main.c	2016-06-12 18:43:00.409447699 +0100
++++ mutt-1.6.1-neomutt/main.c	2016-06-12 18:43:00.714452456 +0100
 @@ -31,6 +31,10 @@
  #include "url.h"
  #include "mutt_crypt.h"
@@ -15582,7 +15692,7 @@ diff -urN mutt-1.6.1/main.c mutt-1.6.1-neomutt/main.c
      mutt_error = mutt_curses_error;
      mutt_message = mutt_curses_message;
 +#ifdef USE_SIDEBAR
-+    sb_init();
++    mutt_sb_init();
 +#endif
    }
  
@@ -15638,7 +15748,7 @@ diff -urN mutt-1.6.1/main.c mutt-1.6.1-neomutt/main.c
         || !explicit_folder)
      {
 +#ifdef USE_SIDEBAR
-+      sb_set_open_buffy (folder);
++      mutt_sb_set_open_buffy (folder);
 +#endif
 +      Labels = hash_create (131, 0);
 +      mutt_scan_labels(Context);
@@ -15651,8 +15761,8 @@ diff -urN mutt-1.6.1/main.c mutt-1.6.1-neomutt/main.c
  #ifdef USE_IMAP
      imap_logout_all ();
 diff -urN mutt-1.6.1/Makefile.am mutt-1.6.1-neomutt/Makefile.am
---- mutt-1.6.1/Makefile.am	2016-05-30 14:49:21.076679581 +0100
-+++ mutt-1.6.1-neomutt/Makefile.am	2016-05-30 14:49:21.331683568 +0100
+--- mutt-1.6.1/Makefile.am	2016-06-12 18:43:00.389447388 +0100
++++ mutt-1.6.1-neomutt/Makefile.am	2016-06-12 18:43:00.663451660 +0100
 @@ -10,7 +10,11 @@
  IMAP_INCLUDES = -I$(top_srcdir)/imap
  endif
@@ -15674,15 +15784,28 @@ diff -urN mutt-1.6.1/Makefile.am mutt-1.6.1-neomutt/Makefile.am
  
  nodist_mutt_SOURCES = $(BUILT_SOURCES)
  
-@@ -56,6 +60,7 @@
+@@ -50,33 +54,44 @@
+ 
+ AM_CPPFLAGS=-I. -I$(top_srcdir) $(IMAP_INCLUDES) $(GPGME_CFLAGS) -Iintl
+ 
+-EXTRA_mutt_SOURCES = account.c bcache.c crypt-gpgme.c crypt-mod-pgp-classic.c \
++EXTRA_mutt_SOURCES = account.c bcache.c compress.c crypt-gpgme.c crypt-mod-pgp-classic.c \
+ 	crypt-mod-pgp-gpgme.c crypt-mod-smime-classic.c \
+ 	crypt-mod-smime-gpgme.c dotlock.c gnupgparse.c hcache.c md5.c \
  	mutt_idna.c mutt_sasl.c mutt_socket.c mutt_ssl.c mutt_ssl_gnutls.c \
  	mutt_tunnel.c pgp.c pgpinvoke.c pgpkey.c pgplib.c pgpmicalg.c \
  	pgppacket.c pop.c pop_auth.c pop_lib.c remailer.c resize.c sha1.c \
+-	smime.c smtp.c utf8.c wcwidth.c \
 +	nntp.c newsrc.c \
- 	smime.c smtp.c utf8.c wcwidth.c \
++	sidebar.c smime.c smtp.c utf8.c wcwidth.c \
  	bcache.h browser.h hcache.h mbyte.h mutt_idna.h remailer.h url.h
  
-@@ -67,16 +72,37 @@
+ EXTRA_DIST = COPYRIGHT GPL OPS OPS.PGP OPS.CRYPT OPS.SMIME TODO UPDATING \
+ 	configure account.h \
+-	attach.h buffy.h charset.h copy.h crypthash.h dotlock.h functions.h gen_defs \
++	attach.h buffy.h charset.h compress.h copy.h crypthash.h dotlock.h functions.h gen_defs \
+ 	globals.h hash.h history.h init.h keymap.h mutt_crypt.h \
+ 	mailbox.h mapping.h md5.h mime.h mutt.h mutt_curses.h mutt_menu.h \
  	mutt_regex.h mutt_sasl.h mutt_socket.h mutt_ssl.h mutt_tunnel.h \
  	mx.h pager.h pgp.h pop.h protos.h rfc1524.h rfc2047.h \
  	rfc2231.h rfc822.h rfc3676.h sha1.h sort.h mime.types VERSION prepare \
@@ -15691,19 +15814,14 @@ diff -urN mutt-1.6.1/Makefile.am mutt-1.6.1-neomutt/Makefile.am
  	mbyte.h lib.h extlib.c pgpewrap.c smime_keys.pl pgplib.h \
  	README.SSL smime.h group.h \
  	muttbug pgppacket.h depcomp ascii.h BEWARE PATCHES patchlist.sh \
- 	ChangeLog mkchangelog.sh mutt_idna.h \
+-	ChangeLog mkchangelog.sh mutt_idna.h \
++	ChangeLog mkchangelog.sh mutt_idna.h sidebar.h OPS.sidebar \
  	snprintf.c regex.c crypt-gpgme.h hcachever.sh.in sys_socket.h \
 -	txt2c.c txt2c.sh version.sh check_sec.sh
 +	txt2c.c txt2c.sh version.sh check_sec.sh version.h
  
  EXTRA_SCRIPTS = smime_keys
  
-+if BUILD_SIDEBAR
-+mutt_SOURCES += sidebar.c sidebar.h
-+endif
-+
-+EXTRA_DIST += OPS.SIDEBAR
-+
 +if BUILD_NOTMUCH
 +mutt_SOURCES += mutt_notmuch.c mutt_notmuch.h
 +mutt_LDADD += $(NOTMUCH_LIBS)
@@ -15713,15 +15831,10 @@ diff -urN mutt-1.6.1/Makefile.am mutt-1.6.1-neomutt/Makefile.am
 +EXTRA_DIST += UPDATING.kz README.notmuch OPS.NOTMUCH
 +
 +
-+if BUILD_COMPRESS
-+mutt_SOURCES += compress.c compress.h
-+endif
-+
-+
  mutt_dotlock_SOURCES = mutt_dotlock.c
  mutt_dotlock_LDADD = $(LIBOBJS)
  mutt_dotlock_DEPENDENCIES = $(LIBOBJS)
-@@ -129,14 +155,16 @@
+@@ -129,14 +144,15 @@
  keymap_defs.h: $(OPS) $(srcdir)/gen_defs
  	$(srcdir)/gen_defs $(OPS) > keymap_defs.h
  
@@ -15729,21 +15842,19 @@ diff -urN mutt-1.6.1/Makefile.am mutt-1.6.1-neomutt/Makefile.am
 +keymap_alldefs.h: $(srcdir)/OPS $(srcdir)/OPS.SIDEBAR $(srcdir)/OPS.NOTMUCH $(srcdir)/OPS.PGP $(srcdir)/OPS.MIX $(srcdir)/OPS.CRYPT $(srcdir)/OPS.SMIME $(srcdir)/gen_defs
  	rm -f $@
 -	$(srcdir)/gen_defs $(srcdir)/OPS $(srcdir)/OPS.PGP \
--		$(srcdir)/OPS.MIX $(srcdir)/OPS.CRYPT $(srcdir)/OPS.SMIME \
-+	$(srcdir)/gen_defs $(srcdir)/OPS $(srcdir)/OPS.NOTMUCH $(srcdir)/OPS.PGP \
-+		$(srcdir)/OPS.SIDEBAR $(srcdir)/OPS.MIX $(srcdir)/OPS.CRYPT $(srcdir)/OPS.SMIME \
++	$(srcdir)/gen_defs $(srcdir)/OPS $(srcdir)/OPS.SIDEBAR $(srcdir)/OPS.NOTMUCH $(srcdir)/OPS.PGP \
+ 		$(srcdir)/OPS.MIX $(srcdir)/OPS.CRYPT $(srcdir)/OPS.SMIME \
  			> keymap_alldefs.h
  
 -reldate.h: $(srcdir)/ChangeLog
 -	echo 'const char *ReleaseDate = "'`head -n 1 $(srcdir)/ChangeLog | LC_ALL=C cut -d ' ' -f 1`'";' > reldate.h.tmp; \
-+reldate.h: ChangeLog.neomutt
-+	date=`head -n 1 $(top_srcdir)/ChangeLog.neomutt | LC_ALL=C cut -d ' ' -f 3-5` && \
-+	date=`date -d "$$date" "+%Y-%m-%d"` && \
++reldate.h: $(top_srcdir)/ChangeLog.neomutt
++	date=`head -n 1 $(top_srcdir)/ChangeLog.neomutt | LC_ALL=C cut -b 1-10` && \
 +	echo 'const char *ReleaseDate = "'$$date'";' > reldate.h.tmp; \
  	cmp -s reldate.h.tmp reldate.h || cp reldate.h.tmp reldate.h; \
  	rm reldate.h.tmp
  
-@@ -184,17 +212,6 @@
+@@ -184,17 +200,6 @@
  check-security:
  	(cd $(top_srcdir) && ./check_sec.sh)
  
@@ -15762,8 +15873,8 @@ diff -urN mutt-1.6.1/Makefile.am mutt-1.6.1-neomutt/Makefile.am
  	(cd doc && $(MAKE) update-doc)
  
 diff -urN mutt-1.6.1/mbox.c mutt-1.6.1-neomutt/mbox.c
---- mutt-1.6.1/mbox.c	2016-05-30 14:49:21.097679910 +0100
-+++ mutt-1.6.1-neomutt/mbox.c	2016-05-30 14:49:21.373684225 +0100
+--- mutt-1.6.1/mbox.c	2016-06-12 18:43:00.409447699 +0100
++++ mutt-1.6.1-neomutt/mbox.c	2016-06-12 18:43:00.714452456 +0100
 @@ -29,6 +29,10 @@
  #include "copy.h"
  #include "mutt_curses.h"
@@ -15809,8 +15920,8 @@ diff -urN mutt-1.6.1/mbox.c mutt-1.6.1-neomutt/mbox.c
    mx_fastclose_mailbox (ctx);
    return 0;
 diff -urN mutt-1.6.1/mbyte.c mutt-1.6.1-neomutt/mbyte.c
---- mutt-1.6.1/mbyte.c	2016-05-30 14:49:21.097679910 +0100
-+++ mutt-1.6.1-neomutt/mbyte.c	2016-05-30 14:49:21.373684225 +0100
+--- mutt-1.6.1/mbyte.c	2016-06-12 18:43:00.409447699 +0100
++++ mutt-1.6.1-neomutt/mbyte.c	2016-06-12 18:43:00.714452456 +0100
 @@ -107,7 +107,7 @@
    char buf[MB_LEN_MAX+1];
    ICONV_CONST char *ib;
@@ -15839,8 +15950,8 @@ diff -urN mutt-1.6.1/mbyte.c mutt-1.6.1-neomutt/mbyte.c
    return ob - s;
  }
 diff -urN mutt-1.6.1/menu.c mutt-1.6.1-neomutt/menu.c
---- mutt-1.6.1/menu.c	2016-05-30 14:49:21.097679910 +0100
-+++ mutt-1.6.1-neomutt/menu.c	2016-05-30 14:49:21.373684225 +0100
+--- mutt-1.6.1/menu.c	2016-06-12 18:43:00.409447699 +0100
++++ mutt-1.6.1-neomutt/menu.c	2016-06-12 18:43:00.715452471 +0100
 @@ -24,10 +24,56 @@
  #include "mutt_curses.h"
  #include "mutt_menu.h"
@@ -15936,7 +16047,7 @@ diff -urN mutt-1.6.1/menu.c mutt-1.6.1-neomutt/menu.c
    int attr;
  
 +#ifdef USE_SIDEBAR
-+  sb_draw();
++  mutt_sb_draw();
 +#endif
    for (i = menu->top; i < menu->top + menu->pagelen; i++)
    {
@@ -16043,8 +16154,8 @@ diff -urN mutt-1.6.1/menu.c mutt-1.6.1-neomutt/menu.c
        move (menu->current - menu->top + menu->offset, 0);
      else
 diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
---- mutt-1.6.1/mh.c	2016-05-30 14:49:21.097679910 +0100
-+++ mutt-1.6.1-neomutt/mh.c	2016-05-30 14:49:21.374684240 +0100
+--- mutt-1.6.1/mh.c	2016-06-12 18:43:00.410447715 +0100
++++ mutt-1.6.1-neomutt/mh.c	2016-06-12 18:43:00.715452471 +0100
 @@ -56,6 +56,10 @@
  #include <sys/time.h>
  #endif
@@ -16056,7 +16167,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
  #define		INS_SORT_THRESHOLD		6
  
  struct maildir
-@@ -295,6 +299,49 @@
+@@ -295,6 +299,48 @@
    mhs_free_sequences (&mhs);
  }
  
@@ -16071,42 +16182,41 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
 +void
 +mh_buffy_update (BUFFY *mailbox)
 +{
-+	if (!mailbox)
-+		return;
++  int i;
++  struct mh_sequences mhs;
 +
-+	if (!option (OPTSIDEBAR))
-+		return;
++  if (!mailbox)
++    return;
 +
-+	struct mh_sequences mhs;
-+	memset (&mhs, 0, sizeof (mhs));
++  if (!option (OPTSIDEBAR))
++    return;
 +
-+	if (mh_read_sequences (&mhs, mailbox->path) < 0)
-+		return;
++  memset (&mhs, 0, sizeof (mhs));
 +
-+	mailbox->msg_count   = 0;
-+	mailbox->msg_unread  = 0;
-+	mailbox->msg_flagged = 0;
++  if (mh_read_sequences (&mhs, mailbox->path) < 0)
++    return;
 +
-+	int i;
-+	for (i = 0; i <= mhs.max; i++) {
-+		mailbox->msg_count++;
-+	}
-+	if (mhs_check (&mhs, i) & MH_SEQ_UNSEEN) {
-+		mailbox->msg_unread++;
-+	}
-+	if (mhs_check (&mhs, i) & MH_SEQ_FLAGGED) {
-+		mailbox->msg_flagged++;
-+	}
-+	mhs_free_sequences (&mhs);
-+	mailbox->sb_last_checked = time (NULL);
++  mailbox->msg_count   = 0;
++  mailbox->msg_unread  = 0;
++  mailbox->msg_flagged = 0;
++
++  for (i = 0; i <= mhs.max; i++)
++  {
++    mailbox->msg_count++;
++    if (mhs_check (&mhs, i) & MH_SEQ_UNSEEN)
++      mailbox->msg_unread++;
++    if (mhs_check (&mhs, i) & MH_SEQ_FLAGGED)
++      mailbox->msg_flagged++;
++  }
++  mhs_free_sequences (&mhs);
++  mailbox->sb_last_checked = time (NULL);
 +}
-+
 +#endif
 +
  static int mh_mkstemp (CONTEXT * dest, FILE ** fp, char **tgt)
  {
    int fd;
-@@ -304,8 +351,8 @@
+@@ -304,8 +350,8 @@
    omask = umask (mh_umask (dest));
    FOREVER
    {
@@ -16117,7 +16227,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
      if ((fd = open (path, O_WRONLY | O_EXCL | O_CREAT, 0666)) == -1)
      {
        if (errno != EEXIST)
-@@ -610,7 +657,7 @@
+@@ -610,7 +656,7 @@
    }
  }
  
@@ -16126,7 +16236,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
  {
    char *p, *q = NULL;
  
-@@ -693,40 +740,51 @@
+@@ -693,40 +739,51 @@
   * Actually parse a maildir message.  This may also be used to fill
   * out a fake header structure generated by lazy maildir parsing.
   */
@@ -16201,7 +16311,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
      return h;
    }
    return NULL;
-@@ -1249,7 +1307,7 @@
+@@ -1249,7 +1306,7 @@
    return (int)( *((const char *) a) - *((const char *) b));
  }
  
@@ -16210,7 +16320,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
  {
    *dest = '\0';
  
-@@ -1313,9 +1371,9 @@
+@@ -1313,9 +1370,9 @@
    omask = umask (mh_umask (dest));
    FOREVER
    {
@@ -16223,7 +16333,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
  
      dprint (2, (debugfile, "maildir_open_new_message (): Trying %s.\n",
  		path));
-@@ -1399,8 +1457,8 @@
+@@ -1399,8 +1456,8 @@
    /* construct a new file name. */
    FOREVER
    {
@@ -16234,7 +16344,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
  	      NONULL (Hostname), suffix);
      snprintf (full, _POSIX_PATH_MAX, "%s/%s", ctx->path, path);
  
-@@ -1409,10 +1467,6 @@
+@@ -1409,10 +1466,6 @@
  
      if (safe_rename (msg->path, full) == 0)
      {
@@ -16245,7 +16355,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
        /*
         * Adjust the mtime on the file to match the time at which this
         * message was received.  Currently this is only set when copying
-@@ -1428,11 +1482,23 @@
+@@ -1428,11 +1481,23 @@
  	if (utime (full, &ut))
  	{
  	  mutt_perror (_("maildir_commit_message(): unable to set time on file"));
@@ -16270,7 +16380,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
      }
      else if (errno != EEXIST)
      {
-@@ -1508,6 +1574,7 @@
+@@ -1508,6 +1573,7 @@
      {
        if (hdr)
  	mutt_str_replace (&hdr->path, tmp);
@@ -16278,7 +16388,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
        FREE (&msg->path);
        break;
      }
-@@ -1612,7 +1679,7 @@
+@@ -1612,7 +1678,7 @@
  {
    HEADER *h = ctx->hdrs[msgno];
  
@@ -16287,7 +16397,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
        (h->env && (h->env->refs_changed || h->env->irt_changed)))
      if (mh_rewrite_message (ctx, msgno) != 0)
        return -1;
-@@ -1624,7 +1691,7 @@
+@@ -1624,7 +1690,7 @@
  {
    HEADER *h = ctx->hdrs[msgno];
  
@@ -16296,7 +16406,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
        (h->env && (h->env->refs_changed || h->env->irt_changed)))
    {
      /* when doing attachment deletion/rethreading, fall back to the MH case. */
-@@ -1683,96 +1750,114 @@
+@@ -1683,96 +1749,114 @@
    return (0);
  }
  
@@ -16304,7 +16414,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
 -{
 -  char path[_POSIX_PATH_MAX], tmp[_POSIX_PATH_MAX];
 -  int i, j;
- #if USE_HCACHE
+-#if USE_HCACHE
 -  header_cache_t *hc = NULL;
 -#endif /* USE_HCACHE */
 -  char msgbuf[STRING];
@@ -16318,7 +16428,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
 -  if (i != 0)
 -    return i;
 -
--#if USE_HCACHE
+ #if USE_HCACHE
 -  if (ctx->magic == M_MAILDIR || ctx->magic == M_MH)
 -    hc = mutt_hcache_open(HeaderCache, ctx->path, NULL);
 -#endif /* USE_HCACHE */
@@ -16464,7 +16574,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
    }
  
  #if USE_HCACHE
-@@ -1851,7 +1936,7 @@
+@@ -1851,7 +1935,7 @@
    mutt_clear_threads (ctx);
  }
  
@@ -16473,7 +16583,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
  {
    /* save the global state here so we can reset it at the
     * end of list block if required.
-@@ -2154,7 +2239,7 @@
+@@ -2154,7 +2238,7 @@
   */
  
  static FILE *_maildir_open_find_message (const char *folder, const char *unique,
@@ -16482,7 +16592,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
  {
    char dir[_POSIX_PATH_MAX];
    char tunique[_POSIX_PATH_MAX];
-@@ -2190,11 +2275,15 @@
+@@ -2190,11 +2274,15 @@
  
    closedir (dp);
  
@@ -16499,7 +16609,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
  {
    char unique[_POSIX_PATH_MAX];
    FILE *fp;
-@@ -2206,7 +2295,8 @@
+@@ -2206,7 +2294,8 @@
    if (
        (fp =
         _maildir_open_find_message (folder, unique,
@@ -16509,7 +16619,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
        || errno != ENOENT)
    {
      if (new_hits < UINT_MAX && cur_hits < UINT_MAX)
-@@ -2220,7 +2310,8 @@
+@@ -2220,7 +2309,8 @@
    if (
        (fp =
         _maildir_open_find_message (folder, unique,
@@ -16520,7 +16630,7 @@ diff -urN mutt-1.6.1/mh.c mutt-1.6.1-neomutt/mh.c
    {
      if (new_hits < UINT_MAX && cur_hits < UINT_MAX)
 diff -urN mutt-1.6.1/mkchangelog.sh mutt-1.6.1-neomutt/mkchangelog.sh
---- mutt-1.6.1/mkchangelog.sh	2016-05-30 14:49:21.097679910 +0100
+--- mutt-1.6.1/mkchangelog.sh	2016-06-12 18:43:00.410447715 +0100
 +++ mutt-1.6.1-neomutt/mkchangelog.sh	1970-01-01 01:00:00.000000000 +0100
 @@ -1,5 +0,0 @@
 -#!/bin/sh
@@ -16529,9 +16639,33 @@ diff -urN mutt-1.6.1/mkchangelog.sh mutt-1.6.1-neomutt/mkchangelog.sh
 -
 -hg log --style=./hg-changelog-map -r "reverse($lrev::.)"
 diff -urN mutt-1.6.1/mutt_curses.h mutt-1.6.1-neomutt/mutt_curses.h
---- mutt-1.6.1/mutt_curses.h	2016-05-30 14:49:21.098679925 +0100
-+++ mutt-1.6.1-neomutt/mutt_curses.h	2016-05-30 14:49:21.374684240 +0100
-@@ -64,6 +64,9 @@
+--- mutt-1.6.1/mutt_curses.h	2016-06-12 18:43:00.410447715 +0100
++++ mutt-1.6.1-neomutt/mutt_curses.h	2016-06-12 18:43:00.716452487 +0100
+@@ -33,13 +33,6 @@
+ #define KEY_DC SL_KEY_DELETE
+ #define KEY_IC SL_KEY_IC
+ 
+-/*
+- * ncurses and SLang seem to send different characters when the Enter key is
+- * pressed, so define some macros to properly detect the Enter key.
+- */
+-#define M_ENTER_C '\r'
+-#define M_ENTER_S "\r"
+-
+ #else /* USE_SLANG_CURSES */
+ 
+ #if HAVE_NCURSESW_NCURSES_H
+@@ -52,9 +45,6 @@
+ # include <curses.h>
+ #endif
+ 
+-#define M_ENTER_C '\n'
+-#define M_ENTER_S "\n"
+-
+ #endif /* USE_SLANG_CURSES */
+ 
+ /* AIX defines ``lines'' in <term.h>, but it's used as a var name in
+@@ -64,6 +54,9 @@
  #undef lines
  #endif /* lines */
  
@@ -16541,7 +16675,7 @@ diff -urN mutt-1.6.1/mutt_curses.h mutt-1.6.1-neomutt/mutt_curses.h
  #define CLEARLINE(x) move(x,0), clrtoeol()
  #define CENTERLINE(x,y) move(y, (COLS-strlen(x))/2), addstr(x)
  #define BEEP() do { if (option (OPTBEEP)) beep(); } while (0)
-@@ -122,14 +125,40 @@
+@@ -122,14 +115,40 @@
    MT_COLOR_SEARCH,
    MT_COLOR_BOLD,
    MT_COLOR_UNDERLINE,
@@ -16583,7 +16717,27 @@ diff -urN mutt-1.6.1/mutt_curses.h mutt-1.6.1-neomutt/mutt_curses.h
    char *pattern;
    pattern_t *color_pattern; /* compiled pattern to speed up index color
                                 calculation */
-@@ -176,7 +205,14 @@
+@@ -163,12 +182,16 @@
+ 
+ static inline int mutt_term_width(short wrap)
+ {
++  int cols = COLS;
++#ifdef USE_SIDEBAR
++  cols -= SidebarWidth;
++#endif
+   if (wrap < 0)
+-    return COLS > -wrap ? COLS + wrap : COLS;
++    return cols > -wrap ? cols + wrap : cols;
+   else if (wrap)
+-    return wrap < COLS ? wrap : COLS;
++    return wrap < cols ? wrap : cols;
+   else
+-    return COLS;
++    return cols;
+ }
+ 
+ extern int *ColorQuote;
+@@ -176,7 +199,14 @@
  extern int ColorDefs[];
  extern COLOR_LINE *ColorHdrList;
  extern COLOR_LINE *ColorBodyList;
@@ -16599,8 +16753,8 @@ diff -urN mutt-1.6.1/mutt_curses.h mutt-1.6.1-neomutt/mutt_curses.h
  void ci_init_color (void);
  void ci_start_color (void);
 diff -urN mutt-1.6.1/mutt.h mutt-1.6.1-neomutt/mutt.h
---- mutt-1.6.1/mutt.h	2016-05-30 14:49:21.098679925 +0100
-+++ mutt-1.6.1-neomutt/mutt.h	2016-05-30 14:49:21.374684240 +0100
+--- mutt-1.6.1/mutt.h	2016-06-12 18:43:00.410447715 +0100
++++ mutt-1.6.1-neomutt/mutt.h	2016-06-12 18:43:00.716452487 +0100
 @@ -52,6 +52,11 @@
  #include <limits.h>
  #endif
@@ -16894,8 +17048,8 @@ diff -urN mutt-1.6.1/mutt.h mutt-1.6.1-neomutt/mutt.h
    /* driver hooks */
    void *data;			/* driver specific data */
 diff -urN mutt-1.6.1/muttlib.c mutt-1.6.1-neomutt/muttlib.c
---- mutt-1.6.1/muttlib.c	2016-05-30 14:49:21.099679941 +0100
-+++ mutt-1.6.1-neomutt/muttlib.c	2016-05-30 14:49:21.377684287 +0100
+--- mutt-1.6.1/muttlib.c	2016-06-12 18:43:00.411447731 +0100
++++ mutt-1.6.1-neomutt/muttlib.c	2016-06-12 18:43:00.719452534 +0100
 @@ -32,11 +32,18 @@
  #include "imap.h"
  #endif
@@ -17237,8 +17391,8 @@ diff -urN mutt-1.6.1/muttlib.c mutt-1.6.1-neomutt/muttlib.c
    {
      if (magic == -1)
 diff -urN mutt-1.6.1/mutt_menu.h mutt-1.6.1-neomutt/mutt_menu.h
---- mutt-1.6.1/mutt_menu.h	2016-05-30 14:49:21.098679925 +0100
-+++ mutt-1.6.1-neomutt/mutt_menu.h	2016-05-30 14:49:21.375684256 +0100
+--- mutt-1.6.1/mutt_menu.h	2016-06-12 18:43:00.410447715 +0100
++++ mutt-1.6.1-neomutt/mutt_menu.h	2016-06-12 18:43:00.717452503 +0100
 @@ -34,6 +34,9 @@
  #define REDRAW_FULL		(1<<5)
  #define REDRAW_BODY		(1<<6)
@@ -17258,8 +17412,8 @@ diff -urN mutt-1.6.1/mutt_menu.h mutt-1.6.1-neomutt/mutt_menu.h
  #endif /* _MUTT_MENU_H_ */
 diff -urN mutt-1.6.1/mutt_notmuch.c mutt-1.6.1-neomutt/mutt_notmuch.c
 --- mutt-1.6.1/mutt_notmuch.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/mutt_notmuch.c	2016-05-30 14:49:21.375684256 +0100
-@@ -0,0 +1,1941 @@
++++ mutt-1.6.1-neomutt/mutt_notmuch.c	2016-06-12 18:43:00.717452503 +0100
+@@ -0,0 +1,1984 @@
 +/*
 + * Notmuch support for mutt
 + *
@@ -17306,6 +17460,18 @@ diff -urN mutt-1.6.1/mutt_notmuch.c mutt-1.6.1-neomutt/mutt_notmuch.c
 +
 +#include "mutt_notmuch.h"
 +#include "mutt_curses.h"
++
++#ifdef LIBNOTMUCH_CHECK_VERSION
++#undef LIBNOTMUCH_CHECK_VERSION
++#endif
++
++/* The definition in <notmuch.h> is broken */
++#define LIBNOTMUCH_CHECK_VERSION(major, minor, micro)                               \
++    (LIBNOTMUCH_MAJOR_VERSION > (major) ||                                          \
++     (LIBNOTMUCH_MAJOR_VERSION == (major) && LIBNOTMUCH_MINOR_VERSION > (minor)) || \
++     (LIBNOTMUCH_MAJOR_VERSION == (major) && LIBNOTMUCH_MINOR_VERSION == (minor) && \
++      LIBNOTMUCH_MICRO_VERSION >= (micro)))
++
 +
 +/* read whole-thread or matching messages only? */
 +enum {
@@ -18191,11 +18357,18 @@ diff -urN mutt-1.6.1/mutt_notmuch.c mutt-1.6.1-neomutt/mutt_notmuch.c
 +		return;
 +
 +	if (!data->progress_ready && q) {
++		unsigned count;
 +		static char msg[STRING];
 +		snprintf(msg, sizeof(msg), _("Reading messages..."));
 +
++#if LIBNOTMUCH_CHECK_VERSION(4,3,0)
++		if (notmuch_query_count_messages_st (q, &count) != NOTMUCH_STATUS_SUCCESS)
++			count = 0;	/* may not be defined on error */
++#else
++		count = notmuch_query_count_messages(q);
++#endif
 +		mutt_progress_init(&data->progress, msg, M_PROGRESS_MSG,
-+			ReadInc, notmuch_query_count_messages(q));
++			ReadInc, count);
 +		data->progress_ready = 1;
 +	}
 +
@@ -18344,8 +18517,14 @@ diff -urN mutt-1.6.1/mutt_notmuch.c mutt-1.6.1-neomutt/mutt_notmuch.c
 +
 +	limit = get_limit(data);
 +
-+	for (msgs = notmuch_query_search_messages(q);
-+	     notmuch_messages_valid(msgs) &&
++#if LIBNOTMUCH_CHECK_VERSION(4,3,0)
++	if (notmuch_query_search_messages_st (q, &msgs) != NOTMUCH_STATUS_SUCCESS)
++		return;
++#else
++	msgs = notmuch_query_search_messages(q);
++#endif
++
++	for (; notmuch_messages_valid(msgs) &&
 +		(limit == 0 || ctx->msgcount < limit);
 +	     notmuch_messages_move_to_next(msgs)) {
 +
@@ -18363,8 +18542,14 @@ diff -urN mutt-1.6.1/mutt_notmuch.c mutt-1.6.1-neomutt/mutt_notmuch.c
 +	if (!data)
 +		return;
 +
-+	for (threads = notmuch_query_search_threads(q);
-+	     notmuch_threads_valid(threads) &&
++#if LIBNOTMUCH_CHECK_VERSION(4,3,0)
++	if (notmuch_query_search_threads_st (q, &threads) != NOTMUCH_STATUS_SUCCESS)
++		return;
++#else
++	threads = notmuch_query_search_threads(q);
++#endif
++
++	for (; notmuch_threads_valid(threads) &&
 +		(limit == 0 || ctx->msgcount < limit);
 +	     notmuch_threads_move_to_next(threads)) {
 +
@@ -18656,7 +18841,7 @@ diff -urN mutt-1.6.1/mutt_notmuch.c mutt-1.6.1-neomutt/mutt_notmuch.c
 +		unlink(path);
 +		break;
 +	case NOTMUCH_STATUS_DUPLICATE_MESSAGE_ID:
-+		dprint(2, (debugfile, "nm: remove succes (duplicate), call unlink\n"));
++		dprint(2, (debugfile, "nm: remove success (duplicate), call unlink\n"));
 +		unlink(path);
 +		for (ls = notmuch_message_get_filenames(msg);
 +		     ls && notmuch_filenames_valid(ls);
@@ -18867,7 +19052,12 @@ diff -urN mutt-1.6.1/mutt_notmuch.c mutt-1.6.1-neomutt/mutt_notmuch.c
 +
 +	if (q) {
 +		apply_exclude_tags(q);
++#if LIBNOTMUCH_CHECK_VERSION(4,3,0)
++		if (notmuch_query_count_messages_st (q, &res) != NOTMUCH_STATUS_SUCCESS)
++			res = 0;	/* may not be defined on error */
++#else
 +		res = notmuch_query_count_messages(q);
++#endif
 +		notmuch_query_destroy(q);
 +		dprint(1, (debugfile, "nm: count '%s', result=%d\n", qstr, res));
 +	}
@@ -19041,7 +19231,14 @@ diff -urN mutt-1.6.1/mutt_notmuch.c mutt-1.6.1-neomutt/mutt_notmuch.c
 +
 +	limit = get_limit(data);
 +
-+	for (i = 0, msgs = notmuch_query_search_messages(q);
++#if LIBNOTMUCH_CHECK_VERSION(4,3,0)
++	if (notmuch_query_search_messages_st (q, &msgs) != NOTMUCH_STATUS_SUCCESS)
++		goto done;
++#else
++	msgs = notmuch_query_search_messages(q);
++#endif
++
++	for (i = 0;
 +	     notmuch_messages_valid(msgs) && (limit == 0 || i < limit);
 +	     notmuch_messages_move_to_next(msgs), i++) {
 +
@@ -19203,7 +19400,7 @@ diff -urN mutt-1.6.1/mutt_notmuch.c mutt-1.6.1-neomutt/mutt_notmuch.c
 +}
 diff -urN mutt-1.6.1/mutt_notmuch.h mutt-1.6.1-neomutt/mutt_notmuch.h
 --- mutt-1.6.1/mutt_notmuch.h	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/mutt_notmuch.h	2016-05-30 14:49:21.375684256 +0100
++++ mutt-1.6.1-neomutt/mutt_notmuch.h	2016-06-12 18:43:00.717452503 +0100
 @@ -0,0 +1,39 @@
 +/*
 + * Copyright (C) 2011 Karel Zak <kzak@redhat.com>
@@ -19245,8 +19442,8 @@ diff -urN mutt-1.6.1/mutt_notmuch.h mutt-1.6.1-neomutt/mutt_notmuch.h
 +
 +#endif /* _MUTT_NOTMUCH_H_ */
 diff -urN mutt-1.6.1/mutt_sasl.c mutt-1.6.1-neomutt/mutt_sasl.c
---- mutt-1.6.1/mutt_sasl.c	2016-05-30 14:49:21.098679925 +0100
-+++ mutt-1.6.1-neomutt/mutt_sasl.c	2016-05-30 14:49:21.375684256 +0100
+--- mutt-1.6.1/mutt_sasl.c	2016-06-12 18:43:00.410447715 +0100
++++ mutt-1.6.1-neomutt/mutt_sasl.c	2016-06-12 18:43:00.717452503 +0100
 @@ -190,6 +190,11 @@
      case M_ACCT_TYPE_SMTP:
        service = "smtp";
@@ -19260,8 +19457,8 @@ diff -urN mutt-1.6.1/mutt_sasl.c mutt-1.6.1-neomutt/mutt_sasl.c
        mutt_error (_("Unknown SASL profile"));
        return -1;
 diff -urN mutt-1.6.1/mutt_ssl.c mutt-1.6.1-neomutt/mutt_ssl.c
---- mutt-1.6.1/mutt_ssl.c	2016-05-30 14:49:21.098679925 +0100
-+++ mutt-1.6.1-neomutt/mutt_ssl.c	2016-05-30 14:49:21.376684272 +0100
+--- mutt-1.6.1/mutt_ssl.c	2016-06-12 18:43:00.411447731 +0100
++++ mutt-1.6.1-neomutt/mutt_ssl.c	2016-06-12 18:43:00.718452518 +0100
 @@ -401,6 +401,18 @@
    SSL_set_mode (ssldata->ssl, SSL_MODE_AUTO_RETRY);
  #endif
@@ -19297,8 +19494,8 @@ diff -urN mutt-1.6.1/mutt_ssl.c mutt-1.6.1-neomutt/mutt_ssl.c
  }
  
 diff -urN mutt-1.6.1/mx.c mutt-1.6.1-neomutt/mx.c
---- mutt-1.6.1/mx.c	2016-05-30 14:49:21.099679941 +0100
-+++ mutt-1.6.1-neomutt/mx.c	2016-05-30 14:49:21.377684287 +0100
+--- mutt-1.6.1/mx.c	2016-06-12 18:43:00.411447731 +0100
++++ mutt-1.6.1-neomutt/mx.c	2016-06-12 18:43:00.719452534 +0100
 @@ -29,6 +29,13 @@
  #include "copy.h"
  #include "keymap.h"
@@ -19496,14 +19693,8 @@ diff -urN mutt-1.6.1/mx.c mutt-1.6.1-neomutt/mx.c
    mutt_buffy_setnotified(ctx->path);
  
    if (ctx->mx_close)
-@@ -719,8 +828,16 @@
-   mutt_clear_threads (ctx);
-   for (i = 0; i < ctx->msgcount; i++)
+@@ -721,6 +830,10 @@
      mutt_free_header (&ctx->hdrs[i]);
-+#ifdef USE_SIDEBAR
-+  ctx->msgcount -= ctx->deleted;
-+  sb_set_buffystats (ctx);
-+#endif
    FREE (&ctx->hdrs);
    FREE (&ctx->v2r);
 +#ifdef USE_COMPRESSED
@@ -19513,7 +19704,7 @@ diff -urN mutt-1.6.1/mx.c mutt-1.6.1-neomutt/mx.c
    FREE (&ctx->path);
    FREE (&ctx->pattern);
    if (ctx->limit_pattern) 
-@@ -764,6 +881,18 @@
+@@ -764,6 +877,18 @@
        rc = pop_sync_mailbox (ctx, index_hint);
        break;
  #endif /* USE_POP */
@@ -19532,7 +19723,7 @@ diff -urN mutt-1.6.1/mx.c mutt-1.6.1-neomutt/mx.c
    }
  
  #if 0
-@@ -773,9 +902,71 @@
+@@ -773,9 +898,71 @@
    
    if (tmp && tmp->new == 0)
      mutt_update_mailbox (tmp);
@@ -19604,7 +19795,7 @@ diff -urN mutt-1.6.1/mx.c mutt-1.6.1-neomutt/mx.c
  /* save changes and close mailbox */
  int mx_close_mailbox (CONTEXT *ctx, int *index_hint)
  {
-@@ -807,13 +998,44 @@
+@@ -807,13 +994,44 @@
      return 0;
    }
  
@@ -19649,7 +19840,7 @@ diff -urN mutt-1.6.1/mx.c mutt-1.6.1-neomutt/mx.c
    if (read_msgs && quadoption (OPT_MOVE) != M_NO)
    {
      char *p;
-@@ -912,6 +1134,7 @@
+@@ -912,6 +1130,7 @@
  	  if (mutt_append_message (&f, ctx, ctx->hdrs[i], 0, CH_UPDATE_LEN) == 0)
  	  {
  	    mutt_set_flag (ctx, ctx->hdrs[i], M_DELETE, 1);
@@ -19657,7 +19848,7 @@ diff -urN mutt-1.6.1/mx.c mutt-1.6.1-neomutt/mx.c
  	  }
  	  else
  	  {
-@@ -936,6 +1159,14 @@
+@@ -936,6 +1155,14 @@
      return 0;
    }
    
@@ -19672,13 +19863,17 @@ diff -urN mutt-1.6.1/mx.c mutt-1.6.1-neomutt/mx.c
  #ifdef USE_IMAP
    /* allow IMAP to preserve the deleted flag across sessions */
    if (ctx->magic == M_IMAP)
-@@ -981,6 +1212,11 @@
+@@ -981,6 +1208,15 @@
        !mutt_is_spool(ctx->path) && !option (OPTSAVEEMPTY))
      mx_unlink_empty (ctx->path);
  
 +#ifdef USE_COMPRESSED
 +  if (ctx->compress_info && comp_slow_close (ctx))
 +    return (-1);
++#endif
++#ifdef USE_SIDEBAR
++  ctx->msgcount -= ctx->deleted;
++  mutt_sb_set_buffystats (ctx);
 +#endif
 +
    mx_fastclose_mailbox (ctx);
@@ -19855,8 +20050,8 @@ diff -urN mutt-1.6.1/mx.c mutt-1.6.1-neomutt/mx.c
    return (r);
  }
 diff -urN mutt-1.6.1/mx.h mutt-1.6.1-neomutt/mx.h
---- mutt-1.6.1/mx.h	2016-05-30 14:49:21.099679941 +0100
-+++ mutt-1.6.1-neomutt/mx.h	2016-05-30 14:49:21.377684287 +0100
+--- mutt-1.6.1/mx.h	2016-06-12 18:43:00.411447731 +0100
++++ mutt-1.6.1-neomutt/mx.h	2016-06-12 18:43:00.719452534 +0100
 @@ -26,6 +26,7 @@
  #define _MX_H
  
@@ -19924,7 +20119,7 @@ diff -urN mutt-1.6.1/mx.h mutt-1.6.1-neomutt/mx.h
  int mutt_reopen_mailbox (CONTEXT *, int *);
 diff -urN mutt-1.6.1/newsrc.c mutt-1.6.1-neomutt/newsrc.c
 --- mutt-1.6.1/newsrc.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/newsrc.c	2016-05-30 14:49:21.377684287 +0100
++++ mutt-1.6.1-neomutt/newsrc.c	2016-06-12 18:43:00.720452549 +0100
 @@ -0,0 +1,1262 @@
 +/*
 + * Copyright (C) 1998 Brandon Long <blong@fiction.net>
@@ -21190,7 +21385,7 @@ diff -urN mutt-1.6.1/newsrc.c mutt-1.6.1-neomutt/newsrc.c
 +}
 diff -urN mutt-1.6.1/nntp.c mutt-1.6.1-neomutt/nntp.c
 --- mutt-1.6.1/nntp.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/nntp.c	2016-05-30 14:49:21.377684287 +0100
++++ mutt-1.6.1-neomutt/nntp.c	2016-06-12 18:43:00.720452549 +0100
 @@ -0,0 +1,2434 @@
 +/*
 + * Copyright (C) 1998 Brandon Long <blong@fiction.net>
@@ -23628,7 +23823,7 @@ diff -urN mutt-1.6.1/nntp.c mutt-1.6.1-neomutt/nntp.c
 +}
 diff -urN mutt-1.6.1/nntp.h mutt-1.6.1-neomutt/nntp.h
 --- mutt-1.6.1/nntp.h	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/nntp.h	2016-05-30 14:49:21.378684303 +0100
++++ mutt-1.6.1-neomutt/nntp.h	2016-06-12 18:43:00.720452549 +0100
 @@ -0,0 +1,168 @@
 +/*
 + * Copyright (C) 1998 Brandon Long <blong@fiction.net>
@@ -23799,8 +23994,8 @@ diff -urN mutt-1.6.1/nntp.h mutt-1.6.1-neomutt/nntp.h
 +
 +#endif /* _NNTP_H_ */
 diff -urN mutt-1.6.1/OPS mutt-1.6.1-neomutt/OPS
---- mutt-1.6.1/OPS	2016-05-30 14:49:21.076679581 +0100
-+++ mutt-1.6.1-neomutt/OPS	2016-05-30 14:49:21.331683568 +0100
+--- mutt-1.6.1/OPS	2016-06-12 18:43:00.389447388 +0100
++++ mutt-1.6.1-neomutt/OPS	2016-06-12 18:43:00.663451660 +0100
 @@ -8,14 +8,16 @@
  OP_BROWSER_NEW_FILE "select a new file in this directory"
  OP_BROWSER_VIEW_FILE "view file"
@@ -23924,7 +24119,7 @@ diff -urN mutt-1.6.1/OPS mutt-1.6.1-neomutt/OPS
  OP_MAIN_COLLAPSE_ALL "collapse/uncollapse all threads"
 diff -urN mutt-1.6.1/OPS.NOTMUCH mutt-1.6.1-neomutt/OPS.NOTMUCH
 --- mutt-1.6.1/OPS.NOTMUCH	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/OPS.NOTMUCH	2016-05-30 14:49:21.331683568 +0100
++++ mutt-1.6.1-neomutt/OPS.NOTMUCH	2016-06-12 18:43:00.664451676 +0100
 @@ -0,0 +1,5 @@
 +OP_MAIN_CHANGE_VFOLDER "open a different virtual folder"
 +OP_MAIN_VFOLDER_FROM_QUERY "generate virtual folder from query"
@@ -23933,7 +24128,7 @@ diff -urN mutt-1.6.1/OPS.NOTMUCH mutt-1.6.1-neomutt/OPS.NOTMUCH
 +OP_MAIN_ENTIRE_THREAD "read entire thread of the current message"
 diff -urN mutt-1.6.1/OPS.SIDEBAR mutt-1.6.1-neomutt/OPS.SIDEBAR
 --- mutt-1.6.1/OPS.SIDEBAR	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/OPS.SIDEBAR	2016-05-30 14:49:21.331683568 +0100
++++ mutt-1.6.1-neomutt/OPS.SIDEBAR	2016-06-12 18:43:00.664451676 +0100
 @@ -0,0 +1,9 @@
 +OP_SIDEBAR_NEXT "Move the highlight to next mailbox"
 +OP_SIDEBAR_NEXT_NEW "Move the highlight to next mailbox with new mail"
@@ -23945,8 +24140,8 @@ diff -urN mutt-1.6.1/OPS.SIDEBAR mutt-1.6.1-neomutt/OPS.SIDEBAR
 +OP_SIDEBAR_TOGGLE_VIRTUAL "toggle between mailboxes and virtual mailboxes"
 +OP_SIDEBAR_TOGGLE_VISIBLE "Make the Sidebar (in)visible"
 diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
---- mutt-1.6.1/pager.c	2016-05-30 14:49:21.100679956 +0100
-+++ mutt-1.6.1-neomutt/pager.c	2016-05-30 14:49:21.378684303 +0100
+--- mutt-1.6.1/pager.c	2016-06-12 18:43:00.412447746 +0100
++++ mutt-1.6.1-neomutt/pager.c	2016-06-12 18:43:00.721452565 +0100
 @@ -29,6 +29,9 @@
  #include "pager.h"
  #include "attach.h"
@@ -23969,17 +24164,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
  
  static int format_line (struct line_t **lineInfo, int n, unsigned char *buf,
  			int flags, ansi_attr *pa, int cnt,
-@@ -1096,6 +1104,9 @@
-   wchar_t wc;
-   mbstate_t mbstate;
-   int wrap_cols = mutt_term_width ((flags & M_PAGER_NOWRAP) ? 0 : Wrap);
-+#ifdef USE_SIDEBAR
-+  wrap_cols -= SidebarWidth;
-+#endif
- 
-   if (check_attachment_marker ((char *)buf) == 0)
-     wrap_cols = COLS;
-@@ -1491,7 +1502,7 @@
+@@ -1491,7 +1499,7 @@
     * a newline (grr!).
     */
  #ifndef USE_SLANG_CURSES
@@ -23988,7 +24173,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
  #endif
        addch ('\n');
  
-@@ -1542,6 +1553,16 @@
+@@ -1542,6 +1550,16 @@
    { NULL,	0 }
  };
  
@@ -24005,7 +24190,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
  
  
  /* This pager is actually not so simple as it once was.  It now operates in
-@@ -1573,6 +1594,7 @@
+@@ -1573,6 +1591,7 @@
  
    int bodyoffset = 1;			/* offset of first line of real text */
    int statusoffset = 0; 		/* offset for the status bar */
@@ -24013,7 +24198,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
    int helpoffset = LINES - 2;		/* offset for the help bar. */
    int bodylen = LINES - 2 - bodyoffset; /* length of displayable area */
  
-@@ -1583,6 +1605,10 @@
+@@ -1583,6 +1602,10 @@
    int old_PagerIndexLines;		/* some people want to resize it
    					 * while inside the pager... */
  
@@ -24024,7 +24209,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
    if (!(flags & M_SHOWCOLOR))
      flags |= M_SHOWFLAT;
  
-@@ -1622,7 +1648,11 @@
+@@ -1622,7 +1645,11 @@
    if (IsHeader (extra))
    {
      strfcpy (tmphelp, helpstr, sizeof (tmphelp));
@@ -24037,7 +24222,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
      snprintf (helpstr, sizeof (helpstr), "%s %s", tmphelp, buffer);
    }
    if (!InHelp)
-@@ -1747,7 +1777,7 @@
+@@ -1747,7 +1774,7 @@
      if ((redraw & REDRAW_BODY) || topline != oldtopline)
      {
        do {
@@ -24046,7 +24231,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
  	curline = oldtopline = topline;
  	lines = 0;
  	force_redraw = 0;
-@@ -1760,6 +1790,9 @@
+@@ -1760,6 +1787,9 @@
  			    &QuoteList, &q_level, &force_redraw, &SearchRE) > 0)
  	    lines++;
  	  curline++;
@@ -24056,7 +24241,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
  	}
  	last_offset = lineInfo[curline].offset;
        } while (force_redraw);
-@@ -1772,6 +1805,9 @@
+@@ -1772,6 +1802,9 @@
  	  addch ('~');
  	addch ('\n');
  	lines++;
@@ -24066,7 +24251,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
        }
        NORMAL_COLOR;
  
-@@ -1789,29 +1825,49 @@
+@@ -1789,29 +1822,49 @@
        hfi.ctx = Context;
        hfi.pager_progress = pager_progress_str;
  
@@ -24120,12 +24305,12 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
        NORMAL_COLOR;
        if (option(OPTTSENABLED) && TSSupported)
        {
-@@ -1827,16 +1883,26 @@
+@@ -1827,16 +1880,26 @@
        /* redraw the pager_index indicator, because the
         * flags for this message might have changed. */
        menu_redraw_current (index);
 +#ifdef USE_SIDEBAR
-+      sb_draw();
++      mutt_sb_draw();
 +#endif
  
        /* print out the index status bar */
@@ -24143,13 +24328,13 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
 +#ifdef USE_SIDEBAR
 +    /* if we're not using the index, update every time */
 +    if (index == 0)
-+      sb_draw();
++      mutt_sb_draw();
 +#endif
 +
      redraw = 0;
  
      if (option(OPTBRAILLEFRIENDLY)) {
-@@ -2249,11 +2315,11 @@
+@@ -2249,11 +2312,11 @@
  	  int dretval = 0;
  	  int new_topline = topline;
  
@@ -24163,7 +24348,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
  	    new_topline++;
  
  	  if (dretval < 0)
-@@ -2262,11 +2328,11 @@
+@@ -2262,11 +2325,11 @@
  	    break;
  	  }
  
@@ -24177,7 +24362,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
  	    new_topline++;
  
  	  if (dretval < 0)
-@@ -2351,6 +2417,7 @@
+@@ -2351,6 +2414,7 @@
  	MAYBE_REDRAW (redraw);
  	break;
  
@@ -24185,7 +24370,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
        case OP_DELETE:
  	CHECK_MODE(IsHeader (extra));
  	CHECK_READONLY;
-@@ -2358,6 +2425,8 @@
+@@ -2358,6 +2422,8 @@
  	CHECK_ACL(M_ACL_DELETE, _("Cannot delete message"));
  
  	mutt_set_flag (Context, extra->hdr, M_DELETE, 1);
@@ -24194,7 +24379,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
          if (option (OPTDELETEUNTAG))
  	  mutt_set_flag (Context, extra->hdr, M_TAG, 0);
  	redraw = REDRAW_STATUS | REDRAW_INDEX;
-@@ -2498,8 +2567,12 @@
+@@ -2498,8 +2564,12 @@
  	  ch = 0;
  	}
  
@@ -24202,13 +24387,13 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
 +	if (option (OPTFORCEREDRAWPAGER)) {
  	  redraw = REDRAW_FULL;
 +#ifdef USE_SIDEBAR
-+	  sb_draw();
++	  mutt_sb_draw();
 +#endif
 +	}
  	unset_option (OPTFORCEREDRAWINDEX);
  	unset_option (OPTFORCEREDRAWPAGER);
  	break;
-@@ -2543,6 +2616,60 @@
+@@ -2543,6 +2613,60 @@
  	redraw = REDRAW_FULL;
  	break;
  
@@ -24269,7 +24454,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
        case OP_REPLY:
  	CHECK_MODE(IsHeader (extra) || IsMsgAttach (extra));
          CHECK_ATTACH;      
-@@ -2589,7 +2716,7 @@
+@@ -2589,7 +2713,7 @@
          CHECK_ATTACH;
          if (IsMsgAttach (extra))
  	  mutt_attach_forward (extra->fp, extra->hdr, extra->idx,
@@ -24278,7 +24463,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
          else
  	  ci_send_message (SENDFORWARD, NULL, NULL, extra->ctx, extra->hdr);
  	redraw = REDRAW_FULL;
-@@ -2688,6 +2815,7 @@
+@@ -2688,6 +2812,7 @@
  	CHECK_ACL(M_ACL_DELETE, _("Cannot undelete message"));
  
  	mutt_set_flag (Context, extra->hdr, M_DELETE, 0);
@@ -24286,7 +24471,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
  	redraw = REDRAW_STATUS | REDRAW_INDEX;
  	if (option (OPTRESOLVE))
  	{
-@@ -2704,9 +2832,11 @@
+@@ -2704,9 +2829,11 @@
  	CHECK_ACL(M_ACL_DELETE, _("Cannot undelete message(s)"));
  
  	r = mutt_thread_set_flag (extra->hdr, M_DELETE, 0,
@@ -24299,7 +24484,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
  	{
  	  if (option (OPTRESOLVE))
  	  {
-@@ -2744,6 +2874,18 @@
+@@ -2744,6 +2871,18 @@
  	redraw = REDRAW_FULL;
  	break;
  
@@ -24318,7 +24503,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
  
        case OP_MAIL_KEY:
          if (!(WithCrypto & APPLICATION_PGP))
-@@ -2777,6 +2919,22 @@
+@@ -2777,6 +2916,22 @@
  	mutt_what_key ();
  	break;
  
@@ -24329,7 +24514,7 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
 +      case OP_SIDEBAR_PAGE_UP:
 +      case OP_SIDEBAR_PREV:
 +      case OP_SIDEBAR_PREV_NEW:
-+	sb_change_mailbox (ch);
++	mutt_sb_change_mailbox (ch);
 +	break;
 +
 +      case OP_SIDEBAR_TOGGLE_VISIBLE:
@@ -24342,8 +24527,8 @@ diff -urN mutt-1.6.1/pager.c mutt-1.6.1-neomutt/pager.c
  	ch = -1;
  	break;
 diff -urN mutt-1.6.1/parse.c mutt-1.6.1-neomutt/parse.c
---- mutt-1.6.1/parse.c	2016-05-30 14:49:21.100679956 +0100
-+++ mutt-1.6.1-neomutt/parse.c	2016-05-30 14:49:21.378684303 +0100
+--- mutt-1.6.1/parse.c	2016-06-12 18:43:00.412447746 +0100
++++ mutt-1.6.1-neomutt/parse.c	2016-06-12 18:43:00.721452565 +0100
 @@ -94,7 +94,7 @@
    /* not reached */
  }
@@ -24533,29 +24718,29 @@ diff -urN mutt-1.6.1/parse.c mutt-1.6.1-neomutt/parse.c
      if (e->subject)
      {
 diff -urN mutt-1.6.1/PATCHES mutt-1.6.1-neomutt/PATCHES
---- mutt-1.6.1/PATCHES	2016-05-30 14:49:21.081679659 +0100
-+++ mutt-1.6.1-neomutt/PATCHES	2016-05-30 14:49:21.336683646 +0100
+--- mutt-1.6.1/PATCHES	2016-06-12 18:43:00.395447481 +0100
++++ mutt-1.6.1-neomutt/PATCHES	2016-06-12 18:43:00.669451754 +0100
 @@ -0,0 +1,17 @@
-+patch-quasi-delete-neo-20160530
-+patch-progress-neo-20160530
-+patch-status-color-neo-20160530
-+patch-index-color-neo-20160530
-+patch-nested-if-neo-20160530
-+patch-cond-date-neo-20160530
-+patch-tls-sni-neo-20160530
-+patch-sidebar-neo-20160530
-+patch-ifdef-neo-20160530
-+patch-fmemopen-neo-20160530
-+patch-initials-neo-20160530
-+patch-trash-neo-20160530
-+patch-limit-current-thread-neo-20160530
-+patch-skip-quoted-neo-20160530
-+patch-compress-neo-20160530
-+patch-keywords-neo-20160530
-+patch-nntp-neo-20160530
++patch-quasi-delete-neo-20160612
++patch-progress-neo-20160612
++patch-status-color-neo-20160612
++patch-index-color-neo-20160612
++patch-nested-if-neo-20160612
++patch-cond-date-neo-20160612
++patch-tls-sni-neo-20160612
++patch-sidebar-neo-20160612
++patch-ifdef-neo-20160612
++patch-fmemopen-neo-20160612
++patch-initials-neo-20160612
++patch-trash-neo-20160612
++patch-limit-current-thread-neo-20160612
++patch-skip-quoted-neo-20160612
++patch-compress-neo-20160612
++patch-keywords-neo-20160612
++patch-nntp-neo-20160612
 diff -urN mutt-1.6.1/patchlist.sh mutt-1.6.1-neomutt/patchlist.sh
---- mutt-1.6.1/patchlist.sh	2016-05-30 14:49:21.100679956 +0100
-+++ mutt-1.6.1-neomutt/patchlist.sh	2016-05-30 14:49:21.378684303 +0100
+--- mutt-1.6.1/patchlist.sh	2016-06-12 18:43:00.412447746 +0100
++++ mutt-1.6.1-neomutt/patchlist.sh	2016-06-12 18:43:00.721452565 +0100
 @@ -1,21 +1,5 @@
  #!/bin/sh --
  
@@ -24588,8 +24773,8 @@ diff -urN mutt-1.6.1/patchlist.sh mutt-1.6.1-neomutt/patchlist.sh
  done
  
 diff -urN mutt-1.6.1/pattern.c mutt-1.6.1-neomutt/pattern.c
---- mutt-1.6.1/pattern.c	2016-05-30 14:49:21.100679956 +0100
-+++ mutt-1.6.1-neomutt/pattern.c	2016-05-30 14:49:21.379684318 +0100
+--- mutt-1.6.1/pattern.c	2016-06-12 18:43:00.413447762 +0100
++++ mutt-1.6.1-neomutt/pattern.c	2016-06-12 18:43:00.721452565 +0100
 @@ -42,6 +42,10 @@
  #include "imap/imap.h"
  #endif
@@ -24852,8 +25037,8 @@ diff -urN mutt-1.6.1/pattern.c mutt-1.6.1-neomutt/pattern.c
  			  (op == M_DELETE));
  	    break;
 diff -urN mutt-1.6.1/po/de.po mutt-1.6.1-neomutt/po/de.po
---- mutt-1.6.1/po/de.po	2016-05-30 14:49:21.102679988 +0100
-+++ mutt-1.6.1-neomutt/po/de.po	2016-05-30 14:49:21.387684444 +0100
+--- mutt-1.6.1/po/de.po	2016-06-12 18:43:00.413447762 +0100
++++ mutt-1.6.1-neomutt/po/de.po	2016-06-12 18:43:00.730452705 +0100
 @@ -2141,6 +2141,10 @@
  msgid "Bad history file format (line %d)"
  msgstr "Falsches Format der Datei früherer Eingaben (Zeile %d)"
@@ -24925,8 +25110,8 @@ diff -urN mutt-1.6.1/po/de.po mutt-1.6.1-neomutt/po/de.po
  #~ msgstr "Klartext"
  
 diff -urN mutt-1.6.1/po/POTFILES.in mutt-1.6.1-neomutt/po/POTFILES.in
---- mutt-1.6.1/po/POTFILES.in	2016-05-30 14:49:21.100679956 +0100
-+++ mutt-1.6.1-neomutt/po/POTFILES.in	2016-05-30 14:49:21.380684334 +0100
+--- mutt-1.6.1/po/POTFILES.in	2016-06-12 18:43:00.413447762 +0100
++++ mutt-1.6.1-neomutt/po/POTFILES.in	2016-06-12 18:43:00.723452596 +0100
 @@ -8,6 +8,7 @@
  color.c
  commands.c
@@ -24945,8 +25130,8 @@ diff -urN mutt-1.6.1/po/POTFILES.in mutt-1.6.1-neomutt/po/POTFILES.in
  parse.c
  pattern.c
 diff -urN mutt-1.6.1/postpone.c mutt-1.6.1-neomutt/postpone.c
---- mutt-1.6.1/postpone.c	2016-05-30 14:49:21.102679988 +0100
-+++ mutt-1.6.1-neomutt/postpone.c	2016-05-30 14:49:21.400684647 +0100
+--- mutt-1.6.1/postpone.c	2016-06-12 18:43:00.414447777 +0100
++++ mutt-1.6.1-neomutt/postpone.c	2016-06-12 18:43:00.745452939 +0100
 @@ -125,15 +125,26 @@
  
    if (LastModify < st.st_mtime)
@@ -24985,8 +25170,8 @@ diff -urN mutt-1.6.1/postpone.c mutt-1.6.1-neomutt/postpone.c
    PostCount = PostContext->msgcount - PostContext->deleted;
  
 diff -urN mutt-1.6.1/protos.h mutt-1.6.1-neomutt/protos.h
---- mutt-1.6.1/protos.h	2016-05-30 14:49:21.102679988 +0100
-+++ mutt-1.6.1-neomutt/protos.h	2016-05-30 14:49:21.400684647 +0100
+--- mutt-1.6.1/protos.h	2016-06-12 18:43:00.414447777 +0100
++++ mutt-1.6.1-neomutt/protos.h	2016-06-12 18:43:00.745452939 +0100
 @@ -1,5 +1,6 @@
  /*
   * Copyright (C) 1996-2000,2007,2010,2013 Michael R. Elkins <me@mutt.org>
@@ -25106,7 +25291,7 @@ diff -urN mutt-1.6.1/protos.h mutt-1.6.1-neomutt/protos.h
 +#endif
 diff -urN mutt-1.6.1/README.compress mutt-1.6.1-neomutt/README.compress
 --- mutt-1.6.1/README.compress	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.compress	2016-05-30 14:49:21.337683662 +0100
++++ mutt-1.6.1-neomutt/README.compress	2016-06-12 18:43:00.669451754 +0100
 @@ -0,0 +1,165 @@
 +Compressed Folders Patch
 +========================
@@ -25275,7 +25460,7 @@ diff -urN mutt-1.6.1/README.compress mutt-1.6.1-neomutt/README.compress
 +
 diff -urN mutt-1.6.1/README.cond-date mutt-1.6.1-neomutt/README.cond-date
 --- mutt-1.6.1/README.cond-date	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.cond-date	2016-05-30 14:49:21.337683662 +0100
++++ mutt-1.6.1-neomutt/README.cond-date	2016-06-12 18:43:00.669451754 +0100
 @@ -0,0 +1,163 @@
 +Conditional Dates Patch
 +=======================
@@ -25442,7 +25627,7 @@ diff -urN mutt-1.6.1/README.cond-date mutt-1.6.1-neomutt/README.cond-date
 +
 diff -urN mutt-1.6.1/README.fmemopen mutt-1.6.1-neomutt/README.fmemopen
 --- mutt-1.6.1/README.fmemopen	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.fmemopen	2016-05-30 14:49:21.337683662 +0100
++++ mutt-1.6.1-neomutt/README.fmemopen	2016-06-12 18:43:00.670451770 +0100
 @@ -0,0 +1,47 @@
 +Fmemopen Patch
 +==============
@@ -25493,7 +25678,7 @@ diff -urN mutt-1.6.1/README.fmemopen mutt-1.6.1-neomutt/README.fmemopen
 +
 diff -urN mutt-1.6.1/README.ifdef mutt-1.6.1-neomutt/README.ifdef
 --- mutt-1.6.1/README.ifdef	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.ifdef	2016-05-30 14:49:21.337683662 +0100
++++ mutt-1.6.1-neomutt/README.ifdef	2016-06-12 18:43:00.670451770 +0100
 @@ -0,0 +1,57 @@
 +Ifdef Patch
 +===========
@@ -25554,7 +25739,7 @@ diff -urN mutt-1.6.1/README.ifdef mutt-1.6.1-neomutt/README.ifdef
 +
 diff -urN mutt-1.6.1/README.index-color mutt-1.6.1-neomutt/README.index-color
 --- mutt-1.6.1/README.index-color	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.index-color	2016-05-30 14:49:21.337683662 +0100
++++ mutt-1.6.1-neomutt/README.index-color	2016-06-12 18:43:00.670451770 +0100
 @@ -0,0 +1,82 @@
 +Index Color Patch
 +=================
@@ -25640,7 +25825,7 @@ diff -urN mutt-1.6.1/README.index-color mutt-1.6.1-neomutt/README.index-color
 +
 diff -urN mutt-1.6.1/README.initials mutt-1.6.1-neomutt/README.initials
 --- mutt-1.6.1/README.initials	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.initials	2016-05-30 14:49:21.337683662 +0100
++++ mutt-1.6.1-neomutt/README.initials	2016-06-12 18:43:00.670451770 +0100
 @@ -0,0 +1,48 @@
 +Initials Expando Patch
 +======================
@@ -25692,7 +25877,7 @@ diff -urN mutt-1.6.1/README.initials mutt-1.6.1-neomutt/README.initials
 +
 diff -urN mutt-1.6.1/README.keywords mutt-1.6.1-neomutt/README.keywords
 --- mutt-1.6.1/README.keywords	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.keywords	2016-05-30 14:49:21.337683662 +0100
++++ mutt-1.6.1-neomutt/README.keywords	2016-06-12 18:43:00.670451770 +0100
 @@ -0,0 +1,105 @@
 +Keywords Patch
 +==============
@@ -25801,7 +25986,7 @@ diff -urN mutt-1.6.1/README.keywords mutt-1.6.1-neomutt/README.keywords
 +
 diff -urN mutt-1.6.1/README.limit-current-thread mutt-1.6.1-neomutt/README.limit-current-thread
 --- mutt-1.6.1/README.limit-current-thread	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.limit-current-thread	2016-05-30 14:49:21.337683662 +0100
++++ mutt-1.6.1-neomutt/README.limit-current-thread	2016-06-12 18:43:00.670451770 +0100
 @@ -0,0 +1,45 @@
 +Limit-Current-Thread Patch
 +==========================
@@ -25850,7 +26035,7 @@ diff -urN mutt-1.6.1/README.limit-current-thread mutt-1.6.1-neomutt/README.limit
 +
 diff -urN mutt-1.6.1/README.md mutt-1.6.1-neomutt/README.md
 --- mutt-1.6.1/README.md	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.md	2016-05-30 14:49:21.338683678 +0100
++++ mutt-1.6.1-neomutt/README.md	2016-06-12 18:43:00.670451770 +0100
 @@ -0,0 +1,79 @@
 +# This is the NeoMutt Project
 +
@@ -25933,7 +26118,7 @@ diff -urN mutt-1.6.1/README.md mutt-1.6.1-neomutt/README.md
 +
 diff -urN mutt-1.6.1/README.neomutt mutt-1.6.1-neomutt/README.neomutt
 --- mutt-1.6.1/README.neomutt	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.neomutt	2016-05-30 14:49:21.338683678 +0100
++++ mutt-1.6.1-neomutt/README.neomutt	2016-06-12 18:43:00.670451770 +0100
 @@ -0,0 +1,79 @@
 +# This is the NeoMutt Project
 +
@@ -26016,7 +26201,7 @@ diff -urN mutt-1.6.1/README.neomutt mutt-1.6.1-neomutt/README.neomutt
 +
 diff -urN mutt-1.6.1/README.nested-if mutt-1.6.1-neomutt/README.nested-if
 --- mutt-1.6.1/README.nested-if	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.nested-if	2016-05-30 14:49:21.338683678 +0100
++++ mutt-1.6.1-neomutt/README.nested-if	2016-06-12 18:43:00.670451770 +0100
 @@ -0,0 +1,125 @@
 +Nested If Patch
 +===============
@@ -26145,7 +26330,7 @@ diff -urN mutt-1.6.1/README.nested-if mutt-1.6.1-neomutt/README.nested-if
 +
 diff -urN mutt-1.6.1/README.nntp mutt-1.6.1-neomutt/README.nntp
 --- mutt-1.6.1/README.nntp	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.nntp	2016-05-30 14:49:21.338683678 +0100
++++ mutt-1.6.1-neomutt/README.nntp	2016-06-12 18:43:00.671451785 +0100
 @@ -0,0 +1,122 @@
 +NNTP Patch
 +==========
@@ -26271,7 +26456,7 @@ diff -urN mutt-1.6.1/README.nntp mutt-1.6.1-neomutt/README.nntp
 +
 diff -urN mutt-1.6.1/README.notmuch mutt-1.6.1-neomutt/README.notmuch
 --- mutt-1.6.1/README.notmuch	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.notmuch	2016-05-30 14:49:21.338683678 +0100
++++ mutt-1.6.1-neomutt/README.notmuch	2016-06-12 18:43:00.671451785 +0100
 @@ -0,0 +1,402 @@
 +notmuch support for mutt
 +------------------------
@@ -26677,7 +26862,7 @@ diff -urN mutt-1.6.1/README.notmuch mutt-1.6.1-neomutt/README.notmuch
 +  http://notmuchmail.org/mutttips/
 diff -urN mutt-1.6.1/README.progress mutt-1.6.1-neomutt/README.progress
 --- mutt-1.6.1/README.progress	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.progress	2016-05-30 14:49:21.338683678 +0100
++++ mutt-1.6.1-neomutt/README.progress	2016-06-12 18:43:00.671451785 +0100
 @@ -0,0 +1,49 @@
 +Progress Bar Patch
 +==================
@@ -26730,7 +26915,7 @@ diff -urN mutt-1.6.1/README.progress mutt-1.6.1-neomutt/README.progress
 +
 diff -urN mutt-1.6.1/README.quasi-delete mutt-1.6.1-neomutt/README.quasi-delete
 --- mutt-1.6.1/README.quasi-delete	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.quasi-delete	2016-05-30 14:49:21.338683678 +0100
++++ mutt-1.6.1-neomutt/README.quasi-delete	2016-06-12 18:43:00.671451785 +0100
 @@ -0,0 +1,49 @@
 +Quasi-Delete Patch
 +==================
@@ -26783,7 +26968,7 @@ diff -urN mutt-1.6.1/README.quasi-delete mutt-1.6.1-neomutt/README.quasi-delete
 +
 diff -urN mutt-1.6.1/README.sidebar mutt-1.6.1-neomutt/README.sidebar
 --- mutt-1.6.1/README.sidebar	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.sidebar	2016-05-30 14:49:21.338683678 +0100
++++ mutt-1.6.1-neomutt/README.sidebar	2016-06-12 18:43:00.671451785 +0100
 @@ -0,0 +1,145 @@
 +Sidebar Patch
 +=============
@@ -26932,7 +27117,7 @@ diff -urN mutt-1.6.1/README.sidebar mutt-1.6.1-neomutt/README.sidebar
 +
 diff -urN mutt-1.6.1/README.skip-quoted mutt-1.6.1-neomutt/README.skip-quoted
 --- mutt-1.6.1/README.skip-quoted	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.skip-quoted	2016-05-30 14:49:21.338683678 +0100
++++ mutt-1.6.1-neomutt/README.skip-quoted	2016-06-12 18:43:00.671451785 +0100
 @@ -0,0 +1,47 @@
 +Skip-Quoted Patch
 +=================
@@ -26982,8 +27167,8 @@ diff -urN mutt-1.6.1/README.skip-quoted mutt-1.6.1-neomutt/README.skip-quoted
 +    * Richard Russon <rich@flatcap.org>
 +
 diff -urN mutt-1.6.1/README.SSL mutt-1.6.1-neomutt/README.SSL
---- mutt-1.6.1/README.SSL	2016-05-30 14:49:21.081679659 +0100
-+++ mutt-1.6.1-neomutt/README.SSL	2016-05-30 14:49:21.337683662 +0100
+--- mutt-1.6.1/README.SSL	2016-06-12 18:43:00.395447481 +0100
++++ mutt-1.6.1-neomutt/README.SSL	2016-06-12 18:43:00.669451754 +0100
 @@ -5,7 +5,7 @@
  -----------
  If you want to have SSL support in mutt, you need to install OpenSSL
@@ -27026,7 +27211,7 @@ diff -urN mutt-1.6.1/README.SSL mutt-1.6.1-neomutt/README.SSL
 +  Phil Pennock <mutt-dev@spodhuis.org>
 diff -urN mutt-1.6.1/README.status-color mutt-1.6.1-neomutt/README.status-color
 --- mutt-1.6.1/README.status-color	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.status-color	2016-05-30 14:49:21.339683693 +0100
++++ mutt-1.6.1-neomutt/README.status-color	2016-06-12 18:43:00.671451785 +0100
 @@ -0,0 +1,67 @@
 +Status Color Patch
 +==================
@@ -27097,7 +27282,7 @@ diff -urN mutt-1.6.1/README.status-color mutt-1.6.1-neomutt/README.status-color
 +
 diff -urN mutt-1.6.1/README.tls-sni mutt-1.6.1-neomutt/README.tls-sni
 --- mutt-1.6.1/README.tls-sni	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.tls-sni	2016-05-30 14:49:21.339683693 +0100
++++ mutt-1.6.1-neomutt/README.tls-sni	2016-06-12 18:43:00.672451801 +0100
 @@ -0,0 +1,51 @@
 +TLS-SNI Patch
 +=============
@@ -27152,7 +27337,7 @@ diff -urN mutt-1.6.1/README.tls-sni mutt-1.6.1-neomutt/README.tls-sni
 +
 diff -urN mutt-1.6.1/README.trash mutt-1.6.1-neomutt/README.trash
 --- mutt-1.6.1/README.trash	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/README.trash	2016-05-30 14:49:21.339683693 +0100
++++ mutt-1.6.1-neomutt/README.trash	2016-06-12 18:43:00.672451801 +0100
 @@ -0,0 +1,74 @@
 +Trash Folder Patch
 +==================
@@ -27229,8 +27414,8 @@ diff -urN mutt-1.6.1/README.trash mutt-1.6.1-neomutt/README.trash
 +    * Richard Russon <rich@flatcap.org>
 +
 diff -urN mutt-1.6.1/recvattach.c mutt-1.6.1-neomutt/recvattach.c
---- mutt-1.6.1/recvattach.c	2016-05-30 14:49:21.102679988 +0100
-+++ mutt-1.6.1-neomutt/recvattach.c	2016-05-30 14:49:21.401684662 +0100
+--- mutt-1.6.1/recvattach.c	2016-06-12 18:43:00.414447777 +0100
++++ mutt-1.6.1-neomutt/recvattach.c	2016-06-12 18:43:00.745452939 +0100
 @@ -1120,6 +1120,15 @@
  	}
  #endif
@@ -27283,8 +27468,8 @@ diff -urN mutt-1.6.1/recvattach.c mutt-1.6.1-neomutt/recvattach.c
        case OP_GROUP_REPLY:
        case OP_LIST_REPLY:
 diff -urN mutt-1.6.1/recvcmd.c mutt-1.6.1-neomutt/recvcmd.c
---- mutt-1.6.1/recvcmd.c	2016-05-30 14:49:21.103680003 +0100
-+++ mutt-1.6.1-neomutt/recvcmd.c	2016-05-30 14:49:21.401684662 +0100
+--- mutt-1.6.1/recvcmd.c	2016-06-12 18:43:00.414447777 +0100
++++ mutt-1.6.1-neomutt/recvcmd.c	2016-06-12 18:43:00.746452955 +0100
 @@ -401,7 +401,7 @@
  static void attach_forward_bodies (FILE * fp, HEADER * hdr,
  				   ATTACHPTR ** idx, short idxlen,
@@ -27409,22 +27594,9 @@ diff -urN mutt-1.6.1/recvcmd.c mutt-1.6.1-neomutt/recvcmd.c
    if (check_all_msg (idx, idxlen, cur, 0) == -1)
    {
      nattach = count_tagged (idx, idxlen);
-diff -urN mutt-1.6.1/rfc3676.c mutt-1.6.1-neomutt/rfc3676.c
---- mutt-1.6.1/rfc3676.c	2016-05-30 14:49:21.103680003 +0100
-+++ mutt-1.6.1-neomutt/rfc3676.c	2016-05-30 14:49:21.403684694 +0100
-@@ -149,6 +149,9 @@
- static int quote_width (STATE *s, int ql)
- {
-   int width = mutt_term_width (ReflowWrap);
-+#ifdef USE_SIDEBAR
-+  width -= SidebarWidth;
-+#endif
-   if (option(OPTTEXTFLOWED) && (s->flags & M_REPLYING))
-   {
-     /* When replying, force a wrap at FLOWED_MAX to comply with RFC3676
 diff -urN mutt-1.6.1/send.c mutt-1.6.1-neomutt/send.c
---- mutt-1.6.1/send.c	2016-05-30 14:49:21.103680003 +0100
-+++ mutt-1.6.1-neomutt/send.c	2016-05-30 14:49:21.404684709 +0100
+--- mutt-1.6.1/send.c	2016-06-12 18:43:00.414447777 +0100
++++ mutt-1.6.1-neomutt/send.c	2016-06-12 18:43:00.749453002 +0100
 @@ -44,10 +44,18 @@
  #include <sys/types.h>
  #include <utime.h>
@@ -27765,8 +27937,8 @@ diff -urN mutt-1.6.1/send.c mutt-1.6.1-neomutt/send.c
  }
  
 diff -urN mutt-1.6.1/sendlib.c mutt-1.6.1-neomutt/sendlib.c
---- mutt-1.6.1/sendlib.c	2016-05-30 14:49:21.104680019 +0100
-+++ mutt-1.6.1-neomutt/sendlib.c	2016-05-30 14:49:21.404684709 +0100
+--- mutt-1.6.1/sendlib.c	2016-06-12 18:43:00.415447793 +0100
++++ mutt-1.6.1-neomutt/sendlib.c	2016-06-12 18:43:00.749453002 +0100
 @@ -46,6 +46,10 @@
  #include <sys/wait.h>
  #include <fcntl.h>
@@ -28032,8 +28204,8 @@ diff -urN mutt-1.6.1/sendlib.c mutt-1.6.1-neomutt/sendlib.c
  
 diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 --- mutt-1.6.1/sidebar.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/sidebar.c	2016-05-30 14:49:21.405684725 +0100
-@@ -0,0 +1,1137 @@
++++ mutt-1.6.1-neomutt/sidebar.c	2016-06-12 18:43:00.749453002 +0100
+@@ -0,0 +1,1155 @@
 +/* Copyright (C) 2004 Justin Hibbits <jrh29@po.cwru.edu>
 + * Copyright (C) 2004 Thomer M. Gil <mutt@thomer.com>
 + * Copyright (C) 2015-2016 Richard Russon <rich@flatcap.org>
@@ -28083,9 +28255,10 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + *
 + * Used in the mutt_FormatString callback
 + */
-+struct sidebar_entry {
-+	char         box[SHORT_STRING];
-+	BUFFY       *buffy;
++struct sidebar_entry
++{
++  char         box[STRING];
++  BUFFY       *buffy;
 +};
 +
 +enum {
@@ -28131,27 +28304,24 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + *	BUFFY*: Success
 + *	NULL:   Failure
 + */
-+static BUFFY *
-+find_next_new (int wrap)
++static BUFFY *find_next_new (int wrap)
 +{
-+	BUFFY *b = HilBuffy;
-+	if (!b)
-+		return NULL;
++  BUFFY *b = HilBuffy;
++  if (!b)
++    return NULL;
 +
-+	do {
-+		b = b->next;
-+		if (!b && wrap) {
-+			b = get_incoming();
-+		}
-+		if (!b || (b == HilBuffy)) {
-+			break;
-+		}
-+		if (b->msg_unread > 0) {
-+			return b;
-+		}
-+	} while (b);
++  do
++  {
++    b = b->next;
++    if (!b && wrap)
++      b = get_incoming();
++    if (!b || (b == HilBuffy))
++      break;
++    if (b->msg_unread > 0)
++      return b;
++  } while (b);
 +
-+	return NULL;
++  return NULL;
 +}
 +
 +/**
@@ -28164,27 +28334,24 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + *	BUFFY*: Success
 + *	NULL:   Failure
 + */
-+static BUFFY *
-+find_prev_new (int wrap)
++static BUFFY *find_prev_new (int wrap)
 +{
-+	BUFFY *b = HilBuffy;
-+	if (!b)
-+		return NULL;
++  BUFFY *b = HilBuffy;
++  if (!b)
++    return NULL;
 +
-+	do {
-+		b = b->prev;
-+		if (!b && wrap) {
-+			b = Outgoing;
-+		}
-+		if (!b || (b == HilBuffy)) {
-+			break;
-+		}
-+		if (b->msg_unread > 0) {
-+			return b;
-+		}
-+	} while (b);
++  do
++  {
++    b = b->prev;
++    if (!b && wrap)
++      b = Outgoing;
++    if (!b || (b == HilBuffy))
++      break;
++    if (b->msg_unread > 0)
++      return b;
++  } while (b);
 +
-+	return NULL;
++  return NULL;
 +}
 +
 +/**
@@ -28207,108 +28374,115 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + *
 + * Returns: src (unchanged)
 + */
-+static const char *
-+cb_format_str (char *dest, size_t destlen, size_t col, char op, const char *src,
-+	const char *prefix, const char *ifstring, const char *elsestring,
-+	unsigned long data, format_flag flags)
++static const char *cb_format_str(char *dest, size_t destlen, size_t col, char op,
++                                 const char *src, const char *prefix, const char *ifstring,
++                                 const char *elsestring, unsigned long data, format_flag flags)
 +{
-+	struct sidebar_entry *sbe = (struct sidebar_entry *) data;
-+	unsigned int optional;
-+	char fmt[SHORT_STRING], buf[SHORT_STRING];
++  struct sidebar_entry *sbe = (struct sidebar_entry *) data;
++  unsigned int optional;
++  char fmt[STRING];
 +
-+	if (!sbe || !dest)
-+		return src;
++  if (!sbe || !dest)
++    return src;
 +
-+	dest[0] = 0;	/* Just in case there's nothing to do */
++  dest[0] = 0;	/* Just in case there's nothing to do */
 +
-+	BUFFY *b = sbe->buffy;
-+	if (!b)
-+		return src;
++  BUFFY *b = sbe->buffy;
++  if (!b)
++    return src;
 +
-+	int c = Context && (mutt_strcmp (Context->path, b->path) == 0);
++  int c = Context && (mutt_strcmp (Context->path, b->path) == 0);
 +
-+	optional = flags & M_FORMAT_OPTIONAL;
++  optional = flags & M_FORMAT_OPTIONAL;
 +
-+	switch (op) {
-+		case 'B':
-+			mutt_format_s (dest, destlen, prefix, sbe->box);
-+			break;
++  switch (op)
++  {
++    case 'B':
++      mutt_format_s (dest, destlen, prefix, sbe->box);
++      break;
 +
-+		case 'd':
-+			if (!optional) {
-+				snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
-+				snprintf (dest, destlen, fmt, c ? Context->deleted : 0);
-+			} else if ((c && Context->deleted == 0) || !c) {
-+				optional = 0;
-+			}
-+			break;
++    case 'd':
++      if (!optional)
++      {
++        snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
++        snprintf (dest, destlen, fmt, c ? Context->deleted : 0);
++      }
++      else if ((c && Context->deleted == 0) || !c)
++        optional = 0;
++      break;
 +
-+		case 'F':
-+			if (!optional) {
-+				snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
-+				snprintf (dest, destlen, fmt, b->msg_flagged);
-+			} else if (b->msg_flagged == 0) {
-+				optional = 0;
-+			}
-+			break;
++    case 'F':
++      if (!optional)
++      {
++        snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
++        snprintf (dest, destlen, fmt, b->msg_flagged);
++      }
++      else if (b->msg_flagged == 0)
++        optional = 0;
++      break;
 +
-+		case 'L':
-+			if (!optional) {
-+				snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
-+				snprintf (dest, destlen, fmt, c ? Context->vcount : b->msg_count);
-+			} else if ((c && Context->vcount == b->msg_count) || !c) {
-+				optional = 0;
-+			}
-+			break;
++    case 'L':
++      if (!optional)
++      {
++        snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
++        snprintf (dest, destlen, fmt, c ? Context->vcount : b->msg_count);
++      }
++      else if ((c && Context->vcount == b->msg_count) || !c)
++        optional = 0;
++      break;
 +
-+		case 'N':
-+			if (!optional) {
-+				snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
-+				snprintf (dest, destlen, fmt, b->msg_unread);
-+			} else if (b->msg_unread == 0) {
-+				optional = 0;
-+			}
-+			break;
++    case 'N':
++      if (!optional)
++      {
++        snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
++        snprintf (dest, destlen, fmt, b->msg_unread);
++      }
++      else if (b->msg_unread == 0)
++        optional = 0;
++      break;
 +
-+		case 'S':
-+			if (!optional) {
-+				snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
-+				snprintf (dest, destlen, fmt, b->msg_count);
-+			} else if (b->msg_count == 0) {
-+				optional = 0;
-+			}
-+			break;
++    case 'S':
++      if (!optional)
++      {
++        snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
++        snprintf (dest, destlen, fmt, b->msg_count);
++      }
++      else if (b->msg_count == 0)
++        optional = 0;
++      break;
 +
-+		case 't':
-+			if (!optional) {
-+				snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
-+				snprintf (dest, destlen, fmt, c ? Context->tagged : 0);
-+			} else if ((c && Context->tagged == 0) || !c) {
-+				optional = 0;
-+			}
-+			break;
++    case 't':
++      if (!optional)
++      {
++        snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
++        snprintf (dest, destlen, fmt, c ? Context->tagged : 0);
++      }
++      else if ((c && Context->tagged == 0) || !c)
++        optional = 0;
++      break;
 +
-+		case '!':
-+			if (b->msg_flagged == 0) {
-+				mutt_format_s (dest, destlen, prefix, "");
-+			} else if (b->msg_flagged == 1) {
-+				mutt_format_s (dest, destlen, prefix, "!");
-+			} else if (b->msg_flagged == 2) {
-+				mutt_format_s (dest, destlen, prefix, "!!");
-+			} else {
-+				snprintf (buf, sizeof (buf), "%d!", b->msg_flagged);
-+				mutt_format_s (dest, destlen, prefix, buf);
-+			}
-+			break;
-+	}
++    case '!':
++      if (b->msg_flagged == 0)
++        mutt_format_s (dest, destlen, prefix, "");
++      else if (b->msg_flagged == 1)
++        mutt_format_s (dest, destlen, prefix, "!");
++      else if (b->msg_flagged == 2)
++        mutt_format_s (dest, destlen, prefix, "!!");
++      else
++      {
++        snprintf (fmt, sizeof (fmt), "%d!", b->msg_flagged);
++        mutt_format_s (dest, destlen, prefix, fmt);
++      }
++      break;
++  }
 +
-+	if (optional)
-+		mutt_FormatString (dest, destlen, col, ifstring,   cb_format_str, (unsigned long) sbe, flags);
-+	else if (flags & M_FORMAT_OPTIONAL)
-+		mutt_FormatString (dest, destlen, col, elsestring, cb_format_str, (unsigned long) sbe, flags);
++  if (optional)
++    mutt_FormatString (dest, destlen, col, ifstring,   cb_format_str, (unsigned long) sbe, flags);
++  else if (flags & M_FORMAT_OPTIONAL)
++    mutt_FormatString (dest, destlen, col, elsestring, cb_format_str, (unsigned long) sbe, flags);
 +
-+	/* We return the format string, unchanged */
-+	return src;
++  /* We return the format string, unchanged */
++  return src;
 +}
 +
 +/**
@@ -28325,39 +28499,39 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + * mutt_FormatString to do the actual work. mutt_FormatString will callback to
 + * us using cb_format_str() for the sidebar specific formatting characters.
 + */
-+static void
-+make_sidebar_entry (char *buf, unsigned int buflen, int width, char *box,
-+	BUFFY *b)
++static void make_sidebar_entry (char *buf, unsigned int buflen, int width, char *box,
++                                BUFFY *b)
 +{
-+	struct sidebar_entry sbe;
++  struct sidebar_entry sbe;
 +
-+	if (!buf || !box || !b)
-+		return;
++  if (!buf || !box || !b)
++    return;
 +
-+	sbe.buffy = b;
-+	strncpy (sbe.box, box, sizeof (sbe.box) - 1);
++  sbe.buffy = b;
++  strfcpy (sbe.box, box, sizeof (sbe.box));
 +
-+	int box_len = strlen (box);
-+	sbe.box[box_len] = '\0';
++  /* Temporarily lie about the screen width */
++  int oc = COLS;
++  COLS = width + SidebarWidth;
++  mutt_FormatString (buf, buflen, 0, NONULL(SidebarFormat), cb_format_str, (unsigned long) &sbe, 0);
++  COLS = oc;
 +
-+	/* Temporarily lie about the screen width */
-+	int oc = COLS;
-+	COLS = width + SidebarWidth;
-+	mutt_FormatString (buf, buflen, 0, NONULL(SidebarFormat), cb_format_str, (unsigned long) &sbe, 0);
-+	COLS = oc;
-+
-+	/* Force string to be exactly the right width */
-+	int w = mutt_strwidth (buf);
-+	int s = strlen (buf);
-+	if (w < width) {
-+		/* Pad with spaces */
-+		memset (buf + s, ' ', width - w);
-+		buf[s + width - w] = 0;
-+	} else if (w > width) {
-+		/* Truncate to fit */
-+		int len = mutt_wstr_trunc (buf, buflen, width, NULL);
-+		buf[len] = 0;
-+	}
++  /* Force string to be exactly the right width */
++  int w = mutt_strwidth (buf);
++  int s = strlen (buf);
++  width = MIN(buflen, width);
++  if (w < width)
++  {
++    /* Pad with spaces */
++    memset (buf + s, ' ', width - w);
++    buf[s + width - w] = 0;
++  }
++  else if (w > width)
++  {
++    /* Truncate to fit */
++    int len = mutt_wstr_trunc (buf, buflen, width, NULL);
++    buf[len] = 0;
++  }
 +}
 +
 +/**
@@ -28372,44 +28546,45 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + *	 0: a and b are identical
 + *	 1: b precedes a
 + */
-+static int
-+cb_qsort_buffy (const void *a, const void *b)
++static int cb_qsort_buffy (const void *a, const void *b)
 +{
-+	const BUFFY *b1 = *(const BUFFY **) a;
-+	const BUFFY *b2 = *(const BUFFY **) b;
++  const BUFFY *b1 = *(const BUFFY **) a;
++  const BUFFY *b2 = *(const BUFFY **) b;
 +
-+	/* Special case -- move hidden BUFFYs to the end */
-+	if (b1->is_hidden != b2->is_hidden) {
-+		if (b1->is_hidden)
-+			return 1;
-+		else
-+			return -1;
-+	}
++  /* Special case -- move hidden BUFFYs to the end */
++  if (b1->is_hidden != b2->is_hidden)
++  {
++    if (b1->is_hidden)
++      return 1;
++    else
++      return -1;
++  }
 +
-+	int result = 0;
++  int result = 0;
 +
-+	switch ((SidebarSortMethod & SORT_MASK)) {
-+		case SORT_COUNT:
-+			result = (b2->msg_count - b1->msg_count);
-+			break;
-+		case SORT_COUNT_NEW:
-+			result = (b2->msg_unread - b1->msg_unread);
-+			break;
-+		case SORT_DESC:
-+			result = mutt_strcmp (b1->desc, b2->desc);
-+			break;
-+		case SORT_FLAGGED:
-+			result = (b2->msg_flagged - b1->msg_flagged);
-+			break;
-+		case SORT_PATH:
-+			result = mutt_strcasecmp (b1->path, b2->path);
-+			break;
-+	}
++  switch ((SidebarSortMethod & SORT_MASK))
++  {
++    case SORT_COUNT:
++      result = (b2->msg_count - b1->msg_count);
++      break;
++    case SORT_COUNT_NEW:
++      result = (b2->msg_unread - b1->msg_unread);
++      break;
++    case SORT_DESC:
++      result = mutt_strcmp (b1->desc, b2->desc);
++      break;
++    case SORT_FLAGGED:
++      result = (b2->msg_flagged - b1->msg_flagged);
++      break;
++    case SORT_PATH:
++      result = mutt_strcasecmp (b1->path, b2->path);
++      break;
++  }
 +
-+	if (SidebarSortMethod & SORT_REVERSE)
-+		result = -result;
++  if (SidebarSortMethod & SORT_REVERSE)
++    result = -result;
 +
-+	return result;
++  return result;
 +}
 +
 +/**
@@ -28425,22 +28600,23 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + * Returns:
 + *	A valid alternative BUFFY, or NULL
 + */
-+static BUFFY *
-+buffy_going (const BUFFY *b)
++static BUFFY *buffy_going (const BUFFY *b)
 +{
-+	if (!b)
-+		return NULL;
++  if (!b)
++    return NULL;
 +
-+	if (b->prev) {
-+		b->prev->next = NULL;
-+	}
++  if (b->prev)
++  {
++    b->prev->next = NULL;
++  }
 +
-+	if (b->next) {
-+		b->next->prev = NULL;
-+		return b->next;
-+	}
++  if (b->next)
++  {
++    b->next->prev = NULL;
++    return b->next;
++  }
 +
-+	return b->prev;
++  return b->prev;
 +}
 +
 +/**
@@ -28456,41 +28632,38 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + *	has flagged messages
 + *	is whitelisted
 + */
-+static void
-+update_buffy_visibility (BUFFY **arr, int arr_len)
++static void update_buffy_visibility (BUFFY **arr, int arr_len)
 +{
-+	if (!arr)
-+		return;
++  if (!arr)
++    return;
 +
-+	short new_only = option (OPTSIDEBARNEWMAILONLY);
++  short new_only = option (OPTSIDEBARNEWMAILONLY);
 +
-+	BUFFY *b;
-+	int i;
-+	for (i = 0; i < arr_len; i++) {
-+		b = arr[i];
++  BUFFY *b;
++  int i;
++  for (i = 0; i < arr_len; i++)
++  {
++    b = arr[i];
 +
-+		b->is_hidden = 0;
++    b->is_hidden = 0;
 +
-+		if (!new_only)
-+			continue;
++    if (!new_only)
++      continue;
 +
-+		if ((b == OpnBuffy) || (b->msg_unread  > 0) ||
-+		    (b == HilBuffy) || (b->msg_flagged > 0)) {
-+			continue;
-+		}
++    if ((b == OpnBuffy) || (b->msg_unread  > 0) ||
++        (b == HilBuffy) || (b->msg_flagged > 0))
++      continue;
 +
-+		if (Context && (strcmp (b->path, Context->path) == 0)) {
-+			/* Spool directory */
-+			continue;
-+		}
++    if (Context && (strcmp (b->path, Context->path) == 0))
++      /* Spool directory */
++      continue;
 +
-+		if (mutt_find_list (SidebarWhitelist, b->path)) {
-+			/* Explicitly asked to be visible */
-+			continue;
-+		}
++    if (mutt_find_list (SidebarWhitelist, b->path))
++      /* Explicitly asked to be visible */
++      continue;
 +
-+		b->is_hidden = 1;
-+	}
++    b->is_hidden = 1;
++  }
 +}
 +
 +/**
@@ -28504,32 +28677,28 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + *
 + * Once sorted, the prev/next links will be reconstructed.
 + */
-+static void
-+sort_buffy_array (BUFFY **arr, int arr_len)
++static void sort_buffy_array (BUFFY **arr, int arr_len)
 +{
-+	if (!arr)
-+		return;
++  if (!arr)
++    return;
 +
-+	/* These are the only sort methods we understand */
-+	short ssm = (SidebarSortMethod & SORT_MASK);
-+	if ((ssm == SORT_COUNT)     ||
-+	    (ssm == SORT_COUNT_NEW) ||
-+	    (ssm == SORT_DESC)      ||
-+	    (ssm == SORT_FLAGGED)   ||
-+	    (ssm == SORT_PATH)) {
-+		qsort (arr, arr_len, sizeof (*arr), cb_qsort_buffy);
-+	}
++  /* These are the only sort methods we understand */
++  short ssm = (SidebarSortMethod & SORT_MASK);
++  if ((ssm == SORT_COUNT)     ||
++      (ssm == SORT_COUNT_NEW) ||
++      (ssm == SORT_DESC)      ||
++      (ssm == SORT_FLAGGED)   ||
++      (ssm == SORT_PATH))
++    qsort (arr, arr_len, sizeof (*arr), cb_qsort_buffy);
 +
-+	int i;
-+	for (i = 0; i < (arr_len - 1); i++) {
-+		arr[i]->next = arr[i + 1];
-+	}
-+	arr[arr_len - 1]->next = NULL;
++  int i;
++  for (i = 0; i < (arr_len - 1); i++)
++    arr[i]->next = arr[i + 1];
++  arr[arr_len - 1]->next = NULL;
 +
-+	for (i = 1; i < arr_len; i++) {
-+		arr[i]->prev = arr[i - 1];
-+	}
-+	arr[0]->prev = NULL;
++  for (i = 1; i < arr_len; i++)
++    arr[i]->prev = arr[i - 1];
++  arr[0]->prev = NULL;
 +}
 +
 +/**
@@ -28543,81 +28712,80 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + * can change outside of the sidebar that we don't hear about.
 + *
 + * Returns:
-+ *	0:  No, don't draw the sidebar
++ *	0: No, don't draw the sidebar
 + *	1: Yes, draw the sidebar
 + */
-+static int
-+prepare_sidebar (int page_size)
++static int prepare_sidebar (int page_size)
 +{
-+	BUFFY *b = get_incoming();
-+	if (!b)
-+		return 0;
++  BUFFY *b = get_incoming();
++  if (!b)
++    return 0;
 +
-+	int count = 0;
-+	for (; b; b = b->next)
-+		count++;
++  int count = 0;
++  for (; b; b = b->next)
++    count++;
 +
-+	BUFFY **arr = safe_malloc (count * sizeof (*arr));
-+	if (!arr)
-+		return 0;
++  BUFFY **arr = safe_malloc (count * sizeof (*arr));
 +
-+	int i = 0;
-+	for (b = get_incoming(); b; b = b->next, i++) {
-+		arr[i] = b;
-+	}
++  int i = 0;
++  for (b = get_incoming(); b; b = b->next, i++)
++    arr[i] = b;
 +
-+	update_buffy_visibility (arr, count);
-+	sort_buffy_array        (arr, count);
++  update_buffy_visibility (arr, count);
++  sort_buffy_array        (arr, count);
 +
-+	if (sidebar_source == SB_SRC_INCOMING)
-+		Incoming = arr[0];
++  if (sidebar_source == SB_SRC_INCOMING)
++    Incoming = arr[0];
 +
-+	int top_index =  0;
-+	int opn_index = -1;
-+	int hil_index = -1;
-+	int bot_index = -1;
++  int top_index =  0;
++  int opn_index = -1;
++  int hil_index = -1;
++  int bot_index = -1;
 +
-+	for (i = 0; i < count; i++) {
-+		if (OpnBuffy == arr[i])
-+			opn_index = i;
-+		if (HilBuffy == arr[i])
-+			hil_index = i;
-+	}
++  for (i = 0; i < count; i++)
++  {
++    if (OpnBuffy == arr[i])
++      opn_index = i;
++    if (HilBuffy == arr[i])
++      hil_index = i;
++  }
 +
-+	if (!HilBuffy || (SidebarSortMethod != PreviousSort)) {
-+		if (OpnBuffy) {
-+			HilBuffy  = OpnBuffy;
-+			hil_index = opn_index;
-+		} else {
-+			HilBuffy  = arr[0];
-+			hil_index = 0;
-+		}
-+	}
-+	if (TopBuffy) {
-+		top_index = (hil_index / page_size) * page_size;
-+	} else {
-+		top_index = hil_index;
-+	}
-+	TopBuffy = arr[top_index];
++  if (!HilBuffy || (SidebarSortMethod != PreviousSort))
++  {
++    if (OpnBuffy)
++    {
++      HilBuffy  = OpnBuffy;
++      hil_index = opn_index;
++    }
++    else
++    {
++      HilBuffy  = arr[0];
++      hil_index = 0;
++    }
++  }
++  if (TopBuffy)
++    top_index = (hil_index / page_size) * page_size;
++  else
++    top_index = hil_index;
++  TopBuffy = arr[top_index];
 +
-+	bot_index = top_index + page_size - 1;
-+	if (bot_index > (count - 1)) {
-+		bot_index = count - 1;
-+	}
-+	BotBuffy  = arr[bot_index];
++  bot_index = top_index + page_size - 1;
++  if (bot_index > (count - 1))
++    bot_index = count - 1;
++  BotBuffy  = arr[bot_index];
 +
-+	Outgoing = arr[count - 1];
++  Outgoing = arr[count - 1];
 +
-+	PreviousSort = SidebarSortMethod;
-+	free (arr);
-+	return 1;
++  PreviousSort = SidebarSortMethod;
++  FREE (&arr);
++  return 1;
 +}
 +
 +/**
 + * visible - Should we display the sidebar?
 + *
 + * After validating the config options "sidebar_visible" and "sidebar_width",
-+ * determine whether we should should display the sidebar.
++ * determine whether we should display the sidebar.
 + *
 + * When not visible, set the global SidebarWidth to 0.
 + *
@@ -28627,36 +28795,49 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 +static short
 +visible (void)
 +{
-+	short new_visible = option (OPTSIDEBAR);
-+	short new_width   = SidebarWidth;
++  short new_visible = option (OPTSIDEBAR);
++  short new_width   = SidebarWidth;
 +
-+	if (OldWidth != new_width) {
-+		if (new_width > 0) {
-+			OldWidth = new_width;
-+		}
-+	}
++  if (OldWidth != new_width)
++  {
++    if (new_width > 0)
++    {
++      OldWidth = new_width;
++    }
++  }
 +
-+	if (OldVisible != new_visible) {
-+		if (new_visible) {
-+			set_option (OPTSIDEBAR);
-+		} else {
-+			unset_option (OPTSIDEBAR);
-+		}
-+		OldVisible = new_visible;
-+	} else if (new_width == 0) {
-+		unset_option (OPTSIDEBAR);
-+		OldVisible = 0;
-+	}
++  if (OldVisible != new_visible)
++  {
++    if (new_visible)
++    {
++      set_option (OPTSIDEBAR);
++    }
++    else
++    {
++      unset_option (OPTSIDEBAR);
++    }
++    OldVisible = new_visible;
++  }
++  else if (new_width == 0)
++  {
++    unset_option (OPTSIDEBAR);
++    OldVisible = 0;
++  }
 +
-+	if (!option (OPTSIDEBAR)) {
-+		SidebarWidth = 0;
-+	} else if (new_width == 0) {
-+		SidebarWidth = OldWidth;
-+	} else {
-+		SidebarWidth = new_width;
-+	}
++  if (!option (OPTSIDEBAR))
++  {
++    SidebarWidth = 0;
++  }
++  else if (new_width == 0)
++  {
++    SidebarWidth = OldWidth;
++  }
++  else
++  {
++    SidebarWidth = new_width;
++  }
 +
-+	return new_visible;
++  return new_visible;
 +}
 +
 +/**
@@ -28674,53 +28855,53 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + *	0:  Error: 0 width character
 + *	n:  Success: character occupies n screen columns
 + */
-+static int
-+draw_divider (int first_row, int num_rows)
++static int draw_divider (int first_row, int num_rows)
 +{
-+	/* Calculate the width of the delimiter in screen cells */
-+	int delim_len = mutt_strwidth (SidebarDividerChar);
++  /* Calculate the width of the delimiter in screen cells */
++  int delim_len = mutt_strwidth (SidebarDividerChar);
 +
-+	if (delim_len < 1)
-+		return delim_len;
++  if (delim_len < 1)
++    return delim_len;
 +
-+	if ((SidebarWidth + delim_len) > (COLS + 1))
-+		return 0;
++  if ((SidebarWidth + delim_len) > (COLS + 1))
++    return 0;
 +
-+	if (delim_len > SidebarWidth)
-+		return -1;
++  if (delim_len > SidebarWidth)
++    return -1;
 +
-+	SETCOLOR(MT_COLOR_DIVIDER);
++  SETCOLOR(MT_COLOR_DIVIDER);
 +
-+	int i;
-+	for (i = 0; i < num_rows; i++) {
-+		move (first_row + i, SidebarWidth - delim_len);
-+		addstr (NONULL(SidebarDividerChar));
-+	}
++  int i;
++  for (i = 0; i < num_rows; i++)
++  {
++    move (first_row + i, SidebarWidth - delim_len);
++    addstr (NONULL(SidebarDividerChar));
++  }
 +
-+	return delim_len;
++  return delim_len;
 +}
 +
 +/**
-+ * fill_empty_space - Wipe the remaining sidebar space
++ * fill_empty_space - Wipe the remaining Sidebar space
 + * @first_row:  Screen line to start (0-based)
 + * @num_rows:   Number of rows to fill
-+ * @width:      Width of the sidebar (minus the divider)
++ * @width:      Width of the Sidebar (minus the divider)
 + *
 + * Write spaces over the area the sidebar isn't using.
 + */
-+static void
-+fill_empty_space (int first_row, int num_rows, int width)
++static void fill_empty_space (int first_row, int num_rows, int width)
 +{
-+	/* Fill the remaining rows with blank space */
-+	SETCOLOR(MT_COLOR_NORMAL);
++  /* Fill the remaining rows with blank space */
++  SETCOLOR(MT_COLOR_NORMAL);
 +
-+	int r;
-+	for (r = 0; r < num_rows; r++) {
-+		int i = 0;
-+		move (first_row + r, 0);
-+		for (; i < width; i++)
-+			addch (' ');
-+	}
++  int r;
++  for (r = 0; r < num_rows; r++)
++  {
++    int i = 0;
++    move (first_row + r, 0);
++    for (; i < width; i++)
++      addch (' ');
++  }
 +}
 +
 +/**
@@ -28744,175 +28925,186 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + * "sidebar_indent_string" and sorted: "sidebar_sort_method".  Finally, they're
 + * trimmed to fit the available space.
 + */
-+static void
-+draw_sidebar (int first_row, int num_rows, int div_width)
++static void draw_sidebar (int first_row, int num_rows, int div_width)
 +{
-+	BUFFY *b = TopBuffy;
-+	if (!b)
-+		return;
++  BUFFY *b = TopBuffy;
++  if (!b)
++    return;
 +
-+	int w = MIN(COLS, (SidebarWidth - div_width));
-+	int row = 0;
-+	for (b = TopBuffy; b && (row < num_rows); b = b->next) {
-+		if (b->is_hidden) {
-+			continue;
-+		}
++  int w = MIN(COLS, (SidebarWidth - div_width));
++  int row = 0;
++  for (b = TopBuffy; b && (row < num_rows); b = b->next)
++  {
++    if (b->is_hidden)
++      continue;
 +
-+		if (b == OpnBuffy) {
-+			if ((ColorDefs[MT_COLOR_SB_INDICATOR] != 0)) {
-+				SETCOLOR(MT_COLOR_SB_INDICATOR);
-+			} else {
-+				SETCOLOR(MT_COLOR_INDICATOR);
-+			}
-+		} else if (b == HilBuffy) {
-+			SETCOLOR(MT_COLOR_HIGHLIGHT);
-+		} else if ((ColorDefs[MT_COLOR_SB_SPOOLFILE] != 0) &&
-+			(mutt_strcmp (b->path, Spoolfile) == 0)) {
-+			SETCOLOR(MT_COLOR_SB_SPOOLFILE);
-+		} else if (b->msg_unread > 0) {
-+			SETCOLOR(MT_COLOR_NEW);
-+		} else if (b->msg_flagged > 0) {
-+			SETCOLOR(MT_COLOR_FLAGGED);
-+		} else {
-+			SETCOLOR(MT_COLOR_NORMAL);
-+		}
++    if (b == OpnBuffy)
++    {
++      if ((ColorDefs[MT_COLOR_SB_INDICATOR] != 0))
++        SETCOLOR(MT_COLOR_SB_INDICATOR);
++      else
++        SETCOLOR(MT_COLOR_INDICATOR);
++    }
++    else if (b == HilBuffy)
++      SETCOLOR(MT_COLOR_HIGHLIGHT);
++    else if ((ColorDefs[MT_COLOR_SB_SPOOLFILE] != 0) &&
++               (mutt_strcmp (b->path, Spoolfile) == 0))
++      SETCOLOR(MT_COLOR_SB_SPOOLFILE);
++    else if (b->msg_unread > 0)
++      SETCOLOR(MT_COLOR_NEW);
++    else if (b->msg_flagged > 0)
++      SETCOLOR(MT_COLOR_FLAGGED);
++    else
++      SETCOLOR(MT_COLOR_NORMAL);
 +
-+		move (first_row + row, 0);
-+		if (Context && Context->path &&
-+			(!strcmp (b->path, Context->path)||
-+			 !strcmp (b->realpath, Context->path))) {
-+			b->msg_unread  = Context->unread;
-+			b->msg_count   = Context->msgcount;
-+			b->msg_flagged = Context->flagged;
-+		}
++    move (first_row + row, 0);
++    if (Context && Context->path &&
++        (!strcmp (b->path, Context->path)||
++         !strcmp (b->realpath, Context->path)))
++    {
++      b->msg_unread  = Context->unread;
++      b->msg_count   = Context->msgcount;
++      b->msg_flagged = Context->flagged;
++    }
 +
-+		/* compute length of Maildir without trailing separator */
-+		size_t maildirlen = strlen (Maildir);
-+		if (SidebarDelimChars && strchr (SidebarDelimChars, Maildir[maildirlen - 1])) {
-+			maildirlen--;
-+		}
++    /* compute length of Maildir without trailing separator */
++    size_t maildirlen = strlen (Maildir);
++    if (SidebarDelimChars && strchr (SidebarDelimChars, Maildir[maildirlen - 1]))
++      maildirlen--;
 +
-+		/* check whether Maildir is a prefix of the current folder's path */
-+		short maildir_is_prefix = 0;
-+		if ((strlen (b->path) > maildirlen) && (strncmp (Maildir, b->path, maildirlen) == 0)) {
-+			maildir_is_prefix = 1;
-+		}
-+		/* calculate depth of current folder and generate its display name with indented spaces */
-+		int sidebar_folder_depth = 0;
-+		char *sidebar_folder_name;
-+		int i;
-+		if (option (OPTSIDEBARSHORTPATH)) {
-+			/* disregard a trailing separator, so strlen() - 2 */
-+			sidebar_folder_name = b->path;
-+			for (i = strlen (sidebar_folder_name) - 2; i >= 0; i--) {
-+				if (SidebarDelimChars &&
-+						strchr (SidebarDelimChars, sidebar_folder_name[i])) {
-+					sidebar_folder_name += (i + 1);
-+					break;
-+				}
-+			}
-+		} else {
-+			sidebar_folder_name = b->path + maildir_is_prefix * (maildirlen + 1);
-+		}
-+		if (maildir_is_prefix && option (OPTSIDEBARFOLDERINDENT)) {
-+			const char *tmp_folder_name;
-+			int lastsep = 0;
-+			tmp_folder_name = b->path + maildirlen + 1;
-+			int tmplen = (int) strlen (tmp_folder_name) - 1;
-+			for (i = 0; i < tmplen; i++) {
-+				if (SidebarDelimChars && strchr (SidebarDelimChars, tmp_folder_name[i])) {
-+					sidebar_folder_depth++;
-+					lastsep = i + 1;
-+				}
-+			}
-+			if (sidebar_folder_depth > 0) {
-+				if (option (OPTSIDEBARSHORTPATH)) {
-+					tmp_folder_name += lastsep;  /* basename */
-+				}
-+				sidebar_folder_name = malloc (strlen (tmp_folder_name) + sidebar_folder_depth*strlen (NONULL(SidebarIndentString)) + 1);
-+				sidebar_folder_name[0]=0;
-+				for (i=0; i < sidebar_folder_depth; i++)
-+					strncat (sidebar_folder_name, NONULL(SidebarIndentString), strlen (NONULL(SidebarIndentString)));
-+				strncat (sidebar_folder_name, tmp_folder_name, strlen (tmp_folder_name));
-+			}
-+		}
++    /* check whether Maildir is a prefix of the current folder's path */
++    short maildir_is_prefix = 0;
++    if ((strlen (b->path) > maildirlen) && (strncmp (Maildir, b->path, maildirlen) == 0))
++      maildir_is_prefix = 1;
++
++    /* calculate depth of current folder and generate its display name with indented spaces */
++    int sidebar_folder_depth = 0;
++    char *sidebar_folder_name;
++    int i;
++    if (option (OPTSIDEBARSHORTPATH))
++    {
++      /* disregard a trailing separator, so strlen() - 2 */
++      sidebar_folder_name = b->path;
++      for (i = strlen (sidebar_folder_name) - 2; i >= 0; i--)
++      {
++        if (SidebarDelimChars &&
++            strchr (SidebarDelimChars, sidebar_folder_name[i]))
++        {
++          sidebar_folder_name += (i + 1);
++          break;
++        }
++      }
++    }
++    else
++      sidebar_folder_name = b->path + maildir_is_prefix * (maildirlen + 1);
++
++    if (maildir_is_prefix && option (OPTSIDEBARFOLDERINDENT))
++    {
++      const char *tmp_folder_name;
++      int lastsep = 0;
++      tmp_folder_name = b->path + maildirlen + 1;
++      int tmplen = (int) strlen (tmp_folder_name) - 1;
++      for (i = 0; i < tmplen; i++)
++      {
++        if (SidebarDelimChars && strchr (SidebarDelimChars, tmp_folder_name[i]))
++        {
++          sidebar_folder_depth++;
++          lastsep = i + 1;
++        }
++      }
++      if (sidebar_folder_depth > 0)
++      {
++        if (option (OPTSIDEBARSHORTPATH))
++          tmp_folder_name += lastsep;  /* basename */
++        sidebar_folder_name = malloc (strlen (tmp_folder_name) + sidebar_folder_depth*strlen (NONULL(SidebarIndentString)) + 1);
++        sidebar_folder_name[0]=0;
++        for (i=0; i < sidebar_folder_depth; i++)
++          strncat (sidebar_folder_name, NONULL(SidebarIndentString), strlen (NONULL(SidebarIndentString)));
++        strncat (sidebar_folder_name, tmp_folder_name, strlen (tmp_folder_name));
++      }
++    }
 +#ifdef USE_NOTMUCH
-+		else if (b->magic == M_NOTMUCH) {
-+			sidebar_folder_name = b->desc;
-+		}
++    else if (b->magic == M_NOTMUCH)
++    {
++      sidebar_folder_name = b->desc;
++    }
 +#endif
-+		char str[SHORT_STRING];
-+		make_sidebar_entry (str, sizeof (str), w, sidebar_folder_name, b);
-+		printw ("%s", str);
-+		if (sidebar_folder_depth > 0)
-+			free (sidebar_folder_name);
-+		row++;
-+	}
++    char str[STRING];
++    make_sidebar_entry (str, sizeof (str), w, sidebar_folder_name, b);
++    printw ("%s", str);
++    if (sidebar_folder_depth > 0)
++      FREE (&sidebar_folder_name);
++    row++;
++  }
 +
-+	fill_empty_space (first_row + row, num_rows - row, w);
++  fill_empty_space (first_row + row, num_rows - row, w);
 +}
 +
 +
 +/**
-+ * sb_init - Set some default values for the sidebar.
++ * mutt_sb_init - Set some default values for the sidebar.
 + */
 +void
-+sb_init (void)
++mutt_sb_init (void)
 +{
-+	OldVisible = option (OPTSIDEBAR);
-+	if (SidebarWidth > 0) {
-+		OldWidth = SidebarWidth;
-+	} else {
-+		OldWidth = 20;
-+		if (OldVisible) {
-+			SidebarWidth = OldWidth;
-+		}
-+	}
++  OldVisible = option (OPTSIDEBAR);
++  if (SidebarWidth > 0)
++  {
++    OldWidth = SidebarWidth;
++  }
++  else
++  {
++    OldWidth = 20;
++    if (OldVisible)
++    {
++      SidebarWidth = OldWidth;
++    }
++  }
 +}
 +
 +/**
-+ * sb_draw - Completely redraw the sidebar
++ * mutt_sb_draw - Completely redraw the sidebar
 + *
 + * Completely refresh the sidebar region.  First draw the divider; then, for
 + * each BUFFY, call make_sidebar_entry; finally blank out any remaining space.
 + */
-+void
-+sb_draw (void)
++void mutt_sb_draw (void)
 +{
-+	if (!visible())
-+		return;
++  if (!visible())
++    return;
 +
-+	/* XXX - if transitioning from invisible to visible */
-+	/* if (OldVisible == 0) */
-+	/* 	mutt_buffy_check (1); we probably have bad or no numbers */
++  /* XXX - if transitioning from invisible to visible */
++  /* if (OldVisible == 0) */
++  /* 	mutt_buffy_check (1); we probably have bad or no numbers */
 +
-+	int first_row = 0;
-+	int num_rows  = LINES - 2;
++  int first_row = 0;
++  int num_rows  = LINES - 2;
 +
-+	if (option (OPTHELP) || option (OPTSTATUSONTOP))
-+		first_row++;
++  if (option (OPTHELP) || option (OPTSTATUSONTOP))
++    first_row++;
 +
-+	if (option (OPTHELP))
-+		num_rows--;
++  if (option (OPTHELP))
++    num_rows--;
 +
-+	int div_width = draw_divider (first_row, num_rows);
-+	if (div_width < 0)
-+		return;
++  int div_width = draw_divider (first_row, num_rows);
++  if (div_width < 0)
++    return;
 +
-+	if (!get_incoming()) {
-+		int w = MIN(COLS, (SidebarWidth - div_width));
-+		fill_empty_space (first_row, num_rows, w);
-+		return;
-+	}
++  if (!get_incoming())
++  {
++    int w = MIN(COLS, (SidebarWidth - div_width));
++    fill_empty_space (first_row, num_rows, w);
++    return;
++  }
 +
-+	if (!prepare_sidebar (num_rows))
-+		return;
++  if (!prepare_sidebar (num_rows))
++    return;
 +
-+	draw_sidebar (first_row, num_rows, div_width);
++  draw_sidebar (first_row, num_rows, div_width);
 +}
 +
 +/**
-+ * sb_should_refresh - Check if the sidebar is due to be refreshed
++ * mutt_sb_should_refresh - Check if the sidebar is due to be refreshed
 + *
 + * The "sidebar_refresh_time" config option allows the user to limit the frequency
 + * with which the sidebar is refreshed.
@@ -28921,22 +29113,21 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + *	1  Yes, refresh is due
 + *	0  No,  refresh happened recently
 + */
-+int
-+sb_should_refresh (void)
++int mutt_sb_should_refresh (void)
 +{
-+	if (!option (OPTSIDEBAR))
-+		return 0;
++  if (!option (OPTSIDEBAR))
++    return 0;
 +
-+	if (SidebarRefreshTime == 0)
-+		return 0;
++  if (SidebarRefreshTime == 0)
++    return 0;
 +
-+	time_t diff = (time (NULL) - LastRefresh);
++  time_t diff = (time (NULL) - LastRefresh);
 +
-+	return (diff >= SidebarRefreshTime);
++  return (diff >= SidebarRefreshTime);
 +}
 +
 +/**
-+ * sb_change_mailbox - Change the selected mailbox
++ * mutt_sb_change_mailbox - Change the selected mailbox
 + * @op: Operation code
 + *
 + * Change the selected mailbox, e.g. "Next mailbox", "Previous Mailbox
@@ -28950,156 +29141,152 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + * OP_SIDEBAR_PAGE_DOWN, OP_SIDEBAR_PAGE_UP, OP_SIDEBAR_PREV,
 + * OP_SIDEBAR_PREV_NEW.
 + */
-+void
-+sb_change_mailbox (int op)
++void mutt_sb_change_mailbox (int op)
 +{
-+	BUFFY *b;
-+	if (!HilBuffy)	/* It'll get reset on the next draw */
-+		return;
++  BUFFY *b;
++  if (!HilBuffy)	/* It'll get reset on the next draw */
++    return;
 +
-+	switch (op) {
-+		case OP_SIDEBAR_NEXT:
-+			if (!HilBuffy->next)
-+				return;
-+			if (HilBuffy->next->is_hidden)
-+				return;
-+			HilBuffy = HilBuffy->next;
-+			break;
-+		case OP_SIDEBAR_NEXT_NEW:
-+			b = find_next_new (option (OPTSIDEBARNEXTNEWWRAP));
-+			if (!b) {
-+				return;
-+			} else {
-+				HilBuffy = b;
-+			}
-+			break;
-+		case OP_SIDEBAR_PAGE_DOWN:
-+			HilBuffy = BotBuffy;
-+			if (HilBuffy->next) {
-+				HilBuffy = HilBuffy->next;
-+			}
-+			break;
-+		case OP_SIDEBAR_PAGE_UP:
-+			HilBuffy = TopBuffy;
-+			if (HilBuffy != get_incoming()) {
-+				HilBuffy = HilBuffy->prev;
-+			}
-+			break;
-+		case OP_SIDEBAR_PREV:
-+			if (!HilBuffy->prev)
-+				return;
-+			if (HilBuffy->prev->is_hidden)	/* Can't happen, we've sorted the hidden to the end */
-+				return;
-+			HilBuffy = HilBuffy->prev;
-+			break;
-+		case OP_SIDEBAR_PREV_NEW:
-+			b = find_prev_new (option (OPTSIDEBARNEXTNEWWRAP));
-+			if (!b) {
-+				return;
-+			} else {
-+				HilBuffy = b;
-+			}
-+			break;
-+		default:
-+			return;
-+	}
++  switch (op)
++  {
++    case OP_SIDEBAR_NEXT:
++      if (!HilBuffy->next)
++        return;
++      if (HilBuffy->next->is_hidden)
++        return;
++      HilBuffy = HilBuffy->next;
++      break;
++    case OP_SIDEBAR_NEXT_NEW:
++      b = find_next_new (option (OPTSIDEBARNEXTNEWWRAP));
++      if (!b)
++        return;
++      else
++        HilBuffy = b;
++      break;
++    case OP_SIDEBAR_PAGE_DOWN:
++      HilBuffy = BotBuffy;
++      if (HilBuffy->next)
++        HilBuffy = HilBuffy->next;
++      break;
++    case OP_SIDEBAR_PAGE_UP:
++      HilBuffy = TopBuffy;
++      if (HilBuffy != get_incoming())
++        HilBuffy = HilBuffy->prev;
++      break;
++    case OP_SIDEBAR_PREV:
++      if (!HilBuffy->prev)
++        return;
++      if (HilBuffy->prev->is_hidden)	/* Can't happen, we've sorted the hidden to the end */
++        return;
++      HilBuffy = HilBuffy->prev;
++      break;
++    case OP_SIDEBAR_PREV_NEW:
++      b = find_prev_new (option (OPTSIDEBARNEXTNEWWRAP));
++      if (!b)
++        return;
++      else
++        HilBuffy = b;
++      break;
++    default:
++      return;
++  }
 +
-+	/* We can change folder even if the sidebar is hidden */
-+	if (option (OPTSIDEBAR))
-+		sb_draw();
++  /* We can change folder even if the sidebar is hidden */
++  if (option (OPTSIDEBAR))
++    mutt_sb_draw();
 +}
 +
 +/**
-+ * sb_set_buffystats - Update the BUFFY's message counts from the CONTEXT
++ * mutt_sb_set_buffystats - Update the BUFFY's message counts from the CONTEXT
 + * @ctx:  A mailbox CONTEXT
 + *
 + * Given a mailbox CONTEXT, find a matching mailbox BUFFY and copy the message
 + * counts into it.
 + */
-+void
-+sb_set_buffystats (const CONTEXT *ctx)
++void mutt_sb_set_buffystats (const CONTEXT *ctx)
 +{
-+	/* Even if the sidebar's hidden,
-+	 * we should take note of the new data. */
-+	BUFFY *b = get_incoming();
-+	if (!ctx || !b)
-+		return;
++  /* Even if the sidebar's hidden,
++   * we should take note of the new data. */
++  BUFFY *b = get_incoming();
++  if (!ctx || !b)
++    return;
 +
-+	for (; b; b = b->next) {
-+		if (!strcmp (b->path,     ctx->path) ||
-+		    !strcmp (b->realpath, ctx->path)) {
-+			b->msg_unread  = ctx->unread;
-+			b->msg_count   = ctx->msgcount;
-+			b->msg_flagged = ctx->flagged;
-+			break;
-+		}
-+	}
++  for (; b; b = b->next)
++  {
++    if (!strcmp (b->path,     ctx->path) ||
++        !strcmp (b->realpath, ctx->path))
++    {
++      b->msg_unread  = ctx->unread;
++      b->msg_count   = ctx->msgcount;
++      b->msg_flagged = ctx->flagged;
++      break;
++    }
++  }
 +}
 +
 +/**
-+ * sb_get_highlight - Get the BUFFY that's highlighted in the sidebar
++ * mutt_sb_get_highlight - Get the BUFFY that's highlighted in the sidebar
 + *
 + * Get the path of the mailbox that's highlighted in the sidebar.
 + *
 + * Returns:
 + *	Mailbox path
 + */
-+const char *
-+sb_get_highlight (void)
++const char *mutt_sb_get_highlight (void)
 +{
-+	if (!HilBuffy)
-+		return NULL;
++  if (!HilBuffy)
++    return NULL;
 +
-+	return HilBuffy->path;
++  return HilBuffy->path;
 +}
 +
 +/**
-+ * sb_set_open_buffy - Set the OpnBuffy based on a mailbox path
++ * mutt_sb_set_open_buffy - Set the OpnBuffy based on a mailbox path
 + * @path: Mailbox path
 + *
 + * Search through the list of mailboxes.  If a BUFFY has a matching path, set
 + * OpnBuffy to it.
 + */
-+BUFFY *
-+sb_set_open_buffy (const char *path)
++BUFFY *mutt_sb_set_open_buffy (const char *path)
 +{
-+	/* Even if the sidebar is hidden */
++  /* Even if the sidebar is hidden */
 +
-+	BUFFY *b = get_incoming();
++  BUFFY *b = get_incoming();
 +
-+	if (!path || !b)
-+		return NULL;
++  if (!path || !b)
++    return NULL;
 +
-+	OpnBuffy = NULL;
++  OpnBuffy = NULL;
 +
-+	for (; b; b = b->next) {
-+		if (!strcmp (b->path,     path) ||
-+		    !strcmp (b->realpath, path)) {
-+			OpnBuffy = b;
-+			HilBuffy = b;
-+			break;
-+		}
-+	}
++  for (; b; b = b->next)
++  {
++    if (!strcmp (b->path,     path) ||
++        !strcmp (b->realpath, path))
++    {
++      OpnBuffy = b;
++      HilBuffy = b;
++      break;
++    }
++  }
 +
-+	return OpnBuffy;
++  return OpnBuffy;
 +}
 +
 +/**
-+ * sb_set_update_time - Note the time that the sidebar was updated
++ * mutt_sb_set_update_time - Note the time that the sidebar was updated
 + *
 + * Update the timestamp representing the last sidebar update.  If the user
 + * configures "sidebar_refresh_time", this will help to reduce traffic.
 + */
-+void
-+sb_set_update_time (void)
++void mutt_sb_set_update_time (void)
 +{
-+	/* XXX - should this be public? */
++  /* XXX - should this be public? */
 +
-+	LastRefresh = time (NULL);
++  LastRefresh = time (NULL);
 +}
 +
 +/**
-+ * sb_notify_mailbox - The state of a BUFFY is about to change
++ * mutt_sb_notify_mailbox - The state of a BUFFY is about to change
 + *
 + * We receive a notification:
 + *	After a new BUFFY has been created
@@ -29107,50 +29294,53 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 + *
 + * Before a deletion, check that our pointers won't be invalidated.
 + */
-+void
-+sb_notify_mailbox (BUFFY *b, int created)
++void mutt_sb_notify_mailbox (BUFFY *b, int created)
 +{
-+	if (!b)
-+		return;
++  if (!b)
++    return;
 +
-+	/* Any new/deleted mailboxes will cause a refresh.  As long as
-+	 * they're valid, our pointers will be updated in prepare_sidebar() */
++  /* Any new/deleted mailboxes will cause a refresh.  As long as
++   * they're valid, our pointers will be updated in prepare_sidebar() */
 +
-+	if (created) {
-+		if (!TopBuffy)
-+			TopBuffy = b;
-+		if (!HilBuffy)
-+			HilBuffy = b;
-+		if (!BotBuffy)
-+			BotBuffy = b;
-+		if (!Outgoing)
-+			Outgoing = b;
-+		if (!OpnBuffy && Context) {
-+			/* This might happen if the user "unmailboxes *", then
-+			 * "mailboxes" our current mailbox back again */
-+			if (mutt_strcmp (b->path, Context->path) == 0) {
-+				OpnBuffy = b;
-+			}
-+		}
-+	} else {
-+		if (TopBuffy == b)
-+			TopBuffy = buffy_going (TopBuffy);
-+		if (OpnBuffy == b)
-+			OpnBuffy = buffy_going (OpnBuffy);
-+		if (HilBuffy == b)
-+			HilBuffy = buffy_going (HilBuffy);
-+		if (BotBuffy == b)
-+			BotBuffy = buffy_going (BotBuffy);
-+		if (Outgoing == b)
-+			Outgoing = buffy_going (Outgoing);
-+	}
++  if (created)
++  {
++    if (!TopBuffy)
++      TopBuffy = b;
++    if (!HilBuffy)
++      HilBuffy = b;
++    if (!BotBuffy)
++      BotBuffy = b;
++    if (!Outgoing)
++      Outgoing = b;
++    if (!OpnBuffy && Context)
++    {
++      /* This might happen if the user "unmailboxes *", then
++       * "mailboxes" our current mailbox back again */
++      if (mutt_strcmp (b->path, Context->path) == 0)
++        OpnBuffy = b;
++    }
++  }
++  else
++  {
++    BUFFY *replacement = buffy_going (b);
++    if (TopBuffy == b)
++      TopBuffy = replacement;
++    if (OpnBuffy == b)
++      OpnBuffy = NULL;
++    if (HilBuffy == b)
++      HilBuffy = replacement;
++    if (BotBuffy == b)
++      BotBuffy = replacement;
++    if (Outgoing == b)
++      Outgoing = replacement;
++  }
 +}
 +
 +/**
 + * sb_toggle_virtual - Switch between regular and virtual folders
 + */
 +void
-+sb_toggle_virtual (void)
++mutt_sb_toggle_virtual (void)
 +{
 +	if (sidebar_source == -1)
 +		get_incoming();
@@ -29168,12 +29358,12 @@ diff -urN mutt-1.6.1/sidebar.c mutt-1.6.1-neomutt/sidebar.c
 +	BotBuffy = NULL;
 +	Outgoing = NULL;
 +
-+	sb_draw();
++	mutt_sb_draw();
 +}
 +
 diff -urN mutt-1.6.1/sidebar.h mutt-1.6.1-neomutt/sidebar.h
 --- mutt-1.6.1/sidebar.h	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/sidebar.h	2016-05-30 14:49:21.405684725 +0100
++++ mutt-1.6.1-neomutt/sidebar.h	2016-06-12 18:43:00.750453017 +0100
 @@ -0,0 +1,37 @@
 +/* Copyright (C) 2004 Justin Hibbits <jrh29@po.cwru.edu>
 + * Copyright (C) 2004 Thomer M. Gil <mutt@thomer.com>
@@ -29200,21 +29390,21 @@ diff -urN mutt-1.6.1/sidebar.h mutt-1.6.1-neomutt/sidebar.h
 +#include "mutt.h"
 +#include "buffy.h"
 +
-+void         sb_change_mailbox (int op);
-+void         sb_draw (void);
-+const char * sb_get_highlight (void);
-+void         sb_init (void);
-+void         sb_notify_mailbox (BUFFY *b, int created);
-+void         sb_set_buffystats (const CONTEXT *ctx);
-+BUFFY *      sb_set_open_buffy (const char *path);
-+void         sb_set_update_time (void);
-+int          sb_should_refresh (void);
-+void         sb_toggle_virtual (void);
++void         mutt_sb_change_mailbox (int op);
++void         mutt_sb_draw (void);
++const char * mutt_sb_get_highlight (void);
++void         mutt_sb_init (void);
++void         mutt_sb_notify_mailbox (BUFFY *b, int created);
++void         mutt_sb_set_buffystats (const CONTEXT *ctx);
++BUFFY *      mutt_sb_set_open_buffy (const char *path);
++void         mutt_sb_set_update_time (void);
++int          mutt_sb_should_refresh (void);
++void         mutt_sb_toggle_virtual (void);
 +
 +#endif /* SIDEBAR_H */
 diff -urN mutt-1.6.1/sort.c mutt-1.6.1-neomutt/sort.c
---- mutt-1.6.1/sort.c	2016-05-30 14:49:21.104680019 +0100
-+++ mutt-1.6.1-neomutt/sort.c	2016-05-30 14:49:21.406684741 +0100
+--- mutt-1.6.1/sort.c	2016-06-12 18:43:00.415447793 +0100
++++ mutt-1.6.1-neomutt/sort.c	2016-06-12 18:43:00.751453033 +0100
 @@ -24,6 +24,11 @@
  #include "sort.h"
  #include "mutt_idna.h"
@@ -29302,8 +29492,8 @@ diff -urN mutt-1.6.1/sort.c mutt-1.6.1-neomutt/sort.c
        return (NULL);
    }
 diff -urN mutt-1.6.1/sort.h mutt-1.6.1-neomutt/sort.h
---- mutt-1.6.1/sort.h	2016-05-30 14:49:21.104680019 +0100
-+++ mutt-1.6.1-neomutt/sort.h	2016-05-30 14:49:21.406684741 +0100
+--- mutt-1.6.1/sort.h	2016-06-12 18:43:00.415447793 +0100
++++ mutt-1.6.1-neomutt/sort.h	2016-06-12 18:43:00.751453033 +0100
 @@ -31,6 +31,13 @@
  #define SORT_KEYID	12
  #define SORT_TRUST	13
@@ -29327,8 +29517,8 @@ diff -urN mutt-1.6.1/sort.h mutt-1.6.1-neomutt/sort.h
  /* FIXME: This one does not belong to here */
  WHERE short PgpSortKeys INITVAL (SORT_ADDRESS);
 diff -urN mutt-1.6.1/status.c mutt-1.6.1-neomutt/status.c
---- mutt-1.6.1/status.c	2016-05-30 14:49:21.104680019 +0100
-+++ mutt-1.6.1-neomutt/status.c	2016-05-30 14:49:21.406684741 +0100
+--- mutt-1.6.1/status.c	2016-06-12 18:43:00.415447793 +0100
++++ mutt-1.6.1-neomutt/status.c	2016-06-12 18:43:00.751453033 +0100
 @@ -27,6 +27,10 @@
  #include "mapping.h"
  #include "mx.h"
@@ -29377,7 +29567,7 @@ diff -urN mutt-1.6.1/status.c mutt-1.6.1-neomutt/status.c
        {
 diff -urN mutt-1.6.1/strndup.c mutt-1.6.1-neomutt/strndup.c
 --- mutt-1.6.1/strndup.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/strndup.c	2016-05-30 14:49:21.406684741 +0100
++++ mutt-1.6.1-neomutt/strndup.c	2016-06-12 18:43:00.751453033 +0100
 @@ -0,0 +1,19 @@
 +/*
 + * Copyright (C) 2013 Karel Zak <kzak@redhat.com>
@@ -29400,7 +29590,7 @@ diff -urN mutt-1.6.1/strndup.c mutt-1.6.1-neomutt/strndup.c
 +}
 diff -urN mutt-1.6.1/strnlen.c mutt-1.6.1-neomutt/strnlen.c
 --- mutt-1.6.1/strnlen.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/strnlen.c	2016-05-30 14:49:21.406684741 +0100
++++ mutt-1.6.1-neomutt/strnlen.c	2016-06-12 18:43:00.751453033 +0100
 @@ -0,0 +1,20 @@
 +/*
 + * Copyright (C) 2013 Karel Zak <kzak@redhat.com>
@@ -29424,7 +29614,7 @@ diff -urN mutt-1.6.1/strnlen.c mutt-1.6.1-neomutt/strnlen.c
 +}
 diff -urN mutt-1.6.1/UPDATING.kz mutt-1.6.1-neomutt/UPDATING.kz
 --- mutt-1.6.1/UPDATING.kz	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/UPDATING.kz	2016-05-30 14:49:21.339683693 +0100
++++ mutt-1.6.1-neomutt/UPDATING.kz	2016-06-12 18:43:00.672451801 +0100
 @@ -0,0 +1,68 @@
 +1.6.0.1:
 +
@@ -29492,11 +29682,11 @@ diff -urN mutt-1.6.1/UPDATING.kz mutt-1.6.1-neomutt/UPDATING.kz
 ++ nm_unread_tag = <name> to specify unread messages
 ++ nm_db_limit = <num> to specify notmuch query limit
 ++ nm_query_type = <threads|messages> to specify what to load from DB
-++ vfolder_format = <string> to specify vfolders brower entry format
+++ vfolder_format = <string> to specify vfolders browser entry format
 ++ %g and %Gx index_format and pager_format formatting sequences
 diff -urN mutt-1.6.1/url.c mutt-1.6.1-neomutt/url.c
---- mutt-1.6.1/url.c	2016-05-30 14:49:21.104680019 +0100
-+++ mutt-1.6.1-neomutt/url.c	2016-05-30 14:49:21.407684756 +0100
+--- mutt-1.6.1/url.c	2016-06-12 18:43:00.415447793 +0100
++++ mutt-1.6.1-neomutt/url.c	2016-06-12 18:43:00.752453048 +0100
 @@ -39,13 +39,18 @@
    { "imaps", 	U_IMAPS },
    { "pop",  	U_POP },
@@ -29527,8 +29717,8 @@ diff -urN mutt-1.6.1/url.c mutt-1.6.1-neomutt/url.c
        char u[STRING];
        url_pct_encode (u, sizeof (u), ciss->user);
 diff -urN mutt-1.6.1/url.h mutt-1.6.1-neomutt/url.h
---- mutt-1.6.1/url.h	2016-05-30 14:49:21.104680019 +0100
-+++ mutt-1.6.1-neomutt/url.h	2016-05-30 14:49:21.407684756 +0100
+--- mutt-1.6.1/url.h	2016-06-12 18:43:00.415447793 +0100
++++ mutt-1.6.1-neomutt/url.h	2016-06-12 18:43:00.752453048 +0100
 @@ -8,9 +8,14 @@
    U_POPS,
    U_IMAP,
@@ -29553,7 +29743,7 @@ diff -urN mutt-1.6.1/url.h mutt-1.6.1-neomutt/url.h
  #endif
 diff -urN mutt-1.6.1/version.c mutt-1.6.1-neomutt/version.c
 --- mutt-1.6.1/version.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/version.c	2016-05-30 14:49:21.407684756 +0100
++++ mutt-1.6.1-neomutt/version.c	2016-06-12 18:43:00.752453048 +0100
 @@ -0,0 +1,516 @@
 +/**
 + * Copyright (C) 1996-2007 Michael R. Elkins <me@mutt.org>
@@ -30073,7 +30263,7 @@ diff -urN mutt-1.6.1/version.c mutt-1.6.1-neomutt/version.c
 +
 diff -urN mutt-1.6.1/version.h mutt-1.6.1-neomutt/version.h
 --- mutt-1.6.1/version.h	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/version.h	2016-05-30 14:49:21.407684756 +0100
++++ mutt-1.6.1-neomutt/version.h	2016-06-12 18:43:00.752453048 +0100
 @@ -0,0 +1,26 @@
 +/**
 + * Copyright (C) 2016 Richard Russon
@@ -30103,12 +30293,12 @@ diff -urN mutt-1.6.1/version.h mutt-1.6.1-neomutt/version.h
 +#endif /* _VERSION_H_ */
 diff -urN mutt-1.6.1/VERSION.neo mutt-1.6.1-neomutt/VERSION.neo
 --- mutt-1.6.1/VERSION.neo	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.1-neomutt/VERSION.neo	2016-05-30 14:49:21.339683693 +0100
++++ mutt-1.6.1-neomutt/VERSION.neo	2016-06-12 18:43:00.672451801 +0100
 @@ -0,0 +1 @@
 +-neo
 diff -urN mutt-1.6.1/version.sh mutt-1.6.1-neomutt/version.sh
---- mutt-1.6.1/version.sh	2016-05-30 14:49:21.104680019 +0100
-+++ mutt-1.6.1-neomutt/version.sh	2016-05-30 14:49:21.407684756 +0100
+--- mutt-1.6.1/version.sh	2016-06-12 18:43:00.415447793 +0100
++++ mutt-1.6.1-neomutt/version.sh	2016-06-12 18:43:00.752453048 +0100
 @@ -1,68 +1,4 @@
  #!/bin/sh
  
