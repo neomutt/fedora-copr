@@ -25,7 +25,7 @@
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %global _origname mutt
-%global _date 20160530
+%global _date 20160611
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -205,6 +205,27 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 
 
 %changelog
+* Sat Jun 11 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160611
+- Change in behaviour
+  - Temporarily disable $sidebar_refresh_time
+    Unfortunately, this was causing too many problems.
+    It will be fixed and re-enabled as soon as possible.
+- Bug Fixes
+  - Fix several crashes, on startup, in Keywords
+  - Reflow text now works as it should
+  - Lots of typos fixed
+  - Compress config bug prevented it working
+  - Some minor bug-fixes from mutt/default
+  - Single quote at line beginning misinterpreted by groff
+  - Setting $sidebar_width to more than 128 would cause bad things to happen.
+  - Fix alignment in the compose menu.
+  - Fix sidebar buffy stats updating on mailbox close.
+- Build Changes
+  - Sync whitespace to mutt/default
+  - Alter ChangeLog date format to simplify Makefiles
+  - Use the new notmuch functions that return a status
+  - Rename sidebar functions sb_* -> mutt_sb_*
+
 * Mon May 23 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160523
 - New Features:
   - Keywords: Email Label/Keywords/Tagging
