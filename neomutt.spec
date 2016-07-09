@@ -25,11 +25,11 @@
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %global _origname mutt
-%global _date 20160611
+%global _date 20160709
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 1.6.1
+Version: 1.6.2
 Release: %{_date}%{?dist}
 Epoch: 5
 # The entire source code is GPLv2+ except
@@ -39,7 +39,7 @@ Group: Applications/Internet
 # git snapshot created from https://github.com/neomutt/neomutt
 Source: %{_origname}-%{version}.tar.gz
 Source1: mutt_ldap_query
-Patch1: mutt-1.6.1.neomutt.patch
+Patch1: mutt-1.6.2.neomutt.patch
 Patch2: mutt-1.5.18-muttrc.patch
 Patch3: mutt-1.5.21-cabundle.patch
 Patch4: mutt-1.5.23-system_certs.patch
@@ -205,6 +205,8 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 
 
 %changelog
+* Sat Jul 09 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160709
+
 * Sat Jun 11 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160611
 - Change in behaviour
   - Temporarily disable $sidebar_refresh_time
