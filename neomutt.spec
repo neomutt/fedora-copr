@@ -25,7 +25,7 @@
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %global _origname mutt
-%global _date 20160709
+%global _date 20160723
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -203,9 +203,44 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man1/pgpewrap.*
 %{_mandir}/man5/muttrc.*
 
-
 %changelog
+* Sat Jul 23 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160723
+- New Motto: "Teaching an Old Dog New Tricks"
+  - Thanks to Alok Singh
+- New Features
+  - New Mail Command - Execute a command on receipt of new mail
+  - vim-keybindings - Mutt config for vim users
+  - LMDB: In-memory header caching database
+  - SMIME Encrypt to Self - Secure storage of sensitive email
+- Bug Fixes
+  - rework mutt_draw_statusline()
+  - fix cursor position after sidebar redraw
+  - Add sidebar_format flag '%n' to display 'N' on new mail.
+  - fix index_format truncation problem
+  - Fix compiler warnings due to always true condition
+  - Change sidebar next/prev-new to look at buffy->new too.
+  - Change the default for sidebar_format to use %n.
+  - sidebar "unsorted" order to match Buffy list order.
+  - Include ncurses tinfo library if found.
+  - Sidebar width problem
+  - sidebar crash for non-existent mailbox
+  - Temporary compatibility workaround
+  - Reset buffy->new for the current mailbox in IMAP.
+  - version.sh regression
+  - crash when notmuch tries to read a message
+  - status line wrapping
+- Docs
+  - Mass tidy up of the docs
+  - Fix xml validation
+  - Add missing docs for new features
+- Travis
+  - New build system:
+    https://github.com/neomutt/travis-build
+    Now we have central control over what gets built
+
 * Sat Jul 09 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160709
+- Bug-fixes
+  - This release was a temporary measure
 
 * Sat Jun 11 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160611
 - Change in behaviour
