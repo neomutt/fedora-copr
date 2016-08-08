@@ -1,4 +1,4 @@
-%bcond_with debug
+%bcond_without debug
 %bcond_without imap
 %bcond_without pop
 %bcond_without smtp
@@ -25,7 +25,7 @@
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %global _origname mutt
-%global _date 20160723
+%global _date 20160808
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -110,6 +110,8 @@ echo %{release} | sed -r 's/.*(201[0-9])([0-1][0-9])([0-3][0-9]).*/"\1-\2-\3";/'
 # https://fedoraproject.org/wiki/Packaging:CryptoPolicies
 rm -f mutt_ssl.c
 
+find . -type f -size 0 -name '*.neomutt' -delete
+
 
 %build
 %configure \
@@ -122,7 +124,7 @@ rm -f mutt_ssl.c
     %{?with_sidebar:	--enable-sidebar} \
     %{?with_notmuch:	--enable-notmuch} \
     %{?with_nntp:	--enable-nntp} \
-    %{?with_compress:	--enable-compress} \
+    %{?with_compress:	--enable-compressed} \
 \
     %if %{with hcache}
     --enable-hcache \
@@ -179,7 +181,14 @@ rm -f $RPM_BUILD_ROOT%{_mandir}/man1/muttbug.1*
 rm -f $RPM_BUILD_ROOT%{_mandir}/man1/flea.1*
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mmdf.5*
-rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}
+
+rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/samples
+rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/applying-patches.txt
+rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/devel-notes.txt
+rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/INSTALL
+rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/patch-notes.txt
+rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/PGP-Notes.txt
+rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/TODO
 
 # provide muttrc.local(5): the same as muttrc(5)
 ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
@@ -190,9 +199,16 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %files -f %{_origname}.lang
 %config(noreplace) %{_sysconfdir}/Muttrc
 %config(noreplace) %{_sysconfdir}/Muttrc.local
-%doc COPYRIGHT ChangeLog LICENSE.md NEWS README* UPDATING mutt_ldap_query
+%doc COPYRIGHT ChangeLog* GPL NEWS README* UPDATING mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
-%doc doc/manual.html doc/manual.txt doc/smime-notes.txt
+# %doc doc/manual.html doc/manual.txt doc/smime-notes.txt
+%doc doc/manual.txt doc/smime-notes.txt
+%doc doc/*.html
+%docdir /usr/share/doc/%{name}/vim-keybindings
+%doc /usr/share/doc/%{name}/vim-keybindings/*
+%docdir /usr/share/doc/%{name}/keybase
+%doc /usr/share/doc/%{name}/keybase/*
+%doc /usr/share/doc/%{name}/keybase/.muttrc
 %{_bindir}/mutt
 %{_bindir}/pgpring
 %{_bindir}/pgpewrap
@@ -203,7 +219,35 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man1/pgpewrap.*
 %{_mandir}/man5/muttrc.*
 
+
 %changelog
+* Mon Aug 08 2016 Richard Russon <rich@flatcap.org> - NeoMutt-201600808
+- New Features
+  - Timeout Hook - Run a command periodically
+  - Multiple fcc - Save multiple copies of outgoing mail
+- Contrib
+  - Keybase Integration
+    Joshua Jordi (JakkinStewart)
+- Devel
+  - Attached - Prevent missing attachments
+    Darshit Shah (darnir)
+  - Virtual Unmailboxes - Remove unwanted virtual mailboxes
+    Richard Russon (flatcap)
+- Bug Fixes
+  - Sidebar's inbox occasionally shows zero/wrong value
+  - Fix crash opening a second compressed mailbox
+- Config
+  - Look for /etc/NeoMuttrc and ~/.neomuttrc
+- Docs
+  - Fix broken links, typos
+  - Update project link
+  - Fix version string in the manual
+- Build
+  - Add option to disable fmemopen
+  - Install all the READMEs and contribs
+  - Big overhaul of the build
+    Darshit Shah (darnir)
+
 * Sat Jul 23 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160723
 - New Motto: "Teaching an Old Dog New Tricks"
   - Thanks to Alok Singh
