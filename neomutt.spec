@@ -204,11 +204,11 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 # %doc doc/manual.html doc/manual.txt doc/smime-notes.txt
 %doc doc/manual.txt doc/smime-notes.txt
 %doc doc/*.html
-%docdir /usr/share/doc/%{name}/vim-keybindings
-%doc /usr/share/doc/%{name}/vim-keybindings/*
-%docdir /usr/share/doc/%{name}/keybase
-%doc /usr/share/doc/%{name}/keybase/*
-%doc /usr/share/doc/%{name}/keybase/.muttrc
+%docdir %{_pkgdocdir}/vim-keybindings
+%doc %{_pkgdocdir}/vim-keybindings/*
+%docdir %{_pkgdocdir}/keybase
+%doc %{_pkgdocdir}/keybase/*
+%doc %{_pkgdocdir}/keybase/.muttrc
 %{_bindir}/mutt
 %{_bindir}/pgpring
 %{_bindir}/pgpewrap
