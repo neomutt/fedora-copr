@@ -25,7 +25,7 @@
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %global _origname mutt
-%global _date 20160808
+%global _date 20160820
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -46,6 +46,7 @@ Patch4: mutt-1.5.23-system_certs.patch
 Patch5: mutt-1.5.23-ssl_ciphers.patch
 Url: http://www.neomutt.org/
 Requires: mailcap, urlview
+Provides: %{_origname}
 Conflicts: %{_origname}
 BuildRequires: ncurses-devel, gettext, automake
 # manual generation
@@ -87,8 +88,6 @@ for selecting groups of messages.
 %setup -q -n %{_origname}-%{version}
 # disable mutt_dotlock program - disable post-install mutt_dotlock checking
 sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
-# do not run ./prepare -V, because it also runs ./configure
-autoreconf --install
 %patch1 -p1 -b .neomutt
 %patch2 -p1 -b .muttrc
 %patch3 -p1 -b .cabundle
@@ -112,8 +111,11 @@ rm -f mutt_ssl.c
 
 find . -type f -size 0 -name '*.neomutt' -delete
 
+chmod +x git-version-gen
 
 %build
+# do not run ./prepare -V, because it also runs ./configure
+autoreconf --install
 %configure \
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
@@ -193,22 +195,21 @@ rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/TODO
 # provide muttrc.local(5): the same as muttrc(5)
 ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 
-%find_lang %{_origname}
+# %find_lang %{_origname}
+%find_lang %{name}
 
-
-%files -f %{_origname}.lang
+%files -f %{name}.lang
 %config(noreplace) %{_sysconfdir}/Muttrc
 %config(noreplace) %{_sysconfdir}/Muttrc.local
 %doc COPYRIGHT ChangeLog* GPL NEWS README* UPDATING mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
-# %doc doc/manual.html doc/manual.txt doc/smime-notes.txt
 %doc doc/manual.txt doc/smime-notes.txt
 %doc doc/*.html
-%docdir %{_pkgdocdir}/vim-keybindings
-%doc %{_pkgdocdir}/vim-keybindings/*
-%docdir %{_pkgdocdir}/keybase
-%doc %{_pkgdocdir}/keybase/*
-%doc %{_pkgdocdir}/keybase/.muttrc
+# %docdir %{_pkgdocdir}/vim-keybindings
+# %doc %{_pkgdocdir}/vim-keybindings/*
+# %docdir %{_pkgdocdir}/keybase
+# %doc %{_pkgdocdir}/keybase/*
+# %doc %{_pkgdocdir}/keybase/.muttrc
 %{_bindir}/mutt
 %{_bindir}/pgpring
 %{_bindir}/pgpewrap
@@ -221,7 +222,31 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 
 
 %changelog
-* Mon Aug 08 2016 Richard Russon <rich@flatcap.org> - NeoMutt-201600808
+* Sat Aug 20 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160820
+- Contrib
+  - Updates to Keybase Support
+    Joshua Jordi (JakkinStewart)
+- Bug Fixes
+  - Fix data-loss when appending a compressed file
+  - Don't paint invisible progress bars
+  - Revert to Mutt keybindings
+  - Don't de-tag emails after labelling them
+  - Don't whine if getrandom() fails
+    Adam Borowski (kilobyte)
+  - Fix display when 'from' field is invalid
+- Config
+  - Support for $XDG_CONFIG_HOME and $XDG_CONFIG_DIRS
+    Marco Hinz (mhinz)
+- Docs
+  - Fix DocBook validation
+  - Document NotMuch queries
+- Build
+  - More Autoconf improvements
+    Darshit Shah (darnir)
+  - Create Distribution Tarballs with autogen sources
+    Darshit Shah (darnir)
+
+* Mon Aug 08 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160808
 - New Features
   - Timeout Hook - Run a command periodically
   - Multiple fcc - Save multiple copies of outgoing mail
