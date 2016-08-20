@@ -46,7 +46,7 @@ Patch4: mutt-1.5.23-system_certs.patch
 Patch5: mutt-1.5.23-ssl_ciphers.patch
 Url: http://www.neomutt.org/
 Requires: mailcap, urlview
-Provides: %{_origname}
+# Provides: %{_origname}
 Conflicts: %{_origname}
 BuildRequires: ncurses-devel, gettext, automake
 # manual generation
