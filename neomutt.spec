@@ -25,7 +25,7 @@
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %global _origname mutt
-%global _date 20160820
+%global _date 20160821
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -222,7 +222,7 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 
 
 %changelog
-* Sat Aug 20 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160820
+* Sun Aug 21 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160821
 - Contrib
   - Updates to Keybase Support
     Joshua Jordi (JakkinStewart)
