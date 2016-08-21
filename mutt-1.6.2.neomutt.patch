@@ -1,6 +1,6 @@
 diff -urN mutt-1.6.2/account.c mutt-1.6.2-neomutt/account.c
---- mutt-1.6.2/account.c	2016-08-20 02:44:51.882765268 +0100
-+++ mutt-1.6.2-neomutt/account.c	2016-08-20 02:44:52.081766316 +0100
+--- mutt-1.6.2/account.c	2016-08-21 11:07:09.487047483 +0100
++++ mutt-1.6.2-neomutt/account.c	2016-08-21 11:07:09.815048741 +0100
 @@ -51,8 +51,17 @@
      user = PopUser;
  #endif
@@ -59,8 +59,8 @@ diff -urN mutt-1.6.2/account.c mutt-1.6.2-neomutt/account.c
      return -1;
    else
 diff -urN mutt-1.6.2/account.h mutt-1.6.2-neomutt/account.h
---- mutt-1.6.2/account.h	2016-08-20 02:44:51.882765268 +0100
-+++ mutt-1.6.2-neomutt/account.h	2016-08-20 02:44:52.081766316 +0100
+--- mutt-1.6.2/account.h	2016-08-21 11:07:09.487047483 +0100
++++ mutt-1.6.2-neomutt/account.h	2016-08-21 11:07:09.815048741 +0100
 @@ -29,7 +29,8 @@
    M_ACCT_TYPE_NONE = 0,
    M_ACCT_TYPE_IMAP,
@@ -72,8 +72,8 @@ diff -urN mutt-1.6.2/account.h mutt-1.6.2-neomutt/account.h
  
  /* account flags */
 diff -urN mutt-1.6.2/addrbook.c mutt-1.6.2-neomutt/addrbook.c
---- mutt-1.6.2/addrbook.c	2016-08-20 02:44:51.882765268 +0100
-+++ mutt-1.6.2-neomutt/addrbook.c	2016-08-20 02:44:52.082766321 +0100
+--- mutt-1.6.2/addrbook.c	2016-08-21 11:07:09.487047483 +0100
++++ mutt-1.6.2-neomutt/addrbook.c	2016-08-21 11:07:09.815048741 +0100
 @@ -24,6 +24,7 @@
  #include "mutt_menu.h"
  #include "mapping.h"
@@ -101,8 +101,8 @@ diff -urN mutt-1.6.2/addrbook.c mutt-1.6.2-neomutt/addrbook.c
  
  static int alias_tag (MUTTMENU *menu, int n, int m)
 diff -urN mutt-1.6.2/alias.c mutt-1.6.2-neomutt/alias.c
---- mutt-1.6.2/alias.c	2016-08-20 02:44:51.882765268 +0100
-+++ mutt-1.6.2-neomutt/alias.c	2016-08-20 02:44:52.082766321 +0100
+--- mutt-1.6.2/alias.c	2016-08-21 11:07:09.487047483 +0100
++++ mutt-1.6.2-neomutt/alias.c	2016-08-21 11:07:09.815048741 +0100
 @@ -27,6 +27,7 @@
  
  #include <string.h>
@@ -125,8 +125,8 @@ diff -urN mutt-1.6.2/alias.c mutt-1.6.2-neomutt/alias.c
    else
      mutt_perror (buf);
 diff -urN mutt-1.6.2/attach.c mutt-1.6.2-neomutt/attach.c
---- mutt-1.6.2/attach.c	2016-08-20 02:44:51.882765268 +0100
-+++ mutt-1.6.2-neomutt/attach.c	2016-08-20 02:44:52.082766321 +0100
+--- mutt-1.6.2/attach.c	2016-08-21 11:07:09.488047487 +0100
++++ mutt-1.6.2-neomutt/attach.c	2016-08-21 11:07:09.816048745 +0100
 @@ -765,7 +765,7 @@
        fseeko ((s.fpin = fp), m->offset, 0);
        mutt_decode_attachment (m, &s);
@@ -178,8 +178,8 @@ diff -urN mutt-1.6.2/attach.c mutt-1.6.2-neomutt/attach.c
  
  /* Ok, the difference between send and receive:
 diff -urN mutt-1.6.2/attach.h mutt-1.6.2-neomutt/attach.h
---- mutt-1.6.2/attach.h	2016-08-20 02:44:51.883765274 +0100
-+++ mutt-1.6.2-neomutt/attach.h	2016-08-20 02:44:52.082766321 +0100
+--- mutt-1.6.2/attach.h	2016-08-21 11:07:09.488047487 +0100
++++ mutt-1.6.2-neomutt/attach.h	2016-08-21 11:07:09.816048745 +0100
 @@ -50,7 +50,7 @@
  
  void mutt_attach_bounce (FILE *, HEADER *, ATTACHPTR **, short, BODY *);
@@ -190,8 +190,8 @@ diff -urN mutt-1.6.2/attach.h mutt-1.6.2-neomutt/attach.h
  
  #endif /* _ATTACH_H_ */
 diff -urN mutt-1.6.2/browser.c mutt-1.6.2-neomutt/browser.c
---- mutt-1.6.2/browser.c	2016-08-20 02:44:51.883765274 +0100
-+++ mutt-1.6.2-neomutt/browser.c	2016-08-20 02:44:52.082766321 +0100
+--- mutt-1.6.2/browser.c	2016-08-21 11:07:09.488047487 +0100
++++ mutt-1.6.2-neomutt/browser.c	2016-08-21 11:07:09.816048745 +0100
 @@ -29,9 +29,16 @@
  #include "sort.h"
  #include "mailbox.h"
@@ -1114,8 +1114,8 @@ diff -urN mutt-1.6.2/browser.c mutt-1.6.2-neomutt/browser.c
    }
    
 diff -urN mutt-1.6.2/browser.h mutt-1.6.2-neomutt/browser.h
---- mutt-1.6.2/browser.h	2016-08-20 02:44:51.883765274 +0100
-+++ mutt-1.6.2-neomutt/browser.h	2016-08-20 02:44:52.082766321 +0100
+--- mutt-1.6.2/browser.h	2016-08-21 11:07:09.488047487 +0100
++++ mutt-1.6.2-neomutt/browser.h	2016-08-21 11:07:09.816048745 +0100
 @@ -19,6 +19,10 @@
  #ifndef _BROWSER_H
  #define _BROWSER_H 1
@@ -1147,8 +1147,8 @@ diff -urN mutt-1.6.2/browser.h mutt-1.6.2-neomutt/browser.h
  };
  
 diff -urN mutt-1.6.2/buffy.c mutt-1.6.2-neomutt/buffy.c
---- mutt-1.6.2/buffy.c	2016-08-20 02:44:51.883765274 +0100
-+++ mutt-1.6.2-neomutt/buffy.c	2016-08-20 02:44:52.083766326 +0100
+--- mutt-1.6.2/buffy.c	2016-08-21 11:07:09.488047487 +0100
++++ mutt-1.6.2-neomutt/buffy.c	2016-08-21 11:07:09.816048745 +0100
 @@ -27,10 +27,18 @@
  
  #include "mutt_curses.h"
@@ -1746,8 +1746,8 @@ diff -urN mutt-1.6.2/buffy.c mutt-1.6.2-neomutt/buffy.c
  static BUFFY* buffy_get (const char *path)
  {
 diff -urN mutt-1.6.2/buffy.h mutt-1.6.2-neomutt/buffy.h
---- mutt-1.6.2/buffy.h	2016-08-20 02:44:51.883765274 +0100
-+++ mutt-1.6.2-neomutt/buffy.h	2016-08-20 02:44:52.083766326 +0100
+--- mutt-1.6.2/buffy.h	2016-08-21 11:07:09.488047487 +0100
++++ mutt-1.6.2-neomutt/buffy.h	2016-08-21 11:07:09.816048745 +0100
 @@ -16,6 +16,9 @@
   *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   */
@@ -1803,9 +1803,9 @@ diff -urN mutt-1.6.2/buffy.h mutt-1.6.2-neomutt/buffy.h
 +#endif /* _BUFFY_H */
 diff -urN mutt-1.6.2/ChangeLog.neomutt mutt-1.6.2-neomutt/ChangeLog.neomutt
 --- mutt-1.6.2/ChangeLog.neomutt	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/ChangeLog.neomutt	2016-08-20 02:44:52.079766305 +0100
++++ mutt-1.6.2-neomutt/ChangeLog.neomutt	2016-08-21 11:07:09.812048729 +0100
 @@ -0,0 +1,186 @@
-+2016-08-19  Richard Russon  <rich@flatcap.org>
++2016-08-21  Richard Russon  <rich@flatcap.org>
 +* Contrib
 +  - Updates to Keybase Support
 +    Joshua Jordi (JakkinStewart)
@@ -1993,7 +1993,7 @@ diff -urN mutt-1.6.2/ChangeLog.neomutt mutt-1.6.2-neomutt/ChangeLog.neomutt
 +
 diff -urN mutt-1.6.2/ChangeLog.nntp mutt-1.6.2-neomutt/ChangeLog.nntp
 --- mutt-1.6.2/ChangeLog.nntp	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/ChangeLog.nntp	2016-08-20 02:44:52.079766305 +0100
++++ mutt-1.6.2-neomutt/ChangeLog.nntp	2016-08-21 11:07:09.813048733 +0100
 @@ -0,0 +1,416 @@
 +* Wed Apr  6 2016 Vsevolod Volkov <vvv@mutt.org.ua>
 +- update to 1.6.0
@@ -2412,8 +2412,8 @@ diff -urN mutt-1.6.2/ChangeLog.nntp mutt-1.6.2-neomutt/ChangeLog.nntp
 +* Fri Jan 28 2000 Vsevolod Volkov <vvv@mutt.kiev.ua>
 +- update to 1.1.2
 diff -urN mutt-1.6.2/color.c mutt-1.6.2-neomutt/color.c
---- mutt-1.6.2/color.c	2016-08-20 02:44:51.883765274 +0100
-+++ mutt-1.6.2-neomutt/color.c	2016-08-20 02:44:52.083766326 +0100
+--- mutt-1.6.2/color.c	2016-08-21 11:07:09.488047487 +0100
++++ mutt-1.6.2-neomutt/color.c	2016-08-21 11:07:09.817048748 +0100
 @@ -34,7 +34,14 @@
  int ColorDefs[MT_COLOR_MAX];
  COLOR_LINE *ColorHdrList = NULL;
@@ -2740,8 +2740,8 @@ diff -urN mutt-1.6.2/color.c mutt-1.6.2-neomutt/color.c
    return (r);
  }
 diff -urN mutt-1.6.2/commands.c mutt-1.6.2-neomutt/commands.c
---- mutt-1.6.2/commands.c	2016-08-20 02:44:51.884765279 +0100
-+++ mutt-1.6.2-neomutt/commands.c	2016-08-20 02:44:52.083766326 +0100
+--- mutt-1.6.2/commands.c	2016-08-21 11:07:09.489047491 +0100
++++ mutt-1.6.2-neomutt/commands.c	2016-08-21 11:07:09.817048748 +0100
 @@ -40,6 +40,10 @@
  #include "imap.h"
  #endif
@@ -2848,8 +2848,8 @@ diff -urN mutt-1.6.2/commands.c mutt-1.6.2-neomutt/commands.c
  
      need_buffy_cleanup = (ctx.magic == M_MBOX || ctx.magic == M_MMDF);
 diff -urN mutt-1.6.2/complete.c mutt-1.6.2-neomutt/complete.c
---- mutt-1.6.2/complete.c	2016-08-20 02:44:51.884765279 +0100
-+++ mutt-1.6.2-neomutt/complete.c	2016-08-20 02:44:52.083766326 +0100
+--- mutt-1.6.2/complete.c	2016-08-21 11:07:09.489047491 +0100
++++ mutt-1.6.2-neomutt/complete.c	2016-08-21 11:07:09.817048748 +0100
 @@ -25,6 +25,9 @@
  #include "mailbox.h"
  #include "imap.h"
@@ -2932,8 +2932,8 @@ diff -urN mutt-1.6.2/complete.c mutt-1.6.2-neomutt/complete.c
    if (*s == '=' || *s == '+' || *s == '!')
    {
 diff -urN mutt-1.6.2/compose.c mutt-1.6.2-neomutt/compose.c
---- mutt-1.6.2/compose.c	2016-08-20 02:44:51.884765279 +0100
-+++ mutt-1.6.2-neomutt/compose.c	2016-08-20 02:44:52.084766332 +0100
+--- mutt-1.6.2/compose.c	2016-08-21 11:07:09.489047491 +0100
++++ mutt-1.6.2-neomutt/compose.c	2016-08-21 11:07:09.817048748 +0100
 @@ -32,11 +32,19 @@
  #include "mailbox.h"
  #include "sort.h"
@@ -3419,7 +3419,7 @@ diff -urN mutt-1.6.2/compose.c mutt-1.6.2-neomutt/compose.c
  	mutt_paddstr (COLS, buf);
 diff -urN mutt-1.6.2/compress.c mutt-1.6.2-neomutt/compress.c
 --- mutt-1.6.2/compress.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/compress.c	2016-08-20 02:44:52.084766332 +0100
++++ mutt-1.6.2-neomutt/compress.c	2016-08-21 11:07:09.817048748 +0100
 @@ -0,0 +1,811 @@
 +/* Copyright (C) 1997 Alain Penders <Alain@Finale-Dev.com>
 + * Copyright (C) 2016 Richard Russon <rich@flatcap.org>
@@ -4234,7 +4234,7 @@ diff -urN mutt-1.6.2/compress.c mutt-1.6.2-neomutt/compress.c
 +
 diff -urN mutt-1.6.2/compress.h mutt-1.6.2-neomutt/compress.h
 --- mutt-1.6.2/compress.h	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/compress.h	2016-08-20 02:44:52.084766332 +0100
++++ mutt-1.6.2-neomutt/compress.h	2016-08-21 11:07:09.817048748 +0100
 @@ -0,0 +1,32 @@
 +/* Copyright (C) 1997 Alain Penders <Alain@Finale-Dev.com>
 + * Copyright (C) 2016 Richard Russon <rich@flatcap.org>
@@ -4269,8 +4269,8 @@ diff -urN mutt-1.6.2/compress.h mutt-1.6.2-neomutt/compress.h
 +
 +#endif /* _COMPRESS_H_ */
 diff -urN mutt-1.6.2/configure.ac mutt-1.6.2-neomutt/configure.ac
---- mutt-1.6.2/configure.ac	2016-08-20 02:44:51.884765279 +0100
-+++ mutt-1.6.2-neomutt/configure.ac	2016-08-20 02:44:52.084766332 +0100
+--- mutt-1.6.2/configure.ac	2016-08-21 11:07:09.489047491 +0100
++++ mutt-1.6.2-neomutt/configure.ac	2016-08-21 11:07:09.818048752 +0100
 @@ -3,7 +3,10 @@
  dnl !!! WHEN ADDING NEW CONFIGURE TESTS, PLEASE ADD CODE TO MAIN.C !!!
  dnl !!! TO DUMP THEIR RESULTS WHEN MUTT -V IS CALLED            !!!
@@ -4700,8 +4700,8 @@ diff -urN mutt-1.6.2/configure.ac mutt-1.6.2-neomutt/configure.ac
 +  Header Cache:      $hcache_db_used
 +])
 diff -urN mutt-1.6.2/copy.c mutt-1.6.2-neomutt/copy.c
---- mutt-1.6.2/copy.c	2016-08-20 02:44:51.885765284 +0100
-+++ mutt-1.6.2-neomutt/copy.c	2016-08-20 02:44:52.090766363 +0100
+--- mutt-1.6.2/copy.c	2016-08-21 11:07:09.490047494 +0100
++++ mutt-1.6.2-neomutt/copy.c	2016-08-21 11:07:09.824048775 +0100
 @@ -30,6 +30,10 @@
  #include "mutt_idna.h"
  #include "mutt_curses.h"
@@ -4868,8 +4868,8 @@ diff -urN mutt-1.6.2/copy.c mutt-1.6.2-neomutt/copy.c
    return r;
  }
 diff -urN mutt-1.6.2/copy.h mutt-1.6.2-neomutt/copy.h
---- mutt-1.6.2/copy.h	2016-08-20 02:44:51.885765284 +0100
-+++ mutt-1.6.2-neomutt/copy.h	2016-08-20 02:44:52.090766363 +0100
+--- mutt-1.6.2/copy.h	2016-08-21 11:07:09.490047494 +0100
++++ mutt-1.6.2-neomutt/copy.h	2016-08-21 11:07:09.824048775 +0100
 @@ -53,6 +53,8 @@
  #define CH_UPDATE_IRT     (1<<16) /* update In-Reply-To: */
  #define CH_UPDATE_REFS    (1<<17) /* update References: */
@@ -4880,8 +4880,8 @@ diff -urN mutt-1.6.2/copy.h mutt-1.6.2-neomutt/copy.h
  
  int mutt_copy_hdr (FILE *, FILE *, LOFF_T, LOFF_T, int, const char *);
 diff -urN mutt-1.6.2/crypt.c mutt-1.6.2-neomutt/crypt.c
---- mutt-1.6.2/crypt.c	2016-08-20 02:44:51.886765289 +0100
-+++ mutt-1.6.2-neomutt/crypt.c	2016-08-20 02:44:52.091766369 +0100
+--- mutt-1.6.2/crypt.c	2016-08-21 11:07:09.491047498 +0100
++++ mutt-1.6.2-neomutt/crypt.c	2016-08-21 11:07:09.825048779 +0100
 @@ -231,8 +231,21 @@
      if ((WithCrypto & APPLICATION_SMIME)
          && (msg->security & APPLICATION_SMIME))
@@ -4907,8 +4907,8 @@ diff -urN mutt-1.6.2/crypt.c mutt-1.6.2-neomutt/crypt.c
  	/* signed ? free it! */
  	return (-1);
 diff -urN mutt-1.6.2/crypt-gpgme.c mutt-1.6.2-neomutt/crypt-gpgme.c
---- mutt-1.6.2/crypt-gpgme.c	2016-08-20 02:44:51.885765284 +0100
-+++ mutt-1.6.2-neomutt/crypt-gpgme.c	2016-08-20 02:44:52.090766363 +0100
+--- mutt-1.6.2/crypt-gpgme.c	2016-08-21 11:07:09.491047498 +0100
++++ mutt-1.6.2-neomutt/crypt-gpgme.c	2016-08-21 11:07:09.825048779 +0100
 @@ -2744,6 +2744,7 @@
  static const char *crypt_entry_fmt (char *dest,
                                      size_t destlen,
@@ -4939,8 +4939,8 @@ diff -urN mutt-1.6.2/crypt-gpgme.c mutt-1.6.2-neomutt/crypt-gpgme.c
  }
  
 diff -urN mutt-1.6.2/curs_lib.c mutt-1.6.2-neomutt/curs_lib.c
---- mutt-1.6.2/curs_lib.c	2016-08-20 02:44:51.886765289 +0100
-+++ mutt-1.6.2-neomutt/curs_lib.c	2016-08-20 02:44:52.091766369 +0100
+--- mutt-1.6.2/curs_lib.c	2016-08-21 11:07:09.491047498 +0100
++++ mutt-1.6.2-neomutt/curs_lib.c	2016-08-21 11:07:09.826048783 +0100
 @@ -44,6 +44,10 @@
  #include <langinfo.h>
  #endif
@@ -5124,8 +5124,8 @@ diff -urN mutt-1.6.2/curs_lib.c mutt-1.6.2-neomutt/curs_lib.c
      {
        k = (k == (size_t)(-1)) ? 1 : n;
 diff -urN mutt-1.6.2/curs_main.c mutt-1.6.2-neomutt/curs_main.c
---- mutt-1.6.2/curs_main.c	2016-08-20 02:44:51.886765289 +0100
-+++ mutt-1.6.2-neomutt/curs_main.c	2016-08-20 02:44:52.092766374 +0100
+--- mutt-1.6.2/curs_main.c	2016-08-21 11:07:09.491047498 +0100
++++ mutt-1.6.2-neomutt/curs_main.c	2016-08-21 11:07:09.826048783 +0100
 @@ -22,12 +22,18 @@
  
  #include "mutt.h"
@@ -6234,8 +6234,8 @@ diff -urN mutt-1.6.2/curs_main.c mutt-1.6.2-neomutt/curs_main.c
      {
        menu->menu = MENU_MAIN;
 diff -urN mutt-1.6.2/doc/gen-map-doc mutt-1.6.2-neomutt/doc/gen-map-doc
---- mutt-1.6.2/doc/gen-map-doc	2016-08-20 02:44:51.887765295 +0100
-+++ mutt-1.6.2-neomutt/doc/gen-map-doc	2016-08-20 02:44:52.092766374 +0100
+--- mutt-1.6.2/doc/gen-map-doc	2016-08-21 11:07:09.492047502 +0100
++++ mutt-1.6.2-neomutt/doc/gen-map-doc	2016-08-21 11:07:09.827048787 +0100
 @@ -34,7 +34,8 @@
      $binding =~ s/^\\(0\d+)$/'^'.chr(64+oct($1))/e;
      $binding =~ s/^\\(0\d+)(.)/'^'.chr(64+oct($1)) ." $2"/e;
@@ -6247,8 +6247,8 @@ diff -urN mutt-1.6.2/doc/gen-map-doc mutt-1.6.2-neomutt/doc/gen-map-doc
      die "unknown key $binding" if $binding =~ /\\[^\\]|<|>/;
      die "unknown OP $op" unless $OPS{$op};
 diff -urN mutt-1.6.2/doc/makedoc-defs.h mutt-1.6.2-neomutt/doc/makedoc-defs.h
---- mutt-1.6.2/doc/makedoc-defs.h	2016-08-20 02:44:51.887765295 +0100
-+++ mutt-1.6.2-neomutt/doc/makedoc-defs.h	2016-08-20 02:44:52.092766374 +0100
+--- mutt-1.6.2/doc/makedoc-defs.h	2016-08-21 11:07:09.492047502 +0100
++++ mutt-1.6.2-neomutt/doc/makedoc-defs.h	2016-08-21 11:07:09.827048787 +0100
 @@ -55,4 +55,7 @@
  # ifndef USE_SASL
  #  define USE_SASL
@@ -6258,8 +6258,8 @@ diff -urN mutt-1.6.2/doc/makedoc-defs.h mutt-1.6.2-neomutt/doc/makedoc-defs.h
 +# endif
  #endif
 diff -urN mutt-1.6.2/doc/Makefile.am mutt-1.6.2-neomutt/doc/Makefile.am
---- mutt-1.6.2/doc/Makefile.am	2016-08-20 02:44:51.886765289 +0100
-+++ mutt-1.6.2-neomutt/doc/Makefile.am	2016-08-20 02:44:52.092766374 +0100
+--- mutt-1.6.2/doc/Makefile.am	2016-08-21 11:07:09.491047498 +0100
++++ mutt-1.6.2-neomutt/doc/Makefile.am	2016-08-21 11:07:09.826048783 +0100
 @@ -14,7 +14,6 @@
  
  EXTRA_DIST = dotlock.man		\
@@ -6327,8 +6327,8 @@ diff -urN mutt-1.6.2/doc/Makefile.am mutt-1.6.2-neomutt/doc/Makefile.am
  	  $(MAKEDOC_CPP) $(top_srcdir)/functions.h | \
  	    perl $(srcdir)/gen-map-doc $(srcdir)/manual.xml.tail $(top_srcdir)/OPS* \
 diff -urN mutt-1.6.2/doc/manual.xml.head mutt-1.6.2-neomutt/doc/manual.xml.head
---- mutt-1.6.2/doc/manual.xml.head	2016-08-20 02:44:51.890765311 +0100
-+++ mutt-1.6.2-neomutt/doc/manual.xml.head	2016-08-20 02:44:52.095766390 +0100
+--- mutt-1.6.2/doc/manual.xml.head	2016-08-21 11:07:09.495047514 +0100
++++ mutt-1.6.2-neomutt/doc/manual.xml.head	2016-08-21 11:07:09.830048798 +0100
 @@ -405,6 +405,602 @@
  
  </sect2>
@@ -12315,7 +12315,7 @@ diff -urN mutt-1.6.2/doc/manual.xml.head mutt-1.6.2-neomutt/doc/manual.xml.head
  <arg choice="plain">
  <replaceable class="parameter">filename</replaceable>
 diff -urN mutt-1.6.2/doc/muttbug.man mutt-1.6.2-neomutt/doc/muttbug.man
---- mutt-1.6.2/doc/muttbug.man	2016-08-20 02:44:51.890765311 +0100
+--- mutt-1.6.2/doc/muttbug.man	2016-08-21 11:07:09.495047514 +0100
 +++ mutt-1.6.2-neomutt/doc/muttbug.man	1970-01-01 01:00:00.000000000 +0100
 @@ -1,200 +0,0 @@
 -.\" -*-nroff-*-
@@ -12519,8 +12519,8 @@ diff -urN mutt-1.6.2/doc/muttbug.man mutt-1.6.2-neomutt/doc/muttbug.man
 -and this manual page were written by Thomas Roessler
 -<roessler@does-not-exist.org>.
 diff -urN mutt-1.6.2/doc/mutt.css mutt-1.6.2-neomutt/doc/mutt.css
---- mutt-1.6.2/doc/mutt.css	2016-08-20 02:44:51.890765311 +0100
-+++ mutt-1.6.2-neomutt/doc/mutt.css	2016-08-20 02:44:52.095766390 +0100
+--- mutt-1.6.2/doc/mutt.css	2016-08-21 11:07:09.495047514 +0100
++++ mutt-1.6.2-neomutt/doc/mutt.css	2016-08-21 11:07:09.830048798 +0100
 @@ -9,17 +9,24 @@
  div.table-contents table th, div.informaltable table th {
      font-family:sans-serif;
@@ -12552,8 +12552,8 @@ diff -urN mutt-1.6.2/doc/mutt.css mutt-1.6.2-neomutt/doc/mutt.css
 +span.highlight { background: #404040; color: #ffffff; }
 +span.reverse { background: #ffffff; color: #000000; }
 diff -urN mutt-1.6.2/doc/mutt.man mutt-1.6.2-neomutt/doc/mutt.man
---- mutt-1.6.2/doc/mutt.man	2016-08-20 02:44:51.890765311 +0100
-+++ mutt-1.6.2-neomutt/doc/mutt.man	2016-08-20 02:44:52.095766390 +0100
+--- mutt-1.6.2/doc/mutt.man	2016-08-21 11:07:09.495047514 +0100
++++ mutt-1.6.2-neomutt/doc/mutt.man	2016-08-21 11:07:09.830048798 +0100
 @@ -23,8 +23,8 @@
  .SH SYNOPSIS
  .PP
@@ -12578,7 +12578,7 @@ diff -urN mutt-1.6.2/doc/mutt.man mutt-1.6.2-neomutt/doc/mutt.man
  .IP "-H \fIdraft\fP"
 diff -urN mutt-1.6.2/doc/muttrc.compress mutt-1.6.2-neomutt/doc/muttrc.compress
 --- mutt-1.6.2/doc/muttrc.compress	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.compress	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.compress	2016-08-21 11:07:09.830048798 +0100
 @@ -0,0 +1,38 @@
 +# Example Mutt config file for the 'compressed folders' feature.
 +
@@ -12620,7 +12620,7 @@ diff -urN mutt-1.6.2/doc/muttrc.compress mutt-1.6.2-neomutt/doc/muttrc.compress
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.cond-date mutt-1.6.2-neomutt/doc/muttrc.cond-date
 --- mutt-1.6.2/doc/muttrc.cond-date	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.cond-date	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.cond-date	2016-08-21 11:07:09.830048798 +0100
 @@ -0,0 +1,16 @@
 +# Example Mutt config file for the 'cond-date' feature.
 +#
@@ -12639,8 +12639,8 @@ diff -urN mutt-1.6.2/doc/muttrc.cond-date mutt-1.6.2-neomutt/doc/muttrc.cond-dat
 +
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/Muttrc.head mutt-1.6.2-neomutt/doc/Muttrc.head
---- mutt-1.6.2/doc/Muttrc.head	2016-08-20 02:44:51.886765289 +0100
-+++ mutt-1.6.2-neomutt/doc/Muttrc.head	2016-08-20 02:44:52.092766374 +0100
+--- mutt-1.6.2/doc/Muttrc.head	2016-08-21 11:07:09.492047502 +0100
++++ mutt-1.6.2-neomutt/doc/Muttrc.head	2016-08-21 11:07:09.826048783 +0100
 @@ -29,6 +29,11 @@
  macro index,pager y "<change-folder>?<toggle-mailboxes>" "show incoming mailboxes list"
  bind browser y exit
@@ -12655,7 +12655,7 @@ diff -urN mutt-1.6.2/doc/Muttrc.head mutt-1.6.2-neomutt/doc/Muttrc.head
  #
 diff -urN mutt-1.6.2/doc/muttrc.ifdef mutt-1.6.2-neomutt/doc/muttrc.ifdef
 --- mutt-1.6.2/doc/muttrc.ifdef	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.ifdef	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.ifdef	2016-08-21 11:07:09.830048798 +0100
 @@ -0,0 +1,32 @@
 +# Example Mutt config file for the 'ifdef' feature.
 +
@@ -12691,7 +12691,7 @@ diff -urN mutt-1.6.2/doc/muttrc.ifdef mutt-1.6.2-neomutt/doc/muttrc.ifdef
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.index-color mutt-1.6.2-neomutt/doc/muttrc.index-color
 --- mutt-1.6.2/doc/muttrc.index-color	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.index-color	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.index-color	2016-08-21 11:07:09.830048798 +0100
 @@ -0,0 +1,37 @@
 +# Example Mutt config file for the 'index-color' feature.
 +
@@ -12732,7 +12732,7 @@ diff -urN mutt-1.6.2/doc/muttrc.index-color mutt-1.6.2-neomutt/doc/muttrc.index-
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.initials mutt-1.6.2-neomutt/doc/muttrc.initials
 --- mutt-1.6.2/doc/muttrc.initials	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.initials	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.initials	2016-08-21 11:07:09.830048798 +0100
 @@ -0,0 +1,27 @@
 +# Example Mutt config file for the 'initials' patch.
 +
@@ -12763,7 +12763,7 @@ diff -urN mutt-1.6.2/doc/muttrc.initials mutt-1.6.2-neomutt/doc/muttrc.initials
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.keywords mutt-1.6.2-neomutt/doc/muttrc.keywords
 --- mutt-1.6.2/doc/muttrc.keywords	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.keywords	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.keywords	2016-08-21 11:07:09.830048798 +0100
 @@ -0,0 +1,23 @@
 +# This is a complete list of keywords-related configuration.
 +
@@ -12790,7 +12790,7 @@ diff -urN mutt-1.6.2/doc/muttrc.keywords mutt-1.6.2-neomutt/doc/muttrc.keywords
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.limit-current-thread mutt-1.6.2-neomutt/doc/muttrc.limit-current-thread
 --- mutt-1.6.2/doc/muttrc.limit-current-thread	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.limit-current-thread	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.limit-current-thread	2016-08-21 11:07:09.830048798 +0100
 @@ -0,0 +1,6 @@
 +# Example Mutt config file for the 'limit-current-thread' patch.
 + 
@@ -12799,8 +12799,8 @@ diff -urN mutt-1.6.2/doc/muttrc.limit-current-thread mutt-1.6.2-neomutt/doc/mutt
 + 
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.man.head mutt-1.6.2-neomutt/doc/muttrc.man.head
---- mutt-1.6.2/doc/muttrc.man.head	2016-08-20 02:44:51.891765316 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.man.head	2016-08-20 02:44:52.096766395 +0100
+--- mutt-1.6.2/doc/muttrc.man.head	2016-08-21 11:07:09.495047514 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.man.head	2016-08-21 11:07:09.831048802 +0100
 @@ -358,7 +358,24 @@
  \fBcrypt-hook\fPs with the same \fIregexp\fP; multiple matching
  \fBcrypt-hook\fPs result in the use of multiple \fIkey-id\fPs for
@@ -12829,7 +12829,7 @@ diff -urN mutt-1.6.2/doc/muttrc.man.head mutt-1.6.2-neomutt/doc/muttrc.man.head
  This command adds the named \fIstring\fP to the keyboard buffer.
 diff -urN mutt-1.6.2/doc/muttrc.nested-if mutt-1.6.2-neomutt/doc/muttrc.nested-if
 --- mutt-1.6.2/doc/muttrc.nested-if	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.nested-if	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.nested-if	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,24 @@
 +# Example Mutt config file for the 'nested-if' feature.
 +
@@ -12857,7 +12857,7 @@ diff -urN mutt-1.6.2/doc/muttrc.nested-if mutt-1.6.2-neomutt/doc/muttrc.nested-i
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.new-mail mutt-1.6.2-neomutt/doc/muttrc.new-mail
 --- mutt-1.6.2/doc/muttrc.new-mail	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.new-mail	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.new-mail	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,18 @@
 +# Example Mutt config file for the 'new-mail-command' patch.
 +
@@ -12879,7 +12879,7 @@ diff -urN mutt-1.6.2/doc/muttrc.new-mail mutt-1.6.2-neomutt/doc/muttrc.new-mail
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.nntp mutt-1.6.2-neomutt/doc/muttrc.nntp
 --- mutt-1.6.2/doc/muttrc.nntp	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.nntp	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.nntp	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,115 @@
 +# This is a complete list of nntp configuration.
 +
@@ -12998,7 +12998,7 @@ diff -urN mutt-1.6.2/doc/muttrc.nntp mutt-1.6.2-neomutt/doc/muttrc.nntp
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.notmuch mutt-1.6.2-neomutt/doc/muttrc.notmuch
 --- mutt-1.6.2/doc/muttrc.notmuch	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.notmuch	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.notmuch	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,114 @@
 +# This is a complete list of notmuch-related configuration.
 +
@@ -13116,7 +13116,7 @@ diff -urN mutt-1.6.2/doc/muttrc.notmuch mutt-1.6.2-neomutt/doc/muttrc.notmuch
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.progress mutt-1.6.2-neomutt/doc/muttrc.progress
 --- mutt-1.6.2/doc/muttrc.progress	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.progress	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.progress	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,10 @@
 +# Example Mutt config file for the 'progress' patch.
 +
@@ -13130,7 +13130,7 @@ diff -urN mutt-1.6.2/doc/muttrc.progress mutt-1.6.2-neomutt/doc/muttrc.progress
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.quasi-delete mutt-1.6.2-neomutt/doc/muttrc.quasi-delete
 --- mutt-1.6.2/doc/muttrc.quasi-delete	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.quasi-delete	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.quasi-delete	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,7 @@
 +# Example Mutt config file for the 'quasi-delete' feature.
 +
@@ -13141,7 +13141,7 @@ diff -urN mutt-1.6.2/doc/muttrc.quasi-delete mutt-1.6.2-neomutt/doc/muttrc.quasi
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.sidebar mutt-1.6.2-neomutt/doc/muttrc.sidebar
 --- mutt-1.6.2/doc/muttrc.sidebar	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.sidebar	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.sidebar	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,116 @@
 +# This is a complete list of sidebar-related configuration.
 +
@@ -13261,7 +13261,7 @@ diff -urN mutt-1.6.2/doc/muttrc.sidebar mutt-1.6.2-neomutt/doc/muttrc.sidebar
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.skip-quoted mutt-1.6.2-neomutt/doc/muttrc.skip-quoted
 --- mutt-1.6.2/doc/muttrc.skip-quoted	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.skip-quoted	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.skip-quoted	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,10 @@
 +# Example Mutt config file for the 'skip-quoted' patch.
 + 
@@ -13275,7 +13275,7 @@ diff -urN mutt-1.6.2/doc/muttrc.skip-quoted mutt-1.6.2-neomutt/doc/muttrc.skip-q
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.smime-encrypt-self mutt-1.6.2-neomutt/doc/muttrc.smime-encrypt-self
 --- mutt-1.6.2/doc/muttrc.smime-encrypt-self	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.smime-encrypt-self	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.smime-encrypt-self	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,10 @@
 +# This is a complete list of smime-encrypt-self-related configuration.
 +
@@ -13289,7 +13289,7 @@ diff -urN mutt-1.6.2/doc/muttrc.smime-encrypt-self mutt-1.6.2-neomutt/doc/muttrc
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.status-color mutt-1.6.2-neomutt/doc/muttrc.status-color
 --- mutt-1.6.2/doc/muttrc.status-color	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.status-color	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.status-color	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,49 @@
 +# Example Mutt config file for the 'status-color' patch.
 +
@@ -13342,7 +13342,7 @@ diff -urN mutt-1.6.2/doc/muttrc.status-color mutt-1.6.2-neomutt/doc/muttrc.statu
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.timeout mutt-1.6.2-neomutt/doc/muttrc.timeout
 --- mutt-1.6.2/doc/muttrc.timeout	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.timeout	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.timeout	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,10 @@
 +# This is a complete list of timeout configuration.
 +
@@ -13356,7 +13356,7 @@ diff -urN mutt-1.6.2/doc/muttrc.timeout mutt-1.6.2-neomutt/doc/muttrc.timeout
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/muttrc.trash mutt-1.6.2-neomutt/doc/muttrc.trash
 --- mutt-1.6.2/doc/muttrc.trash	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/muttrc.trash	2016-08-20 02:44:52.096766395 +0100
++++ mutt-1.6.2-neomutt/doc/muttrc.trash	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,16 @@
 +# Example Mutt config file for the 'trash' feature.
 +
@@ -13376,7 +13376,7 @@ diff -urN mutt-1.6.2/doc/muttrc.trash mutt-1.6.2-neomutt/doc/muttrc.trash
 +# vim: syntax=muttrc
 diff -urN mutt-1.6.2/doc/vimrc.compress mutt-1.6.2-neomutt/doc/vimrc.compress
 --- mutt-1.6.2/doc/vimrc.compress	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/vimrc.compress	2016-08-20 02:44:52.097766400 +0100
++++ mutt-1.6.2-neomutt/doc/vimrc.compress	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,7 @@
 +" Vim syntax file for the mutt compress patch
 +
@@ -13387,7 +13387,7 @@ diff -urN mutt-1.6.2/doc/vimrc.compress mutt-1.6.2-neomutt/doc/vimrc.compress
 +" vim: syntax=vim
 diff -urN mutt-1.6.2/doc/vimrc.ifdef mutt-1.6.2-neomutt/doc/vimrc.ifdef
 --- mutt-1.6.2/doc/vimrc.ifdef	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/vimrc.ifdef	2016-08-20 02:44:52.097766400 +0100
++++ mutt-1.6.2-neomutt/doc/vimrc.ifdef	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,7 @@
 +" Vim syntax file for the mutt ifdef patch
 +
@@ -13398,7 +13398,7 @@ diff -urN mutt-1.6.2/doc/vimrc.ifdef mutt-1.6.2-neomutt/doc/vimrc.ifdef
 +" vim: syntax=vim
 diff -urN mutt-1.6.2/doc/vimrc.index-color mutt-1.6.2-neomutt/doc/vimrc.index-color
 --- mutt-1.6.2/doc/vimrc.index-color	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/vimrc.index-color	2016-08-20 02:44:52.097766400 +0100
++++ mutt-1.6.2-neomutt/doc/vimrc.index-color	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,13 @@
 +" Vim syntax file for the mutt index-color patch
 +
@@ -13415,7 +13415,7 @@ diff -urN mutt-1.6.2/doc/vimrc.index-color mutt-1.6.2-neomutt/doc/vimrc.index-co
 +" vim: syntax=vim
 diff -urN mutt-1.6.2/doc/vimrc.keywords mutt-1.6.2-neomutt/doc/vimrc.keywords
 --- mutt-1.6.2/doc/vimrc.keywords	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/vimrc.keywords	2016-08-20 02:44:52.097766400 +0100
++++ mutt-1.6.2-neomutt/doc/vimrc.keywords	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,10 @@
 +" Vim syntax file for the mutt keywords patch
 +
@@ -13429,7 +13429,7 @@ diff -urN mutt-1.6.2/doc/vimrc.keywords mutt-1.6.2-neomutt/doc/vimrc.keywords
 +" vim: syntax=vim
 diff -urN mutt-1.6.2/doc/vimrc.new-mail mutt-1.6.2-neomutt/doc/vimrc.new-mail
 --- mutt-1.6.2/doc/vimrc.new-mail	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/vimrc.new-mail	2016-08-20 02:44:52.097766400 +0100
++++ mutt-1.6.2-neomutt/doc/vimrc.new-mail	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,5 @@
 +" Vim syntax file for the mutt new-mail patch
 +
@@ -13438,7 +13438,7 @@ diff -urN mutt-1.6.2/doc/vimrc.new-mail mutt-1.6.2-neomutt/doc/vimrc.new-mail
 +" vim: syntax=vim
 diff -urN mutt-1.6.2/doc/vimrc.nntp mutt-1.6.2-neomutt/doc/vimrc.nntp
 --- mutt-1.6.2/doc/vimrc.nntp	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/vimrc.nntp	2016-08-20 02:44:52.097766400 +0100
++++ mutt-1.6.2-neomutt/doc/vimrc.nntp	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,50 @@
 +" Vim syntax file for the mutt nntp patch
 +
@@ -13492,7 +13492,7 @@ diff -urN mutt-1.6.2/doc/vimrc.nntp mutt-1.6.2-neomutt/doc/vimrc.nntp
 +" vim: syntax=vim
 diff -urN mutt-1.6.2/doc/vimrc.notmuch mutt-1.6.2-neomutt/doc/vimrc.notmuch
 --- mutt-1.6.2/doc/vimrc.notmuch	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/vimrc.notmuch	2016-08-20 02:44:52.097766400 +0100
++++ mutt-1.6.2-neomutt/doc/vimrc.notmuch	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,28 @@
 +" Vim syntax file for the mutt notmuch patch
 +
@@ -13524,7 +13524,7 @@ diff -urN mutt-1.6.2/doc/vimrc.notmuch mutt-1.6.2-neomutt/doc/vimrc.notmuch
 +" vim: syntax=vim
 diff -urN mutt-1.6.2/doc/vimrc.progress mutt-1.6.2-neomutt/doc/vimrc.progress
 --- mutt-1.6.2/doc/vimrc.progress	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/vimrc.progress	2016-08-20 02:44:52.097766400 +0100
++++ mutt-1.6.2-neomutt/doc/vimrc.progress	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,5 @@
 +" Vim syntax file for the mutt progress patch
 +
@@ -13533,7 +13533,7 @@ diff -urN mutt-1.6.2/doc/vimrc.progress mutt-1.6.2-neomutt/doc/vimrc.progress
 +" vim: syntax=vim
 diff -urN mutt-1.6.2/doc/vimrc.quasi-delete mutt-1.6.2-neomutt/doc/vimrc.quasi-delete
 --- mutt-1.6.2/doc/vimrc.quasi-delete	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/vimrc.quasi-delete	2016-08-20 02:44:52.097766400 +0100
++++ mutt-1.6.2-neomutt/doc/vimrc.quasi-delete	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,5 @@
 +" Vim syntax file for the mutt quasi-delete patch
 +
@@ -13542,7 +13542,7 @@ diff -urN mutt-1.6.2/doc/vimrc.quasi-delete mutt-1.6.2-neomutt/doc/vimrc.quasi-d
 +" vim: syntax=vim
 diff -urN mutt-1.6.2/doc/vimrc.sidebar mutt-1.6.2-neomutt/doc/vimrc.sidebar
 --- mutt-1.6.2/doc/vimrc.sidebar	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/vimrc.sidebar	2016-08-20 02:44:52.097766400 +0100
++++ mutt-1.6.2-neomutt/doc/vimrc.sidebar	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,34 @@
 +" Vim syntax file for the mutt sidebar patch
 +
@@ -13580,7 +13580,7 @@ diff -urN mutt-1.6.2/doc/vimrc.sidebar mutt-1.6.2-neomutt/doc/vimrc.sidebar
 +" vim: syntax=vim
 diff -urN mutt-1.6.2/doc/vimrc.smime-encrypt-self mutt-1.6.2-neomutt/doc/vimrc.smime-encrypt-self
 --- mutt-1.6.2/doc/vimrc.smime-encrypt-self	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/vimrc.smime-encrypt-self	2016-08-20 02:44:52.097766400 +0100
++++ mutt-1.6.2-neomutt/doc/vimrc.smime-encrypt-self	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,5 @@
 +" Vim syntax file for the mutt smime-encrypt-self patch
 +
@@ -13589,7 +13589,7 @@ diff -urN mutt-1.6.2/doc/vimrc.smime-encrypt-self mutt-1.6.2-neomutt/doc/vimrc.s
 +" vim: syntax=vim
 diff -urN mutt-1.6.2/doc/vimrc.timeout mutt-1.6.2-neomutt/doc/vimrc.timeout
 --- mutt-1.6.2/doc/vimrc.timeout	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/vimrc.timeout	2016-08-20 02:44:52.097766400 +0100
++++ mutt-1.6.2-neomutt/doc/vimrc.timeout	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,5 @@
 +" Vim syntax file for the mutt timeout patch
 +
@@ -13598,7 +13598,7 @@ diff -urN mutt-1.6.2/doc/vimrc.timeout mutt-1.6.2-neomutt/doc/vimrc.timeout
 +" vim: syntax=vim
 diff -urN mutt-1.6.2/doc/vimrc.trash mutt-1.6.2-neomutt/doc/vimrc.trash
 --- mutt-1.6.2/doc/vimrc.trash	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/doc/vimrc.trash	2016-08-20 02:44:52.097766400 +0100
++++ mutt-1.6.2-neomutt/doc/vimrc.trash	2016-08-21 11:07:09.831048802 +0100
 @@ -0,0 +1,7 @@
 +" Vim syntax file for the mutt trash patch
 +
@@ -13608,8 +13608,8 @@ diff -urN mutt-1.6.2/doc/vimrc.trash mutt-1.6.2-neomutt/doc/vimrc.trash
 +
 +" vim: syntax=vim
 diff -urN mutt-1.6.2/enter.c mutt-1.6.2-neomutt/enter.c
---- mutt-1.6.2/enter.c	2016-08-20 02:44:51.891765316 +0100
-+++ mutt-1.6.2-neomutt/enter.c	2016-08-20 02:44:52.097766400 +0100
+--- mutt-1.6.2/enter.c	2016-08-21 11:07:09.495047514 +0100
++++ mutt-1.6.2-neomutt/enter.c	2016-08-21 11:07:09.832048806 +0100
 @@ -565,6 +565,49 @@
  	    }
  	    break;
@@ -13702,8 +13702,8 @@ diff -urN mutt-1.6.2/enter.c mutt-1.6.2-neomutt/enter.c
        if (ch & ~0xff)
  	continue;
 diff -urN mutt-1.6.2/filter.c mutt-1.6.2-neomutt/filter.c
---- mutt-1.6.2/filter.c	2016-08-20 02:44:51.891765316 +0100
-+++ mutt-1.6.2-neomutt/filter.c	2016-08-20 02:44:52.097766400 +0100
+--- mutt-1.6.2/filter.c	2016-08-21 11:07:09.495047514 +0100
++++ mutt-1.6.2-neomutt/filter.c	2016-08-21 11:07:09.842048844 +0100
 @@ -21,6 +21,7 @@
  #endif
  
@@ -13731,8 +13731,8 @@ diff -urN mutt-1.6.2/filter.c mutt-1.6.2-neomutt/filter.c
      _exit (127);
    }
 diff -urN mutt-1.6.2/flags.c mutt-1.6.2-neomutt/flags.c
---- mutt-1.6.2/flags.c	2016-08-20 02:44:51.891765316 +0100
-+++ mutt-1.6.2-neomutt/flags.c	2016-08-20 02:44:52.097766400 +0100
+--- mutt-1.6.2/flags.c	2016-08-21 11:07:09.495047514 +0100
++++ mutt-1.6.2-neomutt/flags.c	2016-08-21 11:07:09.842048844 +0100
 @@ -65,7 +65,13 @@
        {
  	h->deleted = 0;
@@ -13790,8 +13790,8 @@ diff -urN mutt-1.6.2/flags.c mutt-1.6.2-neomutt/flags.c
    /* if the message status has changed, we need to invalidate the cached
     * search results so that any future search will match the current status
 diff -urN mutt-1.6.2/functions.h mutt-1.6.2-neomutt/functions.h
---- mutt-1.6.2/functions.h	2016-08-20 02:44:51.891765316 +0100
-+++ mutt-1.6.2-neomutt/functions.h	2016-08-20 02:44:52.098766405 +0100
+--- mutt-1.6.2/functions.h	2016-08-21 11:07:09.496047517 +0100
++++ mutt-1.6.2-neomutt/functions.h	2016-08-21 11:07:09.842048844 +0100
 @@ -22,9 +22,6 @@
   *
   * Notes:
@@ -14073,7 +14073,7 @@ diff -urN mutt-1.6.2/functions.h mutt-1.6.2-neomutt/functions.h
    { "delete",		OP_MIX_DELETE,  "d"	  },
 diff -urN mutt-1.6.2/.gitignore mutt-1.6.2-neomutt/.gitignore
 --- mutt-1.6.2/.gitignore	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/.gitignore	2016-08-20 02:44:52.075766284 +0100
++++ mutt-1.6.2-neomutt/.gitignore	2016-08-21 11:07:09.809048718 +0100
 @@ -0,0 +1,56 @@
 +# Wildcard ignores
 +*.o
@@ -14133,7 +14133,7 @@ diff -urN mutt-1.6.2/.gitignore mutt-1.6.2-neomutt/.gitignore
 +txt2c
 diff -urN mutt-1.6.2/git-version-gen mutt-1.6.2-neomutt/git-version-gen
 --- mutt-1.6.2/git-version-gen	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/git-version-gen	2016-08-20 02:44:52.098766405 +0100
++++ mutt-1.6.2-neomutt/git-version-gen	2016-08-21 11:07:09.842048844 +0100
 @@ -0,0 +1,226 @@
 +#!/bin/sh
 +# Print a version string.
@@ -14362,8 +14362,8 @@ diff -urN mutt-1.6.2/git-version-gen mutt-1.6.2-neomutt/git-version-gen
 +# time-stamp-end: "; # UTC"
 +# End:
 diff -urN mutt-1.6.2/globals.h mutt-1.6.2-neomutt/globals.h
---- mutt-1.6.2/globals.h	2016-08-20 02:44:51.891765316 +0100
-+++ mutt-1.6.2-neomutt/globals.h	2016-08-20 02:44:52.098766405 +0100
+--- mutt-1.6.2/globals.h	2016-08-21 11:07:09.496047517 +0100
++++ mutt-1.6.2-neomutt/globals.h	2016-08-21 11:07:09.842048844 +0100
 @@ -66,10 +66,11 @@
  #endif
  WHERE char *Inbox;
@@ -14495,8 +14495,8 @@ diff -urN mutt-1.6.2/globals.h mutt-1.6.2-neomutt/globals.h
  
  
 diff -urN mutt-1.6.2/GPL mutt-1.6.2-neomutt/GPL
---- mutt-1.6.2/GPL	2016-08-20 02:44:51.882765268 +0100
-+++ mutt-1.6.2-neomutt/GPL	2016-08-20 02:44:52.079766305 +0100
+--- mutt-1.6.2/GPL	2016-08-21 11:07:09.486047479 +0100
++++ mutt-1.6.2-neomutt/GPL	2016-08-21 11:07:09.813048733 +0100
 @@ -1,73 +1,74 @@
 -		    GNU GENERAL PUBLIC LICENSE
 -		       Version 2, June 1991
@@ -14876,8 +14876,8 @@ diff -urN mutt-1.6.2/GPL mutt-1.6.2-neomutt/GPL
 +library.  If this is what you want to do, use the GNU Lesser General
  Public License instead of this License.
 diff -urN mutt-1.6.2/handler.c mutt-1.6.2-neomutt/handler.c
---- mutt-1.6.2/handler.c	2016-08-20 02:44:51.892765321 +0100
-+++ mutt-1.6.2-neomutt/handler.c	2016-08-20 02:44:52.098766405 +0100
+--- mutt-1.6.2/handler.c	2016-08-21 11:07:09.496047517 +0100
++++ mutt-1.6.2-neomutt/handler.c	2016-08-21 11:07:09.843048848 +0100
 @@ -1595,7 +1595,9 @@
    int origType;
    char *savePrefix = NULL;
@@ -14957,8 +14957,8 @@ diff -urN mutt-1.6.2/handler.c mutt-1.6.2-neomutt/handler.c
      }
    }
 diff -urN mutt-1.6.2/hash.c mutt-1.6.2-neomutt/hash.c
---- mutt-1.6.2/hash.c	2016-08-20 02:44:51.892765321 +0100
-+++ mutt-1.6.2-neomutt/hash.c	2016-08-20 02:44:52.098766405 +0100
+--- mutt-1.6.2/hash.c	2016-08-21 11:07:09.496047517 +0100
++++ mutt-1.6.2-neomutt/hash.c	2016-08-21 11:07:09.843048848 +0100
 @@ -57,6 +57,7 @@
    if (nelem == 0)
      nelem = 2;
@@ -15053,8 +15053,8 @@ diff -urN mutt-1.6.2/hash.c mutt-1.6.2-neomutt/hash.c
 +}
 +
 diff -urN mutt-1.6.2/hash.h mutt-1.6.2-neomutt/hash.h
---- mutt-1.6.2/hash.h	2016-08-20 02:44:51.892765321 +0100
-+++ mutt-1.6.2-neomutt/hash.h	2016-08-20 02:44:52.098766405 +0100
+--- mutt-1.6.2/hash.h	2016-08-21 11:07:09.496047517 +0100
++++ mutt-1.6.2-neomutt/hash.h	2016-08-21 11:07:09.843048848 +0100
 @@ -28,7 +28,7 @@
  
  typedef struct
@@ -15083,8 +15083,8 @@ diff -urN mutt-1.6.2/hash.h mutt-1.6.2-neomutt/hash.h
 +
  #endif
 diff -urN mutt-1.6.2/hcache.c mutt-1.6.2-neomutt/hcache.c
---- mutt-1.6.2/hcache.c	2016-08-20 02:44:51.892765321 +0100
-+++ mutt-1.6.2-neomutt/hcache.c	2016-08-20 02:44:52.099766411 +0100
+--- mutt-1.6.2/hcache.c	2016-08-21 11:07:09.496047517 +0100
++++ mutt-1.6.2-neomutt/hcache.c	2016-08-21 11:07:09.843048848 +0100
 @@ -32,6 +32,9 @@
  #include <gdbm.h>
  #elif HAVE_DB4
@@ -15381,8 +15381,8 @@ diff -urN mutt-1.6.2/hcache.c mutt-1.6.2-neomutt/hcache.c
  const char *mutt_hcache_backend (void)
  {
 diff -urN mutt-1.6.2/hdrline.c mutt-1.6.2-neomutt/hdrline.c
---- mutt-1.6.2/hdrline.c	2016-08-20 02:44:51.892765321 +0100
-+++ mutt-1.6.2-neomutt/hdrline.c	2016-08-20 02:44:52.099766411 +0100
+--- mutt-1.6.2/hdrline.c	2016-08-21 11:07:09.496047517 +0100
++++ mutt-1.6.2-neomutt/hdrline.c	2016-08-21 11:07:09.843048848 +0100
 @@ -36,6 +36,10 @@
  #include <alloca.h>
  #endif
@@ -15968,8 +15968,8 @@ diff -urN mutt-1.6.2/hdrline.c mutt-1.6.2-neomutt/hdrline.c
 +  mutt_FormatString (dst, dstlen, 0, COLS - SidebarWidth, s, hdr_format_str, (unsigned long) hfi, flags);
  }
 diff -urN mutt-1.6.2/headers.c mutt-1.6.2-neomutt/headers.c
---- mutt-1.6.2/headers.c	2016-08-20 02:44:51.892765321 +0100
-+++ mutt-1.6.2-neomutt/headers.c	2016-08-20 02:44:52.099766411 +0100
+--- mutt-1.6.2/headers.c	2016-08-21 11:07:09.497047521 +0100
++++ mutt-1.6.2-neomutt/headers.c	2016-08-21 11:07:09.843048848 +0100
 @@ -114,6 +114,9 @@
       $edit_headers set, we remove References: as they're likely invalid;
       we can simply compare strings as we don't generate References for
@@ -16179,8 +16179,8 @@ diff -urN mutt-1.6.2/headers.c mutt-1.6.2-neomutt/headers.c
 +  return dst;
 +}
 diff -urN mutt-1.6.2/hook.c mutt-1.6.2-neomutt/hook.c
---- mutt-1.6.2/hook.c	2016-08-20 02:44:51.892765321 +0100
-+++ mutt-1.6.2-neomutt/hook.c	2016-08-20 02:44:52.099766411 +0100
+--- mutt-1.6.2/hook.c	2016-08-21 11:07:09.497047521 +0100
++++ mutt-1.6.2-neomutt/hook.c	2016-08-21 11:07:09.844048852 +0100
 @@ -24,6 +24,10 @@
  #include "mailbox.h"
  #include "mutt_crypt.h"
@@ -16259,8 +16259,8 @@ diff -urN mutt-1.6.2/hook.c mutt-1.6.2-neomutt/hook.c
 +}
 +
 diff -urN mutt-1.6.2/imap/command.c mutt-1.6.2-neomutt/imap/command.c
---- mutt-1.6.2/imap/command.c	2016-08-20 02:44:51.893765326 +0100
-+++ mutt-1.6.2-neomutt/imap/command.c	2016-08-20 02:44:52.101766421 +0100
+--- mutt-1.6.2/imap/command.c	2016-08-21 11:07:09.497047521 +0100
++++ mutt-1.6.2-neomutt/imap/command.c	2016-08-21 11:07:09.845048856 +0100
 @@ -900,6 +900,8 @@
    IMAP_STATUS *status;
    unsigned int olduv, oldun;
@@ -16314,8 +16314,8 @@ diff -urN mutt-1.6.2/imap/command.c mutt-1.6.2-neomutt/imap/command.c
  	if (inc->new)
  	  /* force back to keep detecting new mail until the mailbox is
 diff -urN mutt-1.6.2/imap/imap.c mutt-1.6.2-neomutt/imap/imap.c
---- mutt-1.6.2/imap/imap.c	2016-08-20 02:44:51.893765326 +0100
-+++ mutt-1.6.2-neomutt/imap/imap.c	2016-08-20 02:44:52.101766421 +0100
+--- mutt-1.6.2/imap/imap.c	2016-08-21 11:07:09.497047521 +0100
++++ mutt-1.6.2-neomutt/imap/imap.c	2016-08-21 11:07:09.845048856 +0100
 @@ -589,7 +589,9 @@
    imap_qualify_path (buf, sizeof (buf), &mx, idata->mailbox);
  
@@ -16457,8 +16457,8 @@ diff -urN mutt-1.6.2/imap/imap.c mutt-1.6.2-neomutt/imap/imap.c
 +	return 1;
 +}
 diff -urN mutt-1.6.2/imap/imap.h mutt-1.6.2-neomutt/imap/imap.h
---- mutt-1.6.2/imap/imap.h	2016-08-20 02:44:51.893765326 +0100
-+++ mutt-1.6.2-neomutt/imap/imap.h	2016-08-20 02:44:52.101766421 +0100
+--- mutt-1.6.2/imap/imap.h	2016-08-21 11:07:09.497047521 +0100
++++ mutt-1.6.2-neomutt/imap/imap.h	2016-08-21 11:07:09.846048860 +0100
 @@ -39,7 +39,7 @@
  int imap_open_mailbox_append (CONTEXT *ctx);
  int imap_sync_mailbox (CONTEXT *ctx, int expunge, int *index_hint);
@@ -16477,8 +16477,8 @@ diff -urN mutt-1.6.2/imap/imap.h mutt-1.6.2-neomutt/imap/imap.h
 +
  #endif
 diff -urN mutt-1.6.2/imap/message.c mutt-1.6.2-neomutt/imap/message.c
---- mutt-1.6.2/imap/message.c	2016-08-20 02:44:51.893765326 +0100
-+++ mutt-1.6.2-neomutt/imap/message.c	2016-08-20 02:44:52.101766421 +0100
+--- mutt-1.6.2/imap/message.c	2016-08-21 11:07:09.498047525 +0100
++++ mutt-1.6.2-neomutt/imap/message.c	2016-08-21 11:07:09.846048860 +0100
 @@ -69,7 +69,7 @@
    int rc, mfhrc, oldmsgcount;
    int fetchlast = 0;
@@ -16513,8 +16513,8 @@ diff -urN mutt-1.6.2/imap/message.c mutt-1.6.2-neomutt/imap/message.c
          mutt_set_flag (ctx, h, M_TAG, 0);
      }
 diff -urN mutt-1.6.2/init.c mutt-1.6.2-neomutt/init.c
---- mutt-1.6.2/init.c	2016-08-20 02:44:51.894765332 +0100
-+++ mutt-1.6.2-neomutt/init.c	2016-08-20 02:44:52.102766426 +0100
+--- mutt-1.6.2/init.c	2016-08-21 11:07:09.498047525 +0100
++++ mutt-1.6.2-neomutt/init.c	2016-08-21 11:07:09.847048863 +0100
 @@ -32,12 +32,15 @@
  #include "mutt_crypt.h"
  #include "mutt_idna.h"
@@ -17098,7 +17098,7 @@ diff -urN mutt-1.6.2/init.c mutt-1.6.2-neomutt/init.c
  
      default_rc = 1;
      Muttrc = safe_strdup (buffer);
-@@ -3139,22 +3458,38 @@
+@@ -3139,14 +3458,30 @@
       requested not to via "-n".  */
    if (!skip_sys_rc)
    {
@@ -17110,12 +17110,6 @@ diff -urN mutt-1.6.2/init.c mutt-1.6.2-neomutt/init.c
 -    if (access (buffer, F_OK) == -1)
 -      snprintf (buffer, sizeof (buffer), "%s/Muttrc", PKGDATADIR);
 -    if (access (buffer, F_OK) != -1)
--    {
--      if (source_rc (buffer, &err) != 0)
--      {
--	fputs (err.data, stderr);
--	fputc ('\n', stderr);
--	need_pause = 1;
 +    do
 +    {
 +      if (mutt_set_xdg_path (kXDGConfigDirs, buffer, sizeof buffer))
@@ -17138,20 +17132,11 @@ diff -urN mutt-1.6.2/init.c mutt-1.6.2-neomutt/init.c
 +        break;
 +
 +      snprintf (buffer, sizeof buffer, "%s/Muttrc", PKGDATADIR);
-+      if (access (buffer, F_OK) == 0)
-+      {
-+        if (source_rc (buffer, &err) != 0)
-+        {
-+          fputs (err.data, stderr);
-+          fputc ('\n', stderr);
-+          need_pause = 1;
-+        }
-       }
--    }
 +    } while (0);
-   }
- 
-   /* Read the user's initialization file.  */
++    if (access (buffer, F_OK) == 0)
+     {
+       if (source_rc (buffer, &err) != 0)
+       {
 @@ -3188,6 +3523,11 @@
  
    mutt_read_histfile ();
@@ -17295,8 +17280,8 @@ diff -urN mutt-1.6.2/init.c mutt-1.6.2-neomutt/init.c
 +}
 +
 diff -urN mutt-1.6.2/init.h mutt-1.6.2-neomutt/init.h
---- mutt-1.6.2/init.h	2016-08-20 02:44:51.895765337 +0100
-+++ mutt-1.6.2-neomutt/init.h	2016-08-20 02:44:52.103766432 +0100
+--- mutt-1.6.2/init.h	2016-08-21 11:07:09.499047529 +0100
++++ mutt-1.6.2-neomutt/init.h	2016-08-21 11:07:09.848048867 +0100
 @@ -42,11 +42,12 @@
  #define DTYPE(x) ((x) & DT_MASK)
  
@@ -18166,8 +18151,8 @@ diff -urN mutt-1.6.2/init.h mutt-1.6.2-neomutt/init.h
    { "unalias",		parse_unalias,		0 },
    { "unalternative_order",parse_unlist,		UL &AlternativeOrderList },
 diff -urN mutt-1.6.2/keymap.c mutt-1.6.2-neomutt/keymap.c
---- mutt-1.6.2/keymap.c	2016-08-20 02:44:51.895765337 +0100
-+++ mutt-1.6.2-neomutt/keymap.c	2016-08-20 02:44:52.106766448 +0100
+--- mutt-1.6.2/keymap.c	2016-08-21 11:07:09.499047529 +0100
++++ mutt-1.6.2-neomutt/keymap.c	2016-08-21 11:07:09.850048875 +0100
 @@ -76,10 +76,8 @@
    { "<Insert>",	KEY_IC },
    { "<Home>",	KEY_HOME },
@@ -18219,8 +18204,8 @@ diff -urN mutt-1.6.2/keymap.c mutt-1.6.2-neomutt/keymap.c
  
    /* edit-to (default "t") hides generic tag-entry in Compose menu
 diff -urN mutt-1.6.2/lib.c mutt-1.6.2-neomutt/lib.c
---- mutt-1.6.2/lib.c	2016-08-20 02:44:51.895765337 +0100
-+++ mutt-1.6.2-neomutt/lib.c	2016-08-20 02:44:52.106766448 +0100
+--- mutt-1.6.2/lib.c	2016-08-21 11:07:09.499047529 +0100
++++ mutt-1.6.2-neomutt/lib.c	2016-08-21 11:07:09.850048875 +0100
 @@ -219,8 +219,10 @@
    {
      if (fflush (*f) || fsync (fileno (*f)))
@@ -18250,7 +18235,7 @@ diff -urN mutt-1.6.2/lib.c mutt-1.6.2-neomutt/lib.c
  
 diff -urN mutt-1.6.2/LICENSE.md mutt-1.6.2-neomutt/LICENSE.md
 --- mutt-1.6.2/LICENSE.md	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/LICENSE.md	2016-08-20 02:44:52.079766305 +0100
++++ mutt-1.6.2-neomutt/LICENSE.md	2016-08-21 11:07:09.813048733 +0100
 @@ -0,0 +1,336 @@
 +GNU General Public License
 +==========================
@@ -18589,8 +18574,8 @@ diff -urN mutt-1.6.2/LICENSE.md mutt-1.6.2-neomutt/LICENSE.md
 +library.  If this is what you want to do, use the GNU Lesser General
 +Public License instead of this License.
 diff -urN mutt-1.6.2/m4/gssapi.m4 mutt-1.6.2-neomutt/m4/gssapi.m4
---- mutt-1.6.2/m4/gssapi.m4	2016-08-20 02:44:51.895765337 +0100
-+++ mutt-1.6.2-neomutt/m4/gssapi.m4	2016-08-20 02:44:52.107766453 +0100
+--- mutt-1.6.2/m4/gssapi.m4	2016-08-21 11:07:09.500047533 +0100
++++ mutt-1.6.2-neomutt/m4/gssapi.m4	2016-08-21 11:07:09.851048879 +0100
 @@ -23,8 +23,8 @@
    AC_PATH_PROG(KRB5CFGPATH, krb5-config, none, $krb5_path)
    if test "$KRB5CFGPATH" != "none"
@@ -18603,8 +18588,8 @@ diff -urN mutt-1.6.2/m4/gssapi.m4 mutt-1.6.2-neomutt/m4/gssapi.m4
        "Kerberos 5 "*)	GSSAPI_IMPL="MIT";;
        ?eimdal*)		GSSAPI_IMPL="Heimdal";;
 diff -urN mutt-1.6.2/mailbox.h mutt-1.6.2-neomutt/mailbox.h
---- mutt-1.6.2/mailbox.h	2016-08-20 02:44:51.895765337 +0100
-+++ mutt-1.6.2-neomutt/mailbox.h	2016-08-20 02:44:52.107766453 +0100
+--- mutt-1.6.2/mailbox.h	2016-08-21 11:07:09.500047533 +0100
++++ mutt-1.6.2-neomutt/mailbox.h	2016-08-21 11:07:09.851048879 +0100
 @@ -20,13 +20,13 @@
  #define _MAILBOX_H
  
@@ -18645,8 +18630,8 @@ diff -urN mutt-1.6.2/mailbox.h mutt-1.6.2-neomutt/mailbox.h
  int mx_access (const char*, int);
  int mx_check_empty (const char *);
 diff -urN mutt-1.6.2/main.c mutt-1.6.2-neomutt/main.c
---- mutt-1.6.2/main.c	2016-08-20 02:44:51.895765337 +0100
-+++ mutt-1.6.2-neomutt/main.c	2016-08-20 02:44:52.107766453 +0100
+--- mutt-1.6.2/main.c	2016-08-21 11:07:09.500047533 +0100
++++ mutt-1.6.2-neomutt/main.c	2016-08-21 11:07:09.851048879 +0100
 @@ -31,6 +31,10 @@
  #include "url.h"
  #include "mutt_crypt.h"
@@ -19217,8 +19202,8 @@ diff -urN mutt-1.6.2/main.c mutt-1.6.2-neomutt/main.c
  #ifdef USE_IMAP
      imap_logout_all ();
 diff -urN mutt-1.6.2/Makefile.am mutt-1.6.2-neomutt/Makefile.am
---- mutt-1.6.2/Makefile.am	2016-08-20 02:44:51.882765268 +0100
-+++ mutt-1.6.2-neomutt/Makefile.am	2016-08-20 02:44:52.079766305 +0100
+--- mutt-1.6.2/Makefile.am	2016-08-21 11:07:09.486047479 +0100
++++ mutt-1.6.2-neomutt/Makefile.am	2016-08-21 11:07:09.813048733 +0100
 @@ -10,15 +10,19 @@
  IMAP_INCLUDES = -I$(top_srcdir)/imap
  endif
@@ -19366,8 +19351,8 @@ diff -urN mutt-1.6.2/Makefile.am mutt-1.6.2-neomutt/Makefile.am
  	(cd doc && $(MAKE) update-doc)
  
 diff -urN mutt-1.6.2/mbox.c mutt-1.6.2-neomutt/mbox.c
---- mutt-1.6.2/mbox.c	2016-08-20 02:44:51.896765342 +0100
-+++ mutt-1.6.2-neomutt/mbox.c	2016-08-20 02:44:52.107766453 +0100
+--- mutt-1.6.2/mbox.c	2016-08-21 11:07:09.500047533 +0100
++++ mutt-1.6.2-neomutt/mbox.c	2016-08-21 11:07:09.852048883 +0100
 @@ -29,6 +29,10 @@
  #include "copy.h"
  #include "mutt_curses.h"
@@ -19409,8 +19394,8 @@ diff -urN mutt-1.6.2/mbox.c mutt-1.6.2-neomutt/mbox.c
    mx_fastclose_mailbox (ctx);
    return 0;
 diff -urN mutt-1.6.2/mbyte.c mutt-1.6.2-neomutt/mbyte.c
---- mutt-1.6.2/mbyte.c	2016-08-20 02:44:51.896765342 +0100
-+++ mutt-1.6.2-neomutt/mbyte.c	2016-08-20 02:44:52.107766453 +0100
+--- mutt-1.6.2/mbyte.c	2016-08-21 11:07:09.500047533 +0100
++++ mutt-1.6.2-neomutt/mbyte.c	2016-08-21 11:07:09.852048883 +0100
 @@ -107,7 +107,7 @@
    char buf[MB_LEN_MAX+1];
    ICONV_CONST char *ib;
@@ -19439,8 +19424,8 @@ diff -urN mutt-1.6.2/mbyte.c mutt-1.6.2-neomutt/mbyte.c
    return ob - s;
  }
 diff -urN mutt-1.6.2/menu.c mutt-1.6.2-neomutt/menu.c
---- mutt-1.6.2/menu.c	2016-08-20 02:44:51.896765342 +0100
-+++ mutt-1.6.2-neomutt/menu.c	2016-08-20 02:44:52.108766458 +0100
+--- mutt-1.6.2/menu.c	2016-08-21 11:07:09.500047533 +0100
++++ mutt-1.6.2-neomutt/menu.c	2016-08-21 11:07:09.852048883 +0100
 @@ -24,10 +24,56 @@
  #include "mutt_curses.h"
  #include "mutt_menu.h"
@@ -19669,8 +19654,8 @@ diff -urN mutt-1.6.2/menu.c mutt-1.6.2-neomutt/menu.c
        move (menu->current - menu->top + menu->offset, 0);
      else
 diff -urN mutt-1.6.2/mh.c mutt-1.6.2-neomutt/mh.c
---- mutt-1.6.2/mh.c	2016-08-20 02:44:51.896765342 +0100
-+++ mutt-1.6.2-neomutt/mh.c	2016-08-20 02:44:52.108766458 +0100
+--- mutt-1.6.2/mh.c	2016-08-21 11:07:09.501047537 +0100
++++ mutt-1.6.2-neomutt/mh.c	2016-08-21 11:07:09.852048883 +0100
 @@ -56,6 +56,10 @@
  #include <sys/time.h>
  #endif
@@ -20199,7 +20184,7 @@ diff -urN mutt-1.6.2/mh.c mutt-1.6.2-neomutt/mh.c
    {
      if (new_hits < UINT_MAX && cur_hits < UINT_MAX)
 diff -urN mutt-1.6.2/mkchangelog.sh mutt-1.6.2-neomutt/mkchangelog.sh
---- mutt-1.6.2/mkchangelog.sh	2016-08-20 02:44:51.896765342 +0100
+--- mutt-1.6.2/mkchangelog.sh	2016-08-21 11:07:09.501047537 +0100
 +++ mutt-1.6.2-neomutt/mkchangelog.sh	1970-01-01 01:00:00.000000000 +0100
 @@ -1,5 +0,0 @@
 -#!/bin/sh
@@ -20208,14 +20193,14 @@ diff -urN mutt-1.6.2/mkchangelog.sh mutt-1.6.2-neomutt/mkchangelog.sh
 -
 -hg log --style=./hg-changelog-map -r "reverse($lrev::.)"
 diff -urN mutt-1.6.2/muttbug mutt-1.6.2-neomutt/muttbug
---- mutt-1.6.2/muttbug	2016-08-20 02:44:51.897765347 +0100
+--- mutt-1.6.2/muttbug	2016-08-21 11:07:09.502047541 +0100
 +++ mutt-1.6.2-neomutt/muttbug	1970-01-01 01:00:00.000000000 +0100
 @@ -1,3 +0,0 @@
 -#!/bin/sh
 -
 -exec flea "$@"
 diff -urN mutt-1.6.2/muttbug.sh.in mutt-1.6.2-neomutt/muttbug.sh.in
---- mutt-1.6.2/muttbug.sh.in	2016-08-20 02:44:51.897765347 +0100
+--- mutt-1.6.2/muttbug.sh.in	2016-08-21 11:07:09.502047541 +0100
 +++ mutt-1.6.2-neomutt/muttbug.sh.in	1970-01-01 01:00:00.000000000 +0100
 @@ -1,332 +0,0 @@
 -#!/bin/sh
@@ -20551,8 +20536,8 @@ diff -urN mutt-1.6.2/muttbug.sh.in mutt-1.6.2-neomutt/muttbug.sh.in
 -done
 -
 diff -urN mutt-1.6.2/mutt_curses.h mutt-1.6.2-neomutt/mutt_curses.h
---- mutt-1.6.2/mutt_curses.h	2016-08-20 02:44:51.897765347 +0100
-+++ mutt-1.6.2-neomutt/mutt_curses.h	2016-08-20 02:44:52.108766458 +0100
+--- mutt-1.6.2/mutt_curses.h	2016-08-21 11:07:09.501047537 +0100
++++ mutt-1.6.2-neomutt/mutt_curses.h	2016-08-21 11:07:09.853048886 +0100
 @@ -33,13 +33,6 @@
  #define KEY_DC SL_KEY_DELETE
  #define KEY_IC SL_KEY_IC
@@ -20665,8 +20650,8 @@ diff -urN mutt-1.6.2/mutt_curses.h mutt-1.6.2-neomutt/mutt_curses.h
  void ci_init_color (void);
  void ci_start_color (void);
 diff -urN mutt-1.6.2/mutt.h mutt-1.6.2-neomutt/mutt.h
---- mutt-1.6.2/mutt.h	2016-08-20 02:44:51.897765347 +0100
-+++ mutt-1.6.2-neomutt/mutt.h	2016-08-20 02:44:52.108766458 +0100
+--- mutt-1.6.2/mutt.h	2016-08-21 11:07:09.501047537 +0100
++++ mutt-1.6.2-neomutt/mutt.h	2016-08-21 11:07:09.853048886 +0100
 @@ -52,6 +52,11 @@
  #include <limits.h>
  #endif
@@ -20969,8 +20954,8 @@ diff -urN mutt-1.6.2/mutt.h mutt-1.6.2-neomutt/mutt.h
    /* driver hooks */
    void *data;			/* driver specific data */
 diff -urN mutt-1.6.2/muttlib.c mutt-1.6.2-neomutt/muttlib.c
---- mutt-1.6.2/muttlib.c	2016-08-20 02:44:51.898765353 +0100
-+++ mutt-1.6.2-neomutt/muttlib.c	2016-08-20 02:44:52.110766469 +0100
+--- mutt-1.6.2/muttlib.c	2016-08-21 11:07:09.502047541 +0100
++++ mutt-1.6.2-neomutt/muttlib.c	2016-08-21 11:07:09.855048894 +0100
 @@ -32,11 +32,18 @@
  #include "imap.h"
  #endif
@@ -21440,8 +21425,8 @@ diff -urN mutt-1.6.2/muttlib.c mutt-1.6.2-neomutt/muttlib.c
 +  return 0;
 +}
 diff -urN mutt-1.6.2/mutt_menu.h mutt-1.6.2-neomutt/mutt_menu.h
---- mutt-1.6.2/mutt_menu.h	2016-08-20 02:44:51.897765347 +0100
-+++ mutt-1.6.2-neomutt/mutt_menu.h	2016-08-20 02:44:52.109766463 +0100
+--- mutt-1.6.2/mutt_menu.h	2016-08-21 11:07:09.501047537 +0100
++++ mutt-1.6.2-neomutt/mutt_menu.h	2016-08-21 11:07:09.853048886 +0100
 @@ -34,6 +34,9 @@
  #define REDRAW_FULL		(1<<5)
  #define REDRAW_BODY		(1<<6)
@@ -21471,7 +21456,7 @@ diff -urN mutt-1.6.2/mutt_menu.h mutt-1.6.2-neomutt/mutt_menu.h
  #endif /* _MUTT_MENU_H_ */
 diff -urN mutt-1.6.2/mutt_notmuch.c mutt-1.6.2-neomutt/mutt_notmuch.c
 --- mutt-1.6.2/mutt_notmuch.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/mutt_notmuch.c	2016-08-20 02:44:52.109766463 +0100
++++ mutt-1.6.2-neomutt/mutt_notmuch.c	2016-08-21 11:07:09.853048886 +0100
 @@ -0,0 +1,1984 @@
 +/*
 + * Notmuch support for mutt
@@ -23459,7 +23444,7 @@ diff -urN mutt-1.6.2/mutt_notmuch.c mutt-1.6.2-neomutt/mutt_notmuch.c
 +}
 diff -urN mutt-1.6.2/mutt_notmuch.h mutt-1.6.2-neomutt/mutt_notmuch.h
 --- mutt-1.6.2/mutt_notmuch.h	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/mutt_notmuch.h	2016-08-20 02:44:52.109766463 +0100
++++ mutt-1.6.2-neomutt/mutt_notmuch.h	2016-08-21 11:07:09.853048886 +0100
 @@ -0,0 +1,39 @@
 +/*
 + * Copyright (C) 2011 Karel Zak <kzak@redhat.com>
@@ -23501,8 +23486,8 @@ diff -urN mutt-1.6.2/mutt_notmuch.h mutt-1.6.2-neomutt/mutt_notmuch.h
 +
 +#endif /* _MUTT_NOTMUCH_H_ */
 diff -urN mutt-1.6.2/mutt_sasl.c mutt-1.6.2-neomutt/mutt_sasl.c
---- mutt-1.6.2/mutt_sasl.c	2016-08-20 02:44:51.897765347 +0100
-+++ mutt-1.6.2-neomutt/mutt_sasl.c	2016-08-20 02:44:52.109766463 +0100
+--- mutt-1.6.2/mutt_sasl.c	2016-08-21 11:07:09.501047537 +0100
++++ mutt-1.6.2-neomutt/mutt_sasl.c	2016-08-21 11:07:09.854048890 +0100
 @@ -190,6 +190,11 @@
      case M_ACCT_TYPE_SMTP:
        service = "smtp";
@@ -23516,8 +23501,8 @@ diff -urN mutt-1.6.2/mutt_sasl.c mutt-1.6.2-neomutt/mutt_sasl.c
        mutt_error (_("Unknown SASL profile"));
        return -1;
 diff -urN mutt-1.6.2/mutt_ssl.c mutt-1.6.2-neomutt/mutt_ssl.c
---- mutt-1.6.2/mutt_ssl.c	2016-08-20 02:44:51.897765347 +0100
-+++ mutt-1.6.2-neomutt/mutt_ssl.c	2016-08-20 02:44:52.109766463 +0100
+--- mutt-1.6.2/mutt_ssl.c	2016-08-21 11:07:09.502047541 +0100
++++ mutt-1.6.2-neomutt/mutt_ssl.c	2016-08-21 11:07:09.854048890 +0100
 @@ -401,6 +401,18 @@
    SSL_set_mode (ssldata->ssl, SSL_MODE_AUTO_RETRY);
  #endif
@@ -23553,8 +23538,8 @@ diff -urN mutt-1.6.2/mutt_ssl.c mutt-1.6.2-neomutt/mutt_ssl.c
  }
  
 diff -urN mutt-1.6.2/mx.c mutt-1.6.2-neomutt/mx.c
---- mutt-1.6.2/mx.c	2016-08-20 02:44:51.898765353 +0100
-+++ mutt-1.6.2-neomutt/mx.c	2016-08-20 02:44:52.110766469 +0100
+--- mutt-1.6.2/mx.c	2016-08-21 11:07:09.503047544 +0100
++++ mutt-1.6.2-neomutt/mx.c	2016-08-21 11:07:09.855048894 +0100
 @@ -29,6 +29,13 @@
  #include "copy.h"
  #include "keymap.h"
@@ -24120,8 +24105,8 @@ diff -urN mutt-1.6.2/mx.c mutt-1.6.2-neomutt/mx.c
    return (r);
  }
 diff -urN mutt-1.6.2/mx.h mutt-1.6.2-neomutt/mx.h
---- mutt-1.6.2/mx.h	2016-08-20 02:44:51.898765353 +0100
-+++ mutt-1.6.2-neomutt/mx.h	2016-08-20 02:44:52.110766469 +0100
+--- mutt-1.6.2/mx.h	2016-08-21 11:07:09.503047544 +0100
++++ mutt-1.6.2-neomutt/mx.h	2016-08-21 11:07:09.855048894 +0100
 @@ -26,6 +26,7 @@
  #define _MX_H
  
@@ -24180,7 +24165,7 @@ diff -urN mutt-1.6.2/mx.h mutt-1.6.2-neomutt/mx.h
  int mutt_reopen_mailbox (CONTEXT *, int *);
 diff -urN mutt-1.6.2/newsrc.c mutt-1.6.2-neomutt/newsrc.c
 --- mutt-1.6.2/newsrc.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/newsrc.c	2016-08-20 02:44:52.111766474 +0100
++++ mutt-1.6.2-neomutt/newsrc.c	2016-08-21 11:07:09.855048894 +0100
 @@ -0,0 +1,1263 @@
 +/*
 + * Copyright (C) 1998 Brandon Long <blong@fiction.net>
@@ -25447,7 +25432,7 @@ diff -urN mutt-1.6.2/newsrc.c mutt-1.6.2-neomutt/newsrc.c
 +}
 diff -urN mutt-1.6.2/nntp.c mutt-1.6.2-neomutt/nntp.c
 --- mutt-1.6.2/nntp.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/nntp.c	2016-08-20 02:44:52.111766474 +0100
++++ mutt-1.6.2-neomutt/nntp.c	2016-08-21 11:07:09.856048898 +0100
 @@ -0,0 +1,2435 @@
 +/*
 + * Copyright (C) 1998 Brandon Long <blong@fiction.net>
@@ -27886,7 +27871,7 @@ diff -urN mutt-1.6.2/nntp.c mutt-1.6.2-neomutt/nntp.c
 +}
 diff -urN mutt-1.6.2/nntp.h mutt-1.6.2-neomutt/nntp.h
 --- mutt-1.6.2/nntp.h	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/nntp.h	2016-08-20 02:44:52.111766474 +0100
++++ mutt-1.6.2-neomutt/nntp.h	2016-08-21 11:07:09.856048898 +0100
 @@ -0,0 +1,168 @@
 +/*
 + * Copyright (C) 1998 Brandon Long <blong@fiction.net>
@@ -28057,8 +28042,8 @@ diff -urN mutt-1.6.2/nntp.h mutt-1.6.2-neomutt/nntp.h
 +
 +#endif /* _NNTP_H_ */
 diff -urN mutt-1.6.2/OPS mutt-1.6.2-neomutt/OPS
---- mutt-1.6.2/OPS	2016-08-20 02:44:51.882765268 +0100
-+++ mutt-1.6.2-neomutt/OPS	2016-08-20 02:44:52.080766311 +0100
+--- mutt-1.6.2/OPS	2016-08-21 11:07:09.487047483 +0100
++++ mutt-1.6.2-neomutt/OPS	2016-08-21 11:07:09.813048733 +0100
 @@ -8,14 +8,16 @@
  OP_BROWSER_NEW_FILE "select a new file in this directory"
  OP_BROWSER_VIEW_FILE "view file"
@@ -28181,8 +28166,8 @@ diff -urN mutt-1.6.2/OPS mutt-1.6.2-neomutt/OPS
  OP_MAIN_COLLAPSE_THREAD "collapse/uncollapse current thread"
  OP_MAIN_COLLAPSE_ALL "collapse/uncollapse all threads"
 diff -urN mutt-1.6.2/OPS.MIX mutt-1.6.2-neomutt/OPS.MIX
---- mutt-1.6.2/OPS.MIX	2016-08-20 02:44:51.882765268 +0100
-+++ mutt-1.6.2-neomutt/OPS.MIX	2016-08-20 02:44:52.080766311 +0100
+--- mutt-1.6.2/OPS.MIX	2016-08-21 11:07:09.487047483 +0100
++++ mutt-1.6.2-neomutt/OPS.MIX	2016-08-21 11:07:09.813048733 +0100
 @@ -1,7 +1,7 @@
 -OP_MIX_USE "Accept the chain constructed"
 -OP_MIX_APPEND "Append a remailer to the chain"
@@ -28199,7 +28184,7 @@ diff -urN mutt-1.6.2/OPS.MIX mutt-1.6.2-neomutt/OPS.MIX
  OP_COMPOSE_MIX "send the message through a mixmaster remailer chain"
 diff -urN mutt-1.6.2/OPS.NOTMUCH mutt-1.6.2-neomutt/OPS.NOTMUCH
 --- mutt-1.6.2/OPS.NOTMUCH	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/OPS.NOTMUCH	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/OPS.NOTMUCH	2016-08-21 11:07:09.813048733 +0100
 @@ -0,0 +1,5 @@
 +OP_MAIN_CHANGE_VFOLDER "open a different virtual folder"
 +OP_MAIN_VFOLDER_FROM_QUERY "generate virtual folder from query"
@@ -28208,7 +28193,7 @@ diff -urN mutt-1.6.2/OPS.NOTMUCH mutt-1.6.2-neomutt/OPS.NOTMUCH
 +OP_MAIN_ENTIRE_THREAD "read entire thread of the current message"
 diff -urN mutt-1.6.2/OPS.SIDEBAR mutt-1.6.2-neomutt/OPS.SIDEBAR
 --- mutt-1.6.2/OPS.SIDEBAR	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/OPS.SIDEBAR	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/OPS.SIDEBAR	2016-08-21 11:07:09.813048733 +0100
 @@ -0,0 +1,9 @@
 +OP_SIDEBAR_NEXT "move the highlight to next mailbox"
 +OP_SIDEBAR_NEXT_NEW "move the highlight to next mailbox with new mail"
@@ -28220,8 +28205,8 @@ diff -urN mutt-1.6.2/OPS.SIDEBAR mutt-1.6.2-neomutt/OPS.SIDEBAR
 +OP_SIDEBAR_TOGGLE_VIRTUAL "toggle between mailboxes and virtual mailboxes"
 +OP_SIDEBAR_TOGGLE_VISIBLE "make the sidebar (in)visible"
 diff -urN mutt-1.6.2/pager.c mutt-1.6.2-neomutt/pager.c
---- mutt-1.6.2/pager.c	2016-08-20 02:44:51.899765358 +0100
-+++ mutt-1.6.2-neomutt/pager.c	2016-08-20 02:44:52.111766474 +0100
+--- mutt-1.6.2/pager.c	2016-08-21 11:07:09.503047544 +0100
++++ mutt-1.6.2-neomutt/pager.c	2016-08-21 11:07:09.856048898 +0100
 @@ -29,6 +29,9 @@
  #include "pager.h"
  #include "attach.h"
@@ -28614,8 +28599,8 @@ diff -urN mutt-1.6.2/pager.c mutt-1.6.2-neomutt/pager.c
  	ch = -1;
  	break;
 diff -urN mutt-1.6.2/parse.c mutt-1.6.2-neomutt/parse.c
---- mutt-1.6.2/parse.c	2016-08-20 02:44:51.899765358 +0100
-+++ mutt-1.6.2-neomutt/parse.c	2016-08-20 02:44:52.112766479 +0100
+--- mutt-1.6.2/parse.c	2016-08-21 11:07:09.503047544 +0100
++++ mutt-1.6.2-neomutt/parse.c	2016-08-21 11:07:09.856048898 +0100
 @@ -94,7 +94,7 @@
    /* not reached */
  }
@@ -28805,8 +28790,8 @@ diff -urN mutt-1.6.2/parse.c mutt-1.6.2-neomutt/parse.c
      if (e->subject)
      {
 diff -urN mutt-1.6.2/PATCHES mutt-1.6.2-neomutt/PATCHES
---- mutt-1.6.2/PATCHES	2016-08-20 02:44:51.882765268 +0100
-+++ mutt-1.6.2-neomutt/PATCHES	2016-08-20 02:44:52.080766311 +0100
+--- mutt-1.6.2/PATCHES	2016-08-21 11:07:09.487047483 +0100
++++ mutt-1.6.2-neomutt/PATCHES	2016-08-21 11:07:09.813048733 +0100
 @@ -0,0 +1,22 @@
 +patch-compress-neo-git
 +patch-cond-date-neo-git
@@ -28831,8 +28816,8 @@ diff -urN mutt-1.6.2/PATCHES mutt-1.6.2-neomutt/PATCHES
 +patch-tls-sni-neo-git
 +patch-trash-neo-git
 diff -urN mutt-1.6.2/patchlist.sh mutt-1.6.2-neomutt/patchlist.sh
---- mutt-1.6.2/patchlist.sh	2016-08-20 02:44:51.899765358 +0100
-+++ mutt-1.6.2-neomutt/patchlist.sh	2016-08-20 02:44:52.112766479 +0100
+--- mutt-1.6.2/patchlist.sh	2016-08-21 11:07:09.503047544 +0100
++++ mutt-1.6.2-neomutt/patchlist.sh	2016-08-21 11:07:09.856048898 +0100
 @@ -1,21 +1,5 @@
  #!/bin/sh --
  
@@ -28865,8 +28850,8 @@ diff -urN mutt-1.6.2/patchlist.sh mutt-1.6.2-neomutt/patchlist.sh
  done
  
 diff -urN mutt-1.6.2/pattern.c mutt-1.6.2-neomutt/pattern.c
---- mutt-1.6.2/pattern.c	2016-08-20 02:44:51.899765358 +0100
-+++ mutt-1.6.2-neomutt/pattern.c	2016-08-20 02:44:52.112766479 +0100
+--- mutt-1.6.2/pattern.c	2016-08-21 11:07:09.504047548 +0100
++++ mutt-1.6.2-neomutt/pattern.c	2016-08-21 11:07:09.857048902 +0100
 @@ -42,6 +42,10 @@
  #include "imap/imap.h"
  #endif
@@ -29129,8 +29114,8 @@ diff -urN mutt-1.6.2/pattern.c mutt-1.6.2-neomutt/pattern.c
  			  (op == M_DELETE));
  	    break;
 diff -urN mutt-1.6.2/pgpinvoke.c mutt-1.6.2-neomutt/pgpinvoke.c
---- mutt-1.6.2/pgpinvoke.c	2016-08-20 02:44:51.899765358 +0100
-+++ mutt-1.6.2-neomutt/pgpinvoke.c	2016-08-20 02:44:52.113766484 +0100
+--- mutt-1.6.2/pgpinvoke.c	2016-08-21 11:07:09.504047548 +0100
++++ mutt-1.6.2-neomutt/pgpinvoke.c	2016-08-21 11:07:09.857048902 +0100
 @@ -59,6 +59,7 @@
  const char *_mutt_fmt_pgp_command (char *dest,
  				   size_t destlen,
@@ -29160,8 +29145,8 @@ diff -urN mutt-1.6.2/pgpinvoke.c mutt-1.6.2-neomutt/pgpinvoke.c
  }
  
 diff -urN mutt-1.6.2/pgpkey.c mutt-1.6.2-neomutt/pgpkey.c
---- mutt-1.6.2/pgpkey.c	2016-08-20 02:44:51.900765363 +0100
-+++ mutt-1.6.2-neomutt/pgpkey.c	2016-08-20 02:44:52.113766484 +0100
+--- mutt-1.6.2/pgpkey.c	2016-08-21 11:07:09.504047548 +0100
++++ mutt-1.6.2-neomutt/pgpkey.c	2016-08-21 11:07:09.857048902 +0100
 @@ -122,6 +122,7 @@
  static const char *pgp_entry_fmt (char *dest,
  				  size_t destlen,
@@ -29192,8 +29177,8 @@ diff -urN mutt-1.6.2/pgpkey.c mutt-1.6.2-neomutt/pgpkey.c
  }
  
 diff -urN mutt-1.6.2/po/POTFILES.in mutt-1.6.2-neomutt/po/POTFILES.in
---- mutt-1.6.2/po/POTFILES.in	2016-08-20 02:44:51.900765363 +0100
-+++ mutt-1.6.2-neomutt/po/POTFILES.in	2016-08-20 02:44:52.113766484 +0100
+--- mutt-1.6.2/po/POTFILES.in	2016-08-21 11:07:09.504047548 +0100
++++ mutt-1.6.2-neomutt/po/POTFILES.in	2016-08-21 11:07:09.858048906 +0100
 @@ -8,6 +8,7 @@
  color.c
  commands.c
@@ -29212,8 +29197,8 @@ diff -urN mutt-1.6.2/po/POTFILES.in mutt-1.6.2-neomutt/po/POTFILES.in
  parse.c
  pattern.c
 diff -urN mutt-1.6.2/pop.c mutt-1.6.2-neomutt/pop.c
---- mutt-1.6.2/pop.c	2016-08-20 02:44:51.900765363 +0100
-+++ mutt-1.6.2-neomutt/pop.c	2016-08-20 02:44:52.138766616 +0100
+--- mutt-1.6.2/pop.c	2016-08-21 11:07:09.504047548 +0100
++++ mutt-1.6.2-neomutt/pop.c	2016-08-21 11:07:09.882048998 +0100
 @@ -421,7 +421,9 @@
      return -1;
  
@@ -29225,8 +29210,8 @@ diff -urN mutt-1.6.2/pop.c mutt-1.6.2-neomutt/pop.c
    pop_data = safe_calloc (1, sizeof (POP_DATA));
    pop_data->conn = conn;
 diff -urN mutt-1.6.2/postpone.c mutt-1.6.2-neomutt/postpone.c
---- mutt-1.6.2/postpone.c	2016-08-20 02:44:51.900765363 +0100
-+++ mutt-1.6.2-neomutt/postpone.c	2016-08-20 02:44:52.138766616 +0100
+--- mutt-1.6.2/postpone.c	2016-08-21 11:07:09.504047548 +0100
++++ mutt-1.6.2-neomutt/postpone.c	2016-08-21 11:07:09.883049002 +0100
 @@ -125,15 +125,26 @@
  
    if (LastModify < st.st_mtime)
@@ -29265,8 +29250,8 @@ diff -urN mutt-1.6.2/postpone.c mutt-1.6.2-neomutt/postpone.c
    PostCount = PostContext->msgcount - PostContext->deleted;
  
 diff -urN mutt-1.6.2/protos.h mutt-1.6.2-neomutt/protos.h
---- mutt-1.6.2/protos.h	2016-08-20 02:44:51.900765363 +0100
-+++ mutt-1.6.2-neomutt/protos.h	2016-08-20 02:44:52.138766616 +0100
+--- mutt-1.6.2/protos.h	2016-08-21 11:07:09.505047552 +0100
++++ mutt-1.6.2-neomutt/protos.h	2016-08-21 11:07:09.883049002 +0100
 @@ -1,5 +1,6 @@
  /*
   * Copyright (C) 1996-2000,2007,2010,2013 Michael R. Elkins <me@mutt.org>
@@ -29425,8 +29410,8 @@ diff -urN mutt-1.6.2/protos.h mutt-1.6.2-neomutt/protos.h
 +char *strndup(const char *s, size_t n);
 +#endif
 diff -urN mutt-1.6.2/query.c mutt-1.6.2-neomutt/query.c
---- mutt-1.6.2/query.c	2016-08-20 02:44:51.900765363 +0100
-+++ mutt-1.6.2-neomutt/query.c	2016-08-20 02:44:52.138766616 +0100
+--- mutt-1.6.2/query.c	2016-08-21 11:07:09.505047552 +0100
++++ mutt-1.6.2-neomutt/query.c	2016-08-21 11:07:09.883049002 +0100
 @@ -24,6 +24,7 @@
  #include "mutt_menu.h"
  #include "mutt_idna.h"
@@ -29467,7 +29452,7 @@ diff -urN mutt-1.6.2/query.c mutt-1.6.2-neomutt/query.c
  
 diff -urN mutt-1.6.2/README.compress mutt-1.6.2-neomutt/README.compress
 --- mutt-1.6.2/README.compress	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.compress	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.compress	2016-08-21 11:07:09.813048733 +0100
 @@ -0,0 +1,163 @@
 +Compressed Folders Patch
 +========================
@@ -29634,7 +29619,7 @@ diff -urN mutt-1.6.2/README.compress mutt-1.6.2-neomutt/README.compress
 +
 diff -urN mutt-1.6.2/README.cond-date mutt-1.6.2-neomutt/README.cond-date
 --- mutt-1.6.2/README.cond-date	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.cond-date	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.cond-date	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,163 @@
 +Conditional Dates Patch
 +=======================
@@ -29801,7 +29786,7 @@ diff -urN mutt-1.6.2/README.cond-date mutt-1.6.2-neomutt/README.cond-date
 +
 diff -urN mutt-1.6.2/README.fmemopen mutt-1.6.2-neomutt/README.fmemopen
 --- mutt-1.6.2/README.fmemopen	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.fmemopen	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.fmemopen	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,47 @@
 +Fmemopen Patch
 +==============
@@ -29852,7 +29837,7 @@ diff -urN mutt-1.6.2/README.fmemopen mutt-1.6.2-neomutt/README.fmemopen
 +
 diff -urN mutt-1.6.2/README.ifdef mutt-1.6.2-neomutt/README.ifdef
 --- mutt-1.6.2/README.ifdef	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.ifdef	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.ifdef	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,57 @@
 +Ifdef Patch
 +===========
@@ -29913,7 +29898,7 @@ diff -urN mutt-1.6.2/README.ifdef mutt-1.6.2-neomutt/README.ifdef
 +
 diff -urN mutt-1.6.2/README.index-color mutt-1.6.2-neomutt/README.index-color
 --- mutt-1.6.2/README.index-color	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.index-color	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.index-color	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,82 @@
 +Index Color Patch
 +=================
@@ -29999,7 +29984,7 @@ diff -urN mutt-1.6.2/README.index-color mutt-1.6.2-neomutt/README.index-color
 +
 diff -urN mutt-1.6.2/README.initials mutt-1.6.2-neomutt/README.initials
 --- mutt-1.6.2/README.initials	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.initials	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.initials	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,48 @@
 +Initials Expando Patch
 +======================
@@ -30051,7 +30036,7 @@ diff -urN mutt-1.6.2/README.initials mutt-1.6.2-neomutt/README.initials
 +
 diff -urN mutt-1.6.2/README.keywords mutt-1.6.2-neomutt/README.keywords
 --- mutt-1.6.2/README.keywords	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.keywords	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.keywords	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,107 @@
 +Keywords Patch
 +==============
@@ -30162,7 +30147,7 @@ diff -urN mutt-1.6.2/README.keywords mutt-1.6.2-neomutt/README.keywords
 +
 diff -urN mutt-1.6.2/README.limit-current-thread mutt-1.6.2-neomutt/README.limit-current-thread
 --- mutt-1.6.2/README.limit-current-thread	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.limit-current-thread	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.limit-current-thread	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,45 @@
 +Limit-Current-Thread Patch
 +==========================
@@ -30211,7 +30196,7 @@ diff -urN mutt-1.6.2/README.limit-current-thread mutt-1.6.2-neomutt/README.limit
 +
 diff -urN mutt-1.6.2/README.lmdb mutt-1.6.2-neomutt/README.lmdb
 --- mutt-1.6.2/README.lmdb	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.lmdb	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.lmdb	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,38 @@
 +LMDB Patch
 +==========
@@ -30253,7 +30238,7 @@ diff -urN mutt-1.6.2/README.lmdb mutt-1.6.2-neomutt/README.lmdb
 +
 diff -urN mutt-1.6.2/README.md mutt-1.6.2-neomutt/README.md
 --- mutt-1.6.2/README.md	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.md	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.md	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,94 @@
 +# This is the NeoMutt Project
 +
@@ -30351,7 +30336,7 @@ diff -urN mutt-1.6.2/README.md mutt-1.6.2-neomutt/README.md
 +
 diff -urN mutt-1.6.2/README.multiple-fcc mutt-1.6.2-neomutt/README.multiple-fcc
 --- mutt-1.6.2/README.multiple-fcc	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.multiple-fcc	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.multiple-fcc	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,44 @@
 +multiple-fcc Patch
 +==================
@@ -30399,7 +30384,7 @@ diff -urN mutt-1.6.2/README.multiple-fcc mutt-1.6.2-neomutt/README.multiple-fcc
 +
 diff -urN mutt-1.6.2/README.neomutt mutt-1.6.2-neomutt/README.neomutt
 --- mutt-1.6.2/README.neomutt	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.neomutt	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.neomutt	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,94 @@
 +# This is the NeoMutt Project
 +
@@ -30497,7 +30482,7 @@ diff -urN mutt-1.6.2/README.neomutt mutt-1.6.2-neomutt/README.neomutt
 +
 diff -urN mutt-1.6.2/README.nested-if mutt-1.6.2-neomutt/README.nested-if
 --- mutt-1.6.2/README.nested-if	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.nested-if	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.nested-if	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,122 @@
 +Nested If Patch
 +===============
@@ -30623,7 +30608,7 @@ diff -urN mutt-1.6.2/README.nested-if mutt-1.6.2-neomutt/README.nested-if
 +
 diff -urN mutt-1.6.2/README.new-mail mutt-1.6.2-neomutt/README.new-mail
 --- mutt-1.6.2/README.new-mail	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.new-mail	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.new-mail	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,62 @@
 +new-mail Patch
 +==============
@@ -30689,7 +30674,7 @@ diff -urN mutt-1.6.2/README.new-mail mutt-1.6.2-neomutt/README.new-mail
 +
 diff -urN mutt-1.6.2/README.nntp mutt-1.6.2-neomutt/README.nntp
 --- mutt-1.6.2/README.nntp	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.nntp	2016-08-20 02:44:52.080766311 +0100
++++ mutt-1.6.2-neomutt/README.nntp	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,111 @@
 +NNTP Patch
 +==========
@@ -30804,7 +30789,7 @@ diff -urN mutt-1.6.2/README.nntp mutt-1.6.2-neomutt/README.nntp
 +
 diff -urN mutt-1.6.2/README.notmuch mutt-1.6.2-neomutt/README.notmuch
 --- mutt-1.6.2/README.notmuch	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.notmuch	2016-08-20 02:44:52.081766316 +0100
++++ mutt-1.6.2-neomutt/README.notmuch	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,402 @@
 +notmuch support for mutt
 +------------------------
@@ -31210,7 +31195,7 @@ diff -urN mutt-1.6.2/README.notmuch mutt-1.6.2-neomutt/README.notmuch
 +  http://notmuchmail.org/mutttips/
 diff -urN mutt-1.6.2/README.progress mutt-1.6.2-neomutt/README.progress
 --- mutt-1.6.2/README.progress	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.progress	2016-08-20 02:44:52.081766316 +0100
++++ mutt-1.6.2-neomutt/README.progress	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,49 @@
 +Progress Bar Patch
 +==================
@@ -31263,7 +31248,7 @@ diff -urN mutt-1.6.2/README.progress mutt-1.6.2-neomutt/README.progress
 +
 diff -urN mutt-1.6.2/README.quasi-delete mutt-1.6.2-neomutt/README.quasi-delete
 --- mutt-1.6.2/README.quasi-delete	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.quasi-delete	2016-08-20 02:44:52.081766316 +0100
++++ mutt-1.6.2-neomutt/README.quasi-delete	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,49 @@
 +Quasi-Delete Patch
 +==================
@@ -31316,7 +31301,7 @@ diff -urN mutt-1.6.2/README.quasi-delete mutt-1.6.2-neomutt/README.quasi-delete
 +
 diff -urN mutt-1.6.2/README.sidebar mutt-1.6.2-neomutt/README.sidebar
 --- mutt-1.6.2/README.sidebar	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.sidebar	2016-08-20 02:44:52.081766316 +0100
++++ mutt-1.6.2-neomutt/README.sidebar	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,143 @@
 +Sidebar Patch
 +=============
@@ -31463,7 +31448,7 @@ diff -urN mutt-1.6.2/README.sidebar mutt-1.6.2-neomutt/README.sidebar
 +
 diff -urN mutt-1.6.2/README.skip-quoted mutt-1.6.2-neomutt/README.skip-quoted
 --- mutt-1.6.2/README.skip-quoted	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.skip-quoted	2016-08-20 02:44:52.081766316 +0100
++++ mutt-1.6.2-neomutt/README.skip-quoted	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,47 @@
 +Skip-Quoted Patch
 +=================
@@ -31514,7 +31499,7 @@ diff -urN mutt-1.6.2/README.skip-quoted mutt-1.6.2-neomutt/README.skip-quoted
 +
 diff -urN mutt-1.6.2/README.smime-encrypt-self mutt-1.6.2-neomutt/README.smime-encrypt-self
 --- mutt-1.6.2/README.smime-encrypt-self	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.smime-encrypt-self	2016-08-20 02:44:52.081766316 +0100
++++ mutt-1.6.2-neomutt/README.smime-encrypt-self	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,50 @@
 +smime-encrypt-self Patch
 +========================
@@ -31567,8 +31552,8 @@ diff -urN mutt-1.6.2/README.smime-encrypt-self mutt-1.6.2-neomutt/README.smime-e
 +    * Richard Russon <rich@flatcap.org>
 +
 diff -urN mutt-1.6.2/README.SSL mutt-1.6.2-neomutt/README.SSL
---- mutt-1.6.2/README.SSL	2016-08-20 02:44:51.882765268 +0100
-+++ mutt-1.6.2-neomutt/README.SSL	2016-08-20 02:44:52.080766311 +0100
+--- mutt-1.6.2/README.SSL	2016-08-21 11:07:09.487047483 +0100
++++ mutt-1.6.2-neomutt/README.SSL	2016-08-21 11:07:09.813048733 +0100
 @@ -5,7 +5,7 @@
  -----------
  If you want to have SSL support in mutt, you need to install OpenSSL
@@ -31611,7 +31596,7 @@ diff -urN mutt-1.6.2/README.SSL mutt-1.6.2-neomutt/README.SSL
 +  Phil Pennock <mutt-dev@spodhuis.org>
 diff -urN mutt-1.6.2/README.status-color mutt-1.6.2-neomutt/README.status-color
 --- mutt-1.6.2/README.status-color	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.status-color	2016-08-20 02:44:52.081766316 +0100
++++ mutt-1.6.2-neomutt/README.status-color	2016-08-21 11:07:09.814048737 +0100
 @@ -0,0 +1,67 @@
 +Status Color Patch
 +==================
@@ -31682,7 +31667,7 @@ diff -urN mutt-1.6.2/README.status-color mutt-1.6.2-neomutt/README.status-color
 +
 diff -urN mutt-1.6.2/README.timeout mutt-1.6.2-neomutt/README.timeout
 --- mutt-1.6.2/README.timeout	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.timeout	2016-08-20 02:44:52.081766316 +0100
++++ mutt-1.6.2-neomutt/README.timeout	2016-08-21 11:07:09.815048741 +0100
 @@ -0,0 +1,41 @@
 +Timeout Patch
 +=============
@@ -31727,7 +31712,7 @@ diff -urN mutt-1.6.2/README.timeout mutt-1.6.2-neomutt/README.timeout
 +
 diff -urN mutt-1.6.2/README.tls-sni mutt-1.6.2-neomutt/README.tls-sni
 --- mutt-1.6.2/README.tls-sni	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.tls-sni	2016-08-20 02:44:52.081766316 +0100
++++ mutt-1.6.2-neomutt/README.tls-sni	2016-08-21 11:07:09.815048741 +0100
 @@ -0,0 +1,51 @@
 +TLS-SNI Patch
 +=============
@@ -31782,7 +31767,7 @@ diff -urN mutt-1.6.2/README.tls-sni mutt-1.6.2-neomutt/README.tls-sni
 +
 diff -urN mutt-1.6.2/README.trash mutt-1.6.2-neomutt/README.trash
 --- mutt-1.6.2/README.trash	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/README.trash	2016-08-20 02:44:52.081766316 +0100
++++ mutt-1.6.2-neomutt/README.trash	2016-08-21 11:07:09.815048741 +0100
 @@ -0,0 +1,74 @@
 +Trash Folder Patch
 +==================
@@ -31859,8 +31844,8 @@ diff -urN mutt-1.6.2/README.trash mutt-1.6.2-neomutt/README.trash
 +    * Richard Russon <rich@flatcap.org>
 +
 diff -urN mutt-1.6.2/recvattach.c mutt-1.6.2-neomutt/recvattach.c
---- mutt-1.6.2/recvattach.c	2016-08-20 02:44:51.901765368 +0100
-+++ mutt-1.6.2-neomutt/recvattach.c	2016-08-20 02:44:52.139766621 +0100
+--- mutt-1.6.2/recvattach.c	2016-08-21 11:07:09.505047552 +0100
++++ mutt-1.6.2-neomutt/recvattach.c	2016-08-21 11:07:09.883049002 +0100
 @@ -173,6 +173,7 @@
  const char *mutt_attach_fmt (char *dest,
      size_t destlen,
@@ -31940,8 +31925,8 @@ diff -urN mutt-1.6.2/recvattach.c mutt-1.6.2-neomutt/recvattach.c
        case OP_GROUP_REPLY:
        case OP_LIST_REPLY:
 diff -urN mutt-1.6.2/recvcmd.c mutt-1.6.2-neomutt/recvcmd.c
---- mutt-1.6.2/recvcmd.c	2016-08-20 02:44:51.901765368 +0100
-+++ mutt-1.6.2-neomutt/recvcmd.c	2016-08-20 02:44:52.139766621 +0100
+--- mutt-1.6.2/recvcmd.c	2016-08-21 11:07:09.505047552 +0100
++++ mutt-1.6.2-neomutt/recvcmd.c	2016-08-21 11:07:09.883049002 +0100
 @@ -401,7 +401,7 @@
  static void attach_forward_bodies (FILE * fp, HEADER * hdr,
  				   ATTACHPTR ** idx, short idxlen,
@@ -32067,8 +32052,8 @@ diff -urN mutt-1.6.2/recvcmd.c mutt-1.6.2-neomutt/recvcmd.c
    {
      nattach = count_tagged (idx, idxlen);
 diff -urN mutt-1.6.2/regex.c mutt-1.6.2-neomutt/regex.c
---- mutt-1.6.2/regex.c	2016-08-20 02:44:51.902765374 +0100
-+++ mutt-1.6.2-neomutt/regex.c	2016-08-20 02:44:52.140766626 +0100
+--- mutt-1.6.2/regex.c	2016-08-21 11:07:09.506047556 +0100
++++ mutt-1.6.2-neomutt/regex.c	2016-08-21 11:07:09.884049005 +0100
 @@ -381,7 +381,9 @@
  #define false 0
  #define true 1
@@ -32081,8 +32066,8 @@ diff -urN mutt-1.6.2/regex.c mutt-1.6.2-neomutt/regex.c
  /* These are the command codes that appear in compiled regular
     expressions.  Some opcodes are followed by argument bytes.  A
 diff -urN mutt-1.6.2/remailer.c mutt-1.6.2-neomutt/remailer.c
---- mutt-1.6.2/remailer.c	2016-08-20 02:44:51.902765374 +0100
-+++ mutt-1.6.2-neomutt/remailer.c	2016-08-20 02:44:52.140766626 +0100
+--- mutt-1.6.2/remailer.c	2016-08-21 11:07:09.506047556 +0100
++++ mutt-1.6.2-neomutt/remailer.c	2016-08-21 11:07:09.885049009 +0100
 @@ -375,6 +375,7 @@
  static const char *mix_entry_fmt (char *dest,
  				  size_t destlen,
@@ -32113,8 +32098,8 @@ diff -urN mutt-1.6.2/remailer.c mutt-1.6.2-neomutt/remailer.c
  }
  
 diff -urN mutt-1.6.2/send.c mutt-1.6.2-neomutt/send.c
---- mutt-1.6.2/send.c	2016-08-20 02:44:51.902765374 +0100
-+++ mutt-1.6.2-neomutt/send.c	2016-08-20 02:44:52.141766632 +0100
+--- mutt-1.6.2/send.c	2016-08-21 11:07:09.507047560 +0100
++++ mutt-1.6.2-neomutt/send.c	2016-08-21 11:07:09.886049013 +0100
 @@ -44,10 +44,18 @@
  #include <sys/types.h>
  #include <utime.h>
@@ -32455,8 +32440,8 @@ diff -urN mutt-1.6.2/send.c mutt-1.6.2-neomutt/send.c
  }
  
 diff -urN mutt-1.6.2/sendlib.c mutt-1.6.2-neomutt/sendlib.c
---- mutt-1.6.2/sendlib.c	2016-08-20 02:44:51.903765379 +0100
-+++ mutt-1.6.2-neomutt/sendlib.c	2016-08-20 02:44:52.142766637 +0100
+--- mutt-1.6.2/sendlib.c	2016-08-21 11:07:09.507047560 +0100
++++ mutt-1.6.2-neomutt/sendlib.c	2016-08-21 11:07:09.887049017 +0100
 @@ -46,6 +46,10 @@
  #include <sys/wait.h>
  #include <fcntl.h>
@@ -32758,7 +32743,7 @@ diff -urN mutt-1.6.2/sendlib.c mutt-1.6.2-neomutt/sendlib.c
  
 diff -urN mutt-1.6.2/sidebar.c mutt-1.6.2-neomutt/sidebar.c
 --- mutt-1.6.2/sidebar.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/sidebar.c	2016-08-20 02:44:52.142766637 +0100
++++ mutt-1.6.2-neomutt/sidebar.c	2016-08-21 11:07:09.887049017 +0100
 @@ -0,0 +1,1239 @@
 +/* Copyright (C) 2004 Justin Hibbits <jrh29@po.cwru.edu>
 + * Copyright (C) 2004 Thomer M. Gil <mutt@thomer.com>
@@ -34001,7 +33986,7 @@ diff -urN mutt-1.6.2/sidebar.c mutt-1.6.2-neomutt/sidebar.c
 +
 diff -urN mutt-1.6.2/sidebar.h mutt-1.6.2-neomutt/sidebar.h
 --- mutt-1.6.2/sidebar.h	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/sidebar.h	2016-08-20 02:44:52.142766637 +0100
++++ mutt-1.6.2-neomutt/sidebar.h	2016-08-21 11:07:09.887049017 +0100
 @@ -0,0 +1,35 @@
 +/* Copyright (C) 2004 Justin Hibbits <jrh29@po.cwru.edu>
 + * Copyright (C) 2004 Thomer M. Gil <mutt@thomer.com>
@@ -34039,8 +34024,8 @@ diff -urN mutt-1.6.2/sidebar.h mutt-1.6.2-neomutt/sidebar.h
 +
 +#endif /* SIDEBAR_H */
 diff -urN mutt-1.6.2/smime.c mutt-1.6.2-neomutt/smime.c
---- mutt-1.6.2/smime.c	2016-08-20 02:44:51.903765379 +0100
-+++ mutt-1.6.2-neomutt/smime.c	2016-08-20 02:44:52.143766642 +0100
+--- mutt-1.6.2/smime.c	2016-08-21 11:07:09.507047560 +0100
++++ mutt-1.6.2-neomutt/smime.c	2016-08-21 11:07:09.887049017 +0100
 @@ -159,6 +159,7 @@
  static const char *_mutt_fmt_smime_command (char *dest,
  					    size_t destlen,
@@ -34072,8 +34057,8 @@ diff -urN mutt-1.6.2/smime.c mutt-1.6.2-neomutt/smime.c
    dprint (2,(debugfile, "mutt_smime_command: %s\n", d));
  }
 diff -urN mutt-1.6.2/sort.c mutt-1.6.2-neomutt/sort.c
---- mutt-1.6.2/sort.c	2016-08-20 02:44:51.903765379 +0100
-+++ mutt-1.6.2-neomutt/sort.c	2016-08-20 02:44:52.143766642 +0100
+--- mutt-1.6.2/sort.c	2016-08-21 11:07:09.507047560 +0100
++++ mutt-1.6.2-neomutt/sort.c	2016-08-21 11:07:09.888049021 +0100
 @@ -24,6 +24,11 @@
  #include "sort.h"
  #include "mutt_idna.h"
@@ -34161,8 +34146,8 @@ diff -urN mutt-1.6.2/sort.c mutt-1.6.2-neomutt/sort.c
        return (NULL);
    }
 diff -urN mutt-1.6.2/sort.h mutt-1.6.2-neomutt/sort.h
---- mutt-1.6.2/sort.h	2016-08-20 02:44:51.903765379 +0100
-+++ mutt-1.6.2-neomutt/sort.h	2016-08-20 02:44:52.143766642 +0100
+--- mutt-1.6.2/sort.h	2016-08-21 11:07:09.508047563 +0100
++++ mutt-1.6.2-neomutt/sort.h	2016-08-21 11:07:09.888049021 +0100
 @@ -31,6 +31,13 @@
  #define SORT_KEYID	12
  #define SORT_TRUST	13
@@ -34186,8 +34171,8 @@ diff -urN mutt-1.6.2/sort.h mutt-1.6.2-neomutt/sort.h
  /* FIXME: This one does not belong to here */
  WHERE short PgpSortKeys INITVAL (SORT_ADDRESS);
 diff -urN mutt-1.6.2/status.c mutt-1.6.2-neomutt/status.c
---- mutt-1.6.2/status.c	2016-08-20 02:44:51.903765379 +0100
-+++ mutt-1.6.2-neomutt/status.c	2016-08-20 02:44:52.143766642 +0100
+--- mutt-1.6.2/status.c	2016-08-21 11:07:09.508047563 +0100
++++ mutt-1.6.2-neomutt/status.c	2016-08-21 11:07:09.888049021 +0100
 @@ -27,6 +27,10 @@
  #include "mapping.h"
  #include "mx.h"
@@ -34279,7 +34264,7 @@ diff -urN mutt-1.6.2/status.c mutt-1.6.2-neomutt/status.c
  }
 diff -urN mutt-1.6.2/strndup.c mutt-1.6.2-neomutt/strndup.c
 --- mutt-1.6.2/strndup.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/strndup.c	2016-08-20 02:44:52.143766642 +0100
++++ mutt-1.6.2-neomutt/strndup.c	2016-08-21 11:07:09.888049021 +0100
 @@ -0,0 +1,19 @@
 +/*
 + * Copyright (C) 2013 Karel Zak <kzak@redhat.com>
@@ -34302,7 +34287,7 @@ diff -urN mutt-1.6.2/strndup.c mutt-1.6.2-neomutt/strndup.c
 +}
 diff -urN mutt-1.6.2/strnlen.c mutt-1.6.2-neomutt/strnlen.c
 --- mutt-1.6.2/strnlen.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/strnlen.c	2016-08-20 02:44:52.143766642 +0100
++++ mutt-1.6.2-neomutt/strnlen.c	2016-08-21 11:07:09.888049021 +0100
 @@ -0,0 +1,20 @@
 +/*
 + * Copyright (C) 2013 Karel Zak <kzak@redhat.com>
@@ -34326,7 +34311,7 @@ diff -urN mutt-1.6.2/strnlen.c mutt-1.6.2-neomutt/strnlen.c
 +}
 diff -urN mutt-1.6.2/UPDATING.kz mutt-1.6.2-neomutt/UPDATING.kz
 --- mutt-1.6.2/UPDATING.kz	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/UPDATING.kz	2016-08-20 02:44:52.081766316 +0100
++++ mutt-1.6.2-neomutt/UPDATING.kz	2016-08-21 11:07:09.815048741 +0100
 @@ -0,0 +1,68 @@
 +1.6.0.1:
 +
@@ -34397,8 +34382,8 @@ diff -urN mutt-1.6.2/UPDATING.kz mutt-1.6.2-neomutt/UPDATING.kz
 ++ vfolder_format = <string> to specify vfolders browser entry format
 ++ %g and %Gx index_format and pager_format formatting sequences
 diff -urN mutt-1.6.2/url.c mutt-1.6.2-neomutt/url.c
---- mutt-1.6.2/url.c	2016-08-20 02:44:51.903765379 +0100
-+++ mutt-1.6.2-neomutt/url.c	2016-08-20 02:44:52.144766648 +0100
+--- mutt-1.6.2/url.c	2016-08-21 11:07:09.508047563 +0100
++++ mutt-1.6.2-neomutt/url.c	2016-08-21 11:07:09.889049025 +0100
 @@ -39,13 +39,18 @@
    { "imaps", 	U_IMAPS },
    { "pop",  	U_POP },
@@ -34429,8 +34414,8 @@ diff -urN mutt-1.6.2/url.c mutt-1.6.2-neomutt/url.c
        char u[STRING];
        url_pct_encode (u, sizeof (u), ciss->user);
 diff -urN mutt-1.6.2/url.h mutt-1.6.2-neomutt/url.h
---- mutt-1.6.2/url.h	2016-08-20 02:44:51.903765379 +0100
-+++ mutt-1.6.2-neomutt/url.h	2016-08-20 02:44:52.144766648 +0100
+--- mutt-1.6.2/url.h	2016-08-21 11:07:09.508047563 +0100
++++ mutt-1.6.2-neomutt/url.h	2016-08-21 11:07:09.889049025 +0100
 @@ -8,9 +8,14 @@
    U_POPS,
    U_IMAP,
@@ -34455,7 +34440,7 @@ diff -urN mutt-1.6.2/url.h mutt-1.6.2-neomutt/url.h
  #endif
 diff -urN mutt-1.6.2/version.c mutt-1.6.2-neomutt/version.c
 --- mutt-1.6.2/version.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/version.c	2016-08-20 02:44:52.144766648 +0100
++++ mutt-1.6.2-neomutt/version.c	2016-08-21 11:07:09.889049025 +0100
 @@ -0,0 +1,521 @@
 +/**
 + * Copyright (C) 1996-2007 Michael R. Elkins <me@mutt.org>
@@ -34980,7 +34965,7 @@ diff -urN mutt-1.6.2/version.c mutt-1.6.2-neomutt/version.c
 +
 diff -urN mutt-1.6.2/version.h mutt-1.6.2-neomutt/version.h
 --- mutt-1.6.2/version.h	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/version.h	2016-08-20 02:44:52.144766648 +0100
++++ mutt-1.6.2-neomutt/version.h	2016-08-21 11:07:09.889049025 +0100
 @@ -0,0 +1,26 @@
 +/**
 + * Copyright (C) 2016 Richard Russon
@@ -35010,12 +34995,12 @@ diff -urN mutt-1.6.2/version.h mutt-1.6.2-neomutt/version.h
 +#endif /* _VERSION_H_ */
 diff -urN mutt-1.6.2/VERSION.neo mutt-1.6.2-neomutt/VERSION.neo
 --- mutt-1.6.2/VERSION.neo	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.6.2-neomutt/VERSION.neo	2016-08-20 02:44:52.081766316 +0100
++++ mutt-1.6.2-neomutt/VERSION.neo	2016-08-21 11:07:09.815048741 +0100
 @@ -0,0 +1 @@
 +-neo
 diff -urN mutt-1.6.2/version.sh mutt-1.6.2-neomutt/version.sh
---- mutt-1.6.2/version.sh	2016-08-20 02:44:51.903765379 +0100
-+++ mutt-1.6.2-neomutt/version.sh	2016-08-20 02:44:52.144766648 +0100
+--- mutt-1.6.2/version.sh	2016-08-21 11:07:09.508047563 +0100
++++ mutt-1.6.2-neomutt/version.sh	2016-08-21 11:07:09.889049025 +0100
 @@ -1,68 +1,9 @@
  #!/bin/sh
  
