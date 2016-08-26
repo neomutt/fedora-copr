@@ -25,7 +25,7 @@
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %global _origname mutt
-%global _date 20160821
+%global _date 20160826
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -205,11 +205,10 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
 %doc doc/manual.txt doc/smime-notes.txt
 %doc doc/*.html
-# %docdir %{_pkgdocdir}/vim-keybindings
-# %doc %{_pkgdocdir}/vim-keybindings/*
-# %docdir %{_pkgdocdir}/keybase
-# %doc %{_pkgdocdir}/keybase/*
-# %doc %{_pkgdocdir}/keybase/.muttrc
+%docdir %{_pkgdocdir}/vim-keybindings
+%doc %{_pkgdocdir}/vim-keybindings/*
+%docdir %{_pkgdocdir}/keybase
+%doc %{_pkgdocdir}/keybase/*
 %{_bindir}/mutt
 %{_bindir}/pgpring
 %{_bindir}/pgpewrap
@@ -222,6 +221,16 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 
 
 %changelog
+* Fri Aug 26 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160826
+- Build
+  - Disable fmemopen until bug is fixed
+- Contrib
+  - Keybase portability improvements
+    Joshua Jordi (JakkinStewart)
+- Bug Fixes
+  - Fix notmuch crash toggling virtual folders 
+  - Fix display of pager index when sidebar toggled
+
 * Sun Aug 21 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160821
 - Contrib
   - Updates to Keybase Support
