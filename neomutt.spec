@@ -25,7 +25,7 @@
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %global _origname mutt
-%global _date 20160820
+%global _date 20160826
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -46,7 +46,7 @@ Patch4: mutt-1.5.23-system_certs.patch
 Patch5: mutt-1.5.23-ssl_ciphers.patch
 Url: http://www.neomutt.org/
 Requires: mailcap, urlview
-Provides: %{_origname}
+# Provides: %{_origname}
 Conflicts: %{_origname}
 BuildRequires: ncurses-devel, gettext, automake
 # manual generation
@@ -88,8 +88,6 @@ for selecting groups of messages.
 %setup -q -n %{_origname}-%{version}
 # disable mutt_dotlock program - disable post-install mutt_dotlock checking
 sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
-# do not run ./prepare -V, because it also runs ./configure
-autoreconf --install
 %patch1 -p1 -b .neomutt
 %patch2 -p1 -b .muttrc
 %patch3 -p1 -b .cabundle
@@ -113,8 +111,11 @@ rm -f mutt_ssl.c
 
 find . -type f -size 0 -name '*.neomutt' -delete
 
+chmod +x git-version-gen
 
 %build
+# do not run ./prepare -V, because it also runs ./configure
+autoreconf --install
 %configure \
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
@@ -194,10 +195,10 @@ rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/TODO
 # provide muttrc.local(5): the same as muttrc(5)
 ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 
-%find_lang %{_origname}
+# %find_lang %{_origname}
+%find_lang %{name}
 
-
-%files -f %{_origname}.lang
+%files -f %{name}.lang
 %config(noreplace) %{_sysconfdir}/Muttrc
 %config(noreplace) %{_sysconfdir}/Muttrc.local
 %doc COPYRIGHT ChangeLog* GPL NEWS README* UPDATING mutt_ldap_query
@@ -208,7 +209,6 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %doc %{_pkgdocdir}/vim-keybindings/*
 %docdir %{_pkgdocdir}/keybase
 %doc %{_pkgdocdir}/keybase/*
-%doc %{_pkgdocdir}/keybase/.muttrc
 %{_bindir}/mutt
 %{_bindir}/pgpring
 %{_bindir}/pgpewrap
@@ -221,7 +221,17 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 
 
 %changelog
-* Sat Aug 20 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160820
+* Fri Aug 26 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160826
+- Build
+  - Disable fmemopen until bug is fixed
+- Contrib
+  - Keybase portability improvements
+    Joshua Jordi (JakkinStewart)
+- Bug Fixes
+  - Fix notmuch crash toggling virtual folders 
+  - Fix display of pager index when sidebar toggled
+
+* Sun Aug 21 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160821
 - Contrib
   - Updates to Keybase Support
     Joshua Jordi (JakkinStewart)
