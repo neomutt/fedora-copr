@@ -25,11 +25,11 @@
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %global _origname mutt
-%global _date 20160826
+%global _date 20160827
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 1.6.2
+Version: 1.7.0
 Release: %{_date}%{?dist}
 Epoch: 5
 # The entire source code is GPLv2+ except
@@ -39,7 +39,7 @@ Group: Applications/Internet
 # git snapshot created from https://github.com/neomutt/neomutt
 Source: %{_origname}-%{version}.tar.gz
 Source1: mutt_ldap_query
-Patch1: mutt-1.6.2.neomutt.patch
+Patch1: mutt-1.7.0.neomutt.patch
 Patch2: mutt-1.5.18-muttrc.patch
 Patch3: mutt-1.5.21-cabundle.patch
 Patch4: mutt-1.5.23-system_certs.patch
@@ -205,10 +205,8 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
 %doc doc/manual.txt doc/smime-notes.txt
 %doc doc/*.html
-%docdir %{_pkgdocdir}/vim-keybindings
-%doc %{_pkgdocdir}/vim-keybindings/*
-%docdir %{_pkgdocdir}/keybase
-%doc %{_pkgdocdir}/keybase/*
+%doc contrib/keybase
+%doc contrib/vim-keybindings
 %{_bindir}/mutt
 %{_bindir}/pgpring
 %{_bindir}/pgpewrap
@@ -221,6 +219,9 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 
 
 %changelog
+* Sat Aug 27 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160827
+- Ported to Mutt-1.7.0
+
 * Fri Aug 26 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160826
 - Build
   - Disable fmemopen until bug is fixed
