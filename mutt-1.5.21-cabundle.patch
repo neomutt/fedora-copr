@@ -1,19 +1,17 @@
-diff -up mutt-1.5.21/contrib/Makefile.am.cabundle mutt-1.5.21/contrib/Makefile.am
---- mutt-1.5.21/contrib/Makefile.am.cabundle	2008-03-19 21:07:06.000000000 +0100
-+++ mutt-1.5.21/contrib/Makefile.am	2011-11-02 12:47:34.143534053 +0100
-@@ -5,7 +5,7 @@ subdir = contrib
- SAMPLES = Mush.rc Pine.rc gpg.rc pgp2.rc pgp5.rc pgp6.rc Tin.rc \
- 	sample.muttrc  sample.mailcap sample.muttrc-tlr \
- 	colors.default colors.linux smime.rc \
--	ca-bundle.crt smime_keys_test.pl mutt_xtitle
-+	smime_keys_test.pl mutt_xtitle
- 
- EXTRA_DIST = language.txt language50.txt  \
- 	patch.slang-1.2.2.keypad.1	\
-diff -up mutt-1.5.21/doc/smime-notes.txt.cabundle mutt-1.5.21/doc/smime-notes.txt
---- mutt-1.5.21/doc/smime-notes.txt.cabundle	2011-11-02 12:53:56.808750080 +0100
-+++ mutt-1.5.21/doc/smime-notes.txt	2011-11-02 12:57:46.225881970 +0100
-@@ -40,8 +40,10 @@ How to add use mutt's S/MIME capabilitie
+From 5360bc9e3d3fe89ce2fa8ae30ce5dce11e4bf373 Mon Sep 17 00:00:00 2001
+From: Richard Russon <rich@flatcap.org>
+Date: Wed, 1 Jun 2016 21:38:05 +0100
+Subject: [PATCH 3/6] mutt-1.5.21-cabundle
+
+---
+ doc/smime-notes.txt | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/doc/smime-notes.txt b/doc/smime-notes.txt
+index 15ab849..e273148 100644
+--- a/doc/smime-notes.txt
++++ b/doc/smime-notes.txt
+@@ -40,8 +40,10 @@ How to add use mutt's S/MIME capabilities
  - Edit the smime_sign_as line in your muttrc, replacing the keyid with your
    own.
  
@@ -26,3 +24,6 @@ diff -up mutt-1.5.21/doc/smime-notes.txt.cabundle mutt-1.5.21/doc/smime-notes.tx
    signed by one of them. You can use "smime_keys add_root" to do so, or
    just copy ca-bundle.crt into the place you point mutt's smime_ca_location
    variable to.
+-- 
+2.7.4
+
