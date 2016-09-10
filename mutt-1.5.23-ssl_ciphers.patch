@@ -1,7 +1,18 @@
-diff -rup mutt-17a4f92e4a95-orig/init.h mutt-17a4f92e4a95/init.h
---- mutt-17a4f92e4a95-orig/init.h	2015-07-30 11:09:54.536930119 +0200
-+++ mutt-17a4f92e4a95/init.h	2015-07-30 11:11:17.383772131 +0200
-@@ -3092,7 +3092,7 @@ struct option_t MuttVars[] = {
+From e5dbf2d94265ff90d6c617ff6fbe830987c02f9d Mon Sep 17 00:00:00 2001
+From: Richard Russon <rich@flatcap.org>
+Date: Wed, 1 Jun 2016 21:38:22 +0100
+Subject: [PATCH 4/6] mutt-1.5.23-ssl_ciphers
+
+---
+ init.h            |  2 +-
+ mutt_ssl_gnutls.c | 51 +++++++++++++++++++++++++++------------------------
+ 2 files changed, 28 insertions(+), 25 deletions(-)
+
+diff --git a/init.h b/init.h
+index a6aca15..18a7eec 100644
+--- a/init.h
++++ b/init.h
+@@ -3707,7 +3707,7 @@ struct option_t MuttVars[] = {
    ** URL. You should only unset this for particular known hosts, using
    ** the \fC$<account-hook>\fP function.
    */
@@ -10,9 +21,11 @@ diff -rup mutt-17a4f92e4a95-orig/init.h mutt-17a4f92e4a95/init.h
    /*
    ** .pp
    ** Contains a colon-seperated list of ciphers to use when using SSL.
---- mutt-17a4f92e4a95/mutt_ssl_gnutls.c.ssl_ciphers	2015-08-20 13:19:24.990481900 +0200
-+++ mutt-17a4f92e4a95/mutt_ssl_gnutls.c	2015-08-20 14:37:18.405928684 +0200
-@@ -286,32 +286,35 @@
+diff --git a/mutt_ssl_gnutls.c b/mutt_ssl_gnutls.c
+index 4e6a4fd..2c418b0 100644
+--- a/mutt_ssl_gnutls.c
++++ b/mutt_ssl_gnutls.c
+@@ -288,32 +288,35 @@ static int tls_set_priority(tlssockdata *data)
    else
      safe_strcat (priority, priority_size, "NORMAL");
  
@@ -72,3 +85,6 @@ diff -rup mutt-17a4f92e4a95-orig/init.h mutt-17a4f92e4a95/init.h
    }
  
    if ((err = gnutls_priority_set_direct (data->state, priority, NULL)) < 0)
+-- 
+2.7.4
+
