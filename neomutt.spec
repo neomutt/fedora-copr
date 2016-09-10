@@ -25,7 +25,7 @@
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %global _origname mutt
-%global _date 20160827
+%global _date 20160910
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -44,6 +44,7 @@ Patch2: mutt-1.5.18-muttrc.patch
 Patch3: mutt-1.5.21-cabundle.patch
 Patch4: mutt-1.5.23-system_certs.patch
 Patch5: mutt-1.5.23-ssl_ciphers.patch
+Patch6: mutt-1.6.0-syncdebug.patch
 Url: http://www.neomutt.org/
 Requires: mailcap, urlview
 # Provides: %{_origname}
@@ -93,6 +94,7 @@ sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
 %patch3 -p1 -b .cabundle
 %patch4 -p1 -b .system_certs
 %patch5 -p1 -b .ssl_ciphers
+%patch6 -p1 -b .syncdebug
 
 sed -i -r 's/`$GPGME_CONFIG --libs`/"\0 -lgpg-error"/' configure
 # disable mutt_dotlock program - remove support from mutt binary
@@ -219,6 +221,47 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 
 
 %changelog
+* Sat Sep 10 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160910
+- New Features
+  - Colouring Attachments with Regexp
+    Guillaume Brogi (guiniol)
+  - PGP Encrypt to Self
+    Guillaume Brogi (guiniol)
+  - Sensible Browser
+    Pierre-Elliott Bécue (p-eb)
+  - Reply using X-Original-To: header
+    Pierre-Elliott Bécue (p-eb)
+  - Purge Thread
+    Darshit Shah (darnir)
+  - Forgotten attachment
+    Darshit Shah (darnir)
+  - Add sidebar_ordinary color
+- Bug Fixes
+  - align the nntp code with mutt
+    Fabian Groffen (grobian)
+  - check for new mail while in pager when idle
+    Stefan Assmann (sassmann)
+  - Allow the user to interrupt slow IO operations
+    Antonio Radici (aradici)
+  - keywords: check there are emails to tag
+  - fix duplicate saved messages
+  - flatten contrib/keybase dir to fix install
+  - restore the pager keymapping 'i' to exit
+  - proposed fix for clearing labels
+  - notmuch: sync vfolder_format to folder_format
+- Docs
+  - Update List of Features and Authors
+- Build
+  - fix configure check for fmemopen
+  - use fixed version strings
+- Upstream
+  - Increase date buffer size for $folder_format.
+  - Disable ~X when message scoring.
+  - Fix pgpring reporting of DSA and Elgamal key lengths.
+  - Stub out getdnsdomainname() unless HAVE_GETADDRINFO.
+  - Autoconf: always check for getaddrinfo().
+  - Add missing sidebar contrib sample files to dist tarball.
+
 * Sat Aug 27 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160827
 - Ported to Mutt-1.7.0
 
