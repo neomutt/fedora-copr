@@ -19,10 +19,15 @@ rpmbuild_tree()
 }
 
 
+MUTT="1.7.0"
+DATE="$(sed -n '/^*/{s/.*-//p;q}' neomutt.spec)"
+OS="fc24"
+HERE=$(pwd)
+
 rm -fr rpmbuild
 rpmbuild_tree
 
-rpmbuild -rb --define=_topdir\ /home/mutt/release/copr/rpmbuild neomutt-1.7.0-20160910.fc24.src.rpm
+rpmbuild -rb --define=_topdir\ $HERE/rpmbuild neomutt-${MUTT}-${DATE}.${OS}.src.rpm
 
 cp rpmbuild/RPMS/x86_64/* .
 

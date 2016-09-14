@@ -19,16 +19,22 @@ rpmbuild_tree()
 }
 
 
+SPEC="neomutt.spec"
+MUTT="1.7.0"
+DATE="$(sed -n '/^*/{s/.*-//p;q}' "$SPEC")"
+OS="fc24"
+HERE=$(pwd)
+
 rm -fr rpmbuild
 rpmbuild_tree
 
-cp ../mutt-1.7.0.tar.gz rpmbuild/SOURCES
-cp *.patch              rpmbuild/SOURCES
-cp mutt_ldap_query      rpmbuild/SOURCES
+cp ../mutt-${MUTT}.tar.gz rpmbuild/SOURCES
+cp *.patch                rpmbuild/SOURCES
+cp mutt_ldap_query        rpmbuild/SOURCES
 
-rpmbuild -bs --target=noarch --define=_topdir\ /home/mutt/release/copr/rpmbuild neomutt.spec
+rpmbuild -bs --target=noarch --define=_topdir\ $HERE/rpmbuild "$SPEC"
 
-cp rpmbuild/SRPMS/neomutt-1.7.0-20160910.fc24.src.rpm .
+cp rpmbuild/SRPMS/neomutt-${MUTT}-${DATE}.${OS}.src.rpm .
 
 rm -fr rpmbuild
 
