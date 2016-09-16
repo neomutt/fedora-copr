@@ -25,13 +25,15 @@
 
 %global _origname mutt
 %global _date 20160916
-%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}}
 
 Summary: A text mode mail user agent
 Name: neomutt
 Version: 1.7.0
 Release: %{_date}%{?dist}
 Epoch: 5
+
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}}
+
 # The entire source code is GPLv2+ except
 # pgpewrap.c setenv.c sha1.c wcwidth.c which are Public Domain
 License: GPLv2+ and Public Domain
