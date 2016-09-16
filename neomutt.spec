@@ -111,6 +111,8 @@ echo %{release} | sed -r 's/.*(201[0-9])([0-1][0-9])([0-3][0-9]).*/"\1-\2-\3";/'
 # https://fedoraproject.org/wiki/Packaging:CryptoPolicies
 rm -f mutt_ssl.c
 
+find . -type f -size 0 -name '*.neomutt' -delete
+
 chmod +x git-version-gen
 
 %build
@@ -196,9 +198,7 @@ rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/TODO
 ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 
 %find_lang %{_origname}
-# %find_lang %{name}
 
-# %files -f %{name}.lang
 %files -f %{_origname}.lang
 %config(noreplace) %{_sysconfdir}/Muttrc
 %config(noreplace) %{_sysconfdir}/Muttrc.local
