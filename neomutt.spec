@@ -23,9 +23,9 @@
 %bcond_without notmuch
 %endif
 
-%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 %global _origname mutt
-%global _date 20160910
+%global _date 20160916
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{_origname}-%{version}}
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -111,8 +111,6 @@ echo %{release} | sed -r 's/.*(201[0-9])([0-1][0-9])([0-3][0-9]).*/"\1-\2-\3";/'
 # https://fedoraproject.org/wiki/Packaging:CryptoPolicies
 rm -f mutt_ssl.c
 
-find . -type f -size 0 -name '*.neomutt' -delete
-
 chmod +x git-version-gen
 
 %build
@@ -197,14 +195,16 @@ rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/TODO
 # provide muttrc.local(5): the same as muttrc(5)
 ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 
-# %find_lang %{_origname}
-%find_lang %{name}
+%find_lang %{_origname}
+# %find_lang %{name}
 
-%files -f %{name}.lang
+# %files -f %{name}.lang
+%files -f %{_origname}.lang
 %config(noreplace) %{_sysconfdir}/Muttrc
 %config(noreplace) %{_sysconfdir}/Muttrc.local
 %doc COPYRIGHT ChangeLog* GPL NEWS README* UPDATING mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
+%doc doc/muttrc.* doc/neomutt-syntax.vim
 %doc doc/manual.txt doc/smime-notes.txt
 %doc doc/*.html
 %doc contrib/keybase
@@ -219,8 +219,41 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man1/pgpewrap.*
 %{_mandir}/man5/muttrc.*
 
-
 %changelog
+* Fri Sep 16 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160916
+- Bug Fixes
+  - Avoid segfault when listing mailboxes on startup
+    John Swinbank
+  - Fix buffer overrun in search for attach keyword
+    James McCoy
+  - Fix off-by-one in error message
+    Antonio Radici
+  - fix AC_INIT tarname parameter
+  - fix crash when exiting the pager
+  - fix another crash in the pager
+  - nntp: close message handles
+  - fix: make the pager more robust
+  - fix sidebar sort order
+  - fix notmuch tag completion
+- Docs
+  - doc: Removes bug entry in new-mail docs
+    Santiago Torres
+  - fix some translations in crypt-gpgme.c
+    Antonio Radici
+  - docs: mass tidy up
+- Upstream
+  - Fix sidebar documentation a bit
+  - Add unsidebar_whitelist command
+  - Remove the $locale configuration variable
+  - Add $attribution_locale configuration variable
+  - Add missing include <locale.h> to send.c and edit.c
+  - Filter out zero width no-break space (U+FEFF)
+  - Update a confusing and obsolete comment
+  - Moves mutt_copy_list to muttlib.c, where it belongs
+  - Redraw screen after an SSL cert prompt
+  - Preserve message-id and mft headers for recalled messages
+  - Fix openssl 1.1 compilation issues
+
 * Sat Sep 10 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160910
 - New Features
   - Colouring Attachments with Regexp
