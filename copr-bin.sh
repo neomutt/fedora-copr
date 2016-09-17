@@ -27,7 +27,7 @@ HERE=$(pwd)
 rm -fr rpmbuild
 rpmbuild_tree
 
-rpmbuild -rb --define=_topdir\ $HERE/rpmbuild neomutt-${MUTT}-${DATE}.${OS}.src.rpm
+rpmbuild --rebuild --define=_topdir\ $HERE/rpmbuild neomutt-${MUTT}-${DATE}.${OS}.src.rpm
 
 cp rpmbuild/RPMS/x86_64/* .
 
