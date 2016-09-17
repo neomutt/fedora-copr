@@ -25,13 +25,15 @@
 
 %global _origname mutt
 %global _date 20160916
-%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{_origname}-%{version}}
 
 Summary: A text mode mail user agent
 Name: neomutt
 Version: 1.7.0
 Release: %{_date}%{?dist}
 Epoch: 5
+
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}}
+
 # The entire source code is GPLv2+ except
 # pgpewrap.c setenv.c sha1.c wcwidth.c which are Public Domain
 License: GPLv2+ and Public Domain
@@ -110,6 +112,8 @@ echo %{release} | sed -r 's/.*(201[0-9])([0-1][0-9])([0-3][0-9]).*/"\1-\2-\3";/'
 # Packaging:CryptoPolicies
 # https://fedoraproject.org/wiki/Packaging:CryptoPolicies
 rm -f mutt_ssl.c
+
+find . -type f -size 0 -name '*.neomutt' -delete
 
 chmod +x git-version-gen
 
@@ -191,14 +195,13 @@ rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/INSTALL
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/patch-notes.txt
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/PGP-Notes.txt
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/TODO
+rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 
 # provide muttrc.local(5): the same as muttrc(5)
 ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 
 %find_lang %{_origname}
-# %find_lang %{name}
 
-# %files -f %{name}.lang
 %files -f %{_origname}.lang
 %config(noreplace) %{_sysconfdir}/Muttrc
 %config(noreplace) %{_sysconfdir}/Muttrc.local
