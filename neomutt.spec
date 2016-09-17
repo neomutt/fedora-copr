@@ -195,6 +195,7 @@ rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/INSTALL
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/patch-notes.txt
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/PGP-Notes.txt
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/TODO
+rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 
 # provide muttrc.local(5): the same as muttrc(5)
 ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
