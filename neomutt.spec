@@ -196,7 +196,7 @@ rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/patch-notes.txt
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/PGP-Notes.txt
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/TODO
 
-%if 0%{?rhel} == 0
+%if 0%{?rhel}
 rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %endif
 
