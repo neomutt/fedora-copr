@@ -24,7 +24,7 @@
 %endif
 
 %global _origname mutt
-%global _date 20160916
+%global _date 20161002
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -195,7 +195,10 @@ rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/INSTALL
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/patch-notes.txt
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/PGP-Notes.txt
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/TODO
+
+%if 0%{?rhel} == 0
 rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
+%endif
 
 # provide muttrc.local(5): the same as muttrc(5)
 ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
@@ -205,7 +208,7 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %files -f %{_origname}.lang
 %config(noreplace) %{_sysconfdir}/Muttrc
 %config(noreplace) %{_sysconfdir}/Muttrc.local
-%doc COPYRIGHT ChangeLog* GPL NEWS README* UPDATING mutt_ldap_query
+%doc COPYRIGHT ChangeLog* LICENSE.md NEWS README* UPDATING mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
 %doc doc/muttrc.* doc/neomutt-syntax.vim
 %doc doc/manual.txt doc/smime-notes.txt
@@ -223,6 +226,45 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Sun Oct 02 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161002
+- Features
+  - Kyoto Cabinet header cache
+  - Compose to Sender
+  - Forgotten Attachment uses a regex
+  - Optimize LMDB's hcache backend
+  - Sensible-browser behaviour fixes
+- Bug Fixes
+  - Fixes repaint problem with $pager_index_lines #159
+  - Quasi-Delete: check there's a selection
+  - Bulletproof the pager
+  - Typo in the version string
+- Docs
+  - Add badges to README.neomutt
+  - Document the Kyoto cabinet hcache backend
+  - Fix the layout of the syntax file
+  - Make the license clear to github
+  - Fix the alignment in a 'nested-if' example
+  - Fix notmuch vim syntax file
+  - Added Mailinglist mailto links to "Where is NeoMutt" section
+  - Fix build of neomutt-syntax.vim
+  - Fixed typo of devel mailinglist name
+- Build
+  - Travis: install the kyoto-cabinet dev files
+  - Build source before docs
+  - Build fix for strndup / malloc
+  - Change gcc build options to prevent crashes
+- Upstream
+  - Ensure signatures exist when verifying multipart/signed emails. (closes #3881).
+  - RFC2047-decode mailto url headers after RFC2822 parsing. (closes #3879)
+  - RFC2047-decode mailto header values. (closes #3879)
+  - Reset invalid parsed received dates to 0.  (closes #3878)
+  - Clear pager position when toggling headers.
+  - Don't abort the menu editor on sigwinch. (closes #3875)
+  - Mark some gpgme pgp menu keybinding translations as fuzzy. (closes #3874)
+  - Check for NULL mx_ops in mx.c
+  - Use body color for gpgme output. (closes #3872)
+  - Fix gpgme segfault when querying candidates with a '+' in the address. (closes #3873)
+
 * Fri Sep 16 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160916
 - Bug Fixes
   - Avoid segfault when listing mailboxes on startup
