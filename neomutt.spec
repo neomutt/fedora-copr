@@ -24,7 +24,7 @@
 %endif
 
 %global _origname mutt
-%global _date 20161002
+%global _date 20161003
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -226,6 +226,10 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Mon Oct 03 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161003
+- Build
+  - Fix install and dist targets
+
 * Sun Oct 02 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161002
 - Features
   - Kyoto Cabinet header cache
