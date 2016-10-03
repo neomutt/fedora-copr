@@ -1,9 +1,13 @@
 diff --git c/ChangeLog.neomutt w/ChangeLog.neomutt
 new file mode 100644
-index 0000000..0c8cea4
+index 0000000..d89cedf
 --- /dev/null
 +++ w/ChangeLog.neomutt
-@@ -0,0 +1,308 @@
+@@ -0,0 +1,312 @@
++2016-10-03  Richard Russon  <rich@flatcap.org>
++* Build
++  - Fix install and dist targets
++
 +2016-10-02  Richard Russon  <rich@flatcap.org>
 +* Features
 +  - Kyoto Cabinet header cache
@@ -1423,7 +1427,7 @@ index 0000000..0daa041
 +library.  If this is what you want to do, use the GNU Lesser General
 +Public License instead of this License.
 diff --git c/Makefile.am w/Makefile.am
-index a052495..935fb89 100644
+index a052495..668f200 100644
 --- c/Makefile.am
 +++ w/Makefile.am
 @@ -10,15 +10,17 @@ IMAP_SUBDIR = imap
@@ -1471,9 +1475,10 @@ index a052495..935fb89 100644
  	sidebar.c smime.c smtp.c utf8.c wcwidth.c \
  	bcache.h browser.h hcache.h mbyte.h mutt_idna.h remailer.h url.h
  
- EXTRA_DIST = COPYRIGHT GPL OPS OPS.PGP OPS.CRYPT OPS.SMIME TODO UPDATING \
+-EXTRA_DIST = COPYRIGHT GPL OPS OPS.PGP OPS.CRYPT OPS.SMIME TODO UPDATING \
 -	configure account.h \
 -	attach.h buffy.h charset.h copy.h crypthash.h dotlock.h functions.h gen_defs \
++EXTRA_DIST = COPYRIGHT LICENSE.md OPS OPS.PGP OPS.CRYPT OPS.SMIME TODO UPDATING \
 +	account.h \
 +	attach.h buffy.h charset.h compress.h copy.h crypthash.h dotlock.h functions.h gen_defs \
  	globals.h hash.h history.h init.h keymap.h mutt_crypt.h \
@@ -6052,7 +6057,7 @@ index 0000000..26beae6
 +
 +#endif /* _COMPRESS_H_ */
 diff --git c/configure.ac w/configure.ac
-index 75517f6..4ff86c2 100644
+index 75517f6..473fed7 100644
 --- c/configure.ac
 +++ w/configure.ac
 @@ -3,15 +3,15 @@ dnl Process this file with autoconf to produce a configure script.
@@ -6063,7 +6068,7 @@ index 75517f6..4ff86c2 100644
 +CFLAGS=$CFLAGS
 +LDFLAGS=$LDFLAGS
 +
-+AC_INIT([NeoMutt], [20161002], [neomutt-devel@neomutt.org], [mutt], [http://www.neomutt.org])
++AC_INIT([NeoMutt], [20161003], [neomutt-devel@neomutt.org], [mutt], [http://www.neomutt.org])
  AC_CONFIG_SRCDIR(mutt.h)
  AM_INIT_AUTOMAKE
  AC_CONFIG_HEADERS([config.h])
@@ -10694,7 +10699,7 @@ index 8e0f52a..35bfde1 100644
      {
        mutt_clear_pager_position ();
 diff --git c/doc/Makefile.am w/doc/Makefile.am
-index bc8f856..b9deb90 100644
+index bc8f856..a051229 100644
 --- c/doc/Makefile.am
 +++ w/doc/Makefile.am
 @@ -14,7 +14,6 @@ noinst_PROGRAMS = makedoc
@@ -10735,7 +10740,7 @@ index bc8f856..b9deb90 100644
  
 -topsrcdir_DOCFILES = COPYRIGHT GPL INSTALL ChangeLog	\
 -	README NEWS TODO README.SECURITY README.SSL 
-+topsrcdir_DOCFILES = COPYRIGHT GPL INSTALL ChangeLog ChangeLog.neomutt	\
++topsrcdir_DOCFILES = COPYRIGHT LICENSE.md INSTALL ChangeLog ChangeLog.neomutt	\
 +	README NEWS TODO README.SECURITY README.SSL README.neomutt README.notmuch
  
  all: makedoc-all
