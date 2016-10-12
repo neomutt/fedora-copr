@@ -47,10 +47,10 @@ Patch3: mutt-1.5.21-cabundle.patch
 Patch4: mutt-1.5.23-system_certs.patch
 Patch5: mutt-1.5.23-ssl_ciphers.patch
 Patch6: mutt-1.6.0-syncdebug.patch
-Url: http://www.neomutt.org/
+Url: https://www.neomutt.org/
 Requires: mailcap, urlview
-# Provides: %{_origname}
-Conflicts: %{_origname}
+Provides: %{_origname}-%{version}
+Obsoletes: %{_origname}
 BuildRequires: ncurses-devel, gettext, automake
 # manual generation
 BuildRequires: /usr/bin/xsltproc, docbook-style-xsl, perl
