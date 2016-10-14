@@ -49,7 +49,7 @@ Patch5: mutt-1.5.23-ssl_ciphers.patch
 Patch6: mutt-1.6.0-syncdebug.patch
 Url: https://www.neomutt.org/
 Requires: mailcap, urlview
-Provides: %{_origname}-%{version}
+Provides: %{_origname} = %{epoch}:%{version}
 Obsoletes: %{_origname}
 BuildRequires: ncurses-devel, gettext, automake
 # manual generation
