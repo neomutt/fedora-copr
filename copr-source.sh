@@ -20,7 +20,7 @@ rpmbuild_tree()
 
 
 SPEC="neomutt.spec"
-MUTT="1.7.0"
+MUTT="1.7.1"
 DATE="$(sed -n '/^*/{s/.*-//p;q}' "$SPEC")"
 OS="fc24"
 HERE=$(pwd)

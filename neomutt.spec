@@ -24,11 +24,11 @@
 %endif
 
 %global _origname mutt
-%global _date 20161003
+%global _date 20161014
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 1.7.0
+Version: 1.7.1
 Release: %{_date}%{?dist}
 Epoch: 5
 
@@ -41,7 +41,7 @@ Group: Applications/Internet
 # git snapshot created from https://github.com/neomutt/neomutt
 Source: %{_origname}-%{version}.tar.gz
 Source1: mutt_ldap_query
-Patch1: mutt-1.7.0.neomutt.patch
+Patch1: mutt-1.7.1.neomutt.patch
 Patch2: mutt-1.5.18-muttrc.patch
 Patch3: mutt-1.5.21-cabundle.patch
 Patch4: mutt-1.5.23-system_certs.patch
@@ -226,6 +226,28 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Fri Oct 14 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161014
+- Features
+  - sidebar: Make sure INBOX appears first in the list.
+  - notmuch: Synchronise tags to flags
+- Bug Fixes
+  - updates when pager is open
+  - crash when neither $spoolfile, $folder are set
+  - forgotten-attachment: fix empty regex expression
+  - status-color when pager_index_lines > 0
+  - buffer underrun when no menu item is selected
+  - crash handling keywords/labels
+- Docs
+  - update notmuch references
+- Build
+  - update references to 1.7.1
+  - strfcpy() improvement
+- Upstream
+  - automatic post-release commit for mutt-1.7.1
+  - Mark IMAP fast-trash'ed messages as read before copying. (see #3860)
+  - Updated Czech translation.
+  - Preserve forwarded attachment names in d_filename.
+
 * Mon Oct 03 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161003
 - Build
   - Fix install and dist targets

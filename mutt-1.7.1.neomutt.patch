@@ -1,9 +1,31 @@
 diff --git c/ChangeLog.neomutt w/ChangeLog.neomutt
 new file mode 100644
-index 0000000..d89cedf
+index 0000000..1b833be
 --- /dev/null
 +++ w/ChangeLog.neomutt
-@@ -0,0 +1,312 @@
+@@ -0,0 +1,334 @@
++2016-10-14  Richard Russon  <rich@flatcap.org>
++* Features
++  - sidebar: Make sure INBOX appears first in the list.
++  - notmuch: Synchronise tags to flags
++* Bug Fixes
++  - updates when pager is open
++  - crash when neither $spoolfile, $folder are set
++  - forgotten-attachment: fix empty regex expression
++  - status-color when pager_index_lines > 0
++  - buffer underrun when no menu item is selected
++  - crash handling keywords/labels
++* Docs
++  - update notmuch references
++* Build
++  - update references to 1.7.1
++  - strfcpy() improvement
++* Upstream
++  - automatic post-release commit for mutt-1.7.1
++  - Mark IMAP fast-trash'ed messages as read before copying. (see #3860)
++  - Updated Czech translation.
++  - Preserve forwarded attachment names in d_filename.
++
 +2016-10-03  Richard Russon  <rich@flatcap.org>
 +* Build
 +  - Fix install and dist targets
@@ -1427,7 +1449,7 @@ index 0000000..0daa041
 +library.  If this is what you want to do, use the GNU Lesser General
 +Public License instead of this License.
 diff --git c/Makefile.am w/Makefile.am
-index a052495..668f200 100644
+index a052495..14b025b 100644
 --- c/Makefile.am
 +++ w/Makefile.am
 @@ -10,15 +10,17 @@ IMAP_SUBDIR = imap
@@ -1555,7 +1577,7 @@ index a052495..668f200 100644
 -	cmp -s reldate.h.tmp reldate.h || cp reldate.h.tmp reldate.h; \
 -	rm reldate.h.tmp
 +oldmutt_ver.h:
-+	version="1.7.0" && \
++	version="1.7.1" && \
 +	echo 'const char *OldMuttVer = "'$$version'";' > oldmutt_ver.h.tmp; \
 +	cmp -s oldmutt_ver.h.tmp oldmutt_ver.h || mv oldmutt_ver.h.tmp oldmutt_ver.h
 +
@@ -1934,10 +1956,10 @@ index 0000000..966b4b6
 +
 diff --git c/README.notmuch w/README.notmuch
 new file mode 100644
-index 0000000..a36d1b2
+index 0000000..471d22a
 --- /dev/null
 +++ w/README.notmuch
-@@ -0,0 +1,403 @@
+@@ -0,0 +1,411 @@
 +notmuch support for mutt
 +------------------------
 +
@@ -1946,14 +1968,22 @@ index 0000000..a36d1b2
 +
 + * home page (wiki) and git:
 +
-+   https://github.com/karelzak/mutt-kz
++   Note: The mutt-kz project is now deprecated in favour of the NeoMutt Project.
++
++   https://www.neomutt.org
 +
 +   Note that the master branch is rebased to be up to date with mutt upstream. Use
 +   stable/v<version> branches for downstream packaging.
 +
 + * mailing list:
 +
-+   https://admin.fedoraproject.org/mailman/listinfo/mutt-kz
++   NeoMutt Users' Mailing List
++     Discuss your favourite features, share experiences, swap config files, ask for help...
++     http://mailman.neomutt.org/mailman/listinfo/neomutt-users-neomutt.org
++
++   NeoMutt Developers' Mailing List
++     Listen in to the developers, propose new features, offer help...
++     http://mailman.neomutt.org/mailman/listinfo/neomutt-devel-neomutt.org
 +
 + * requirements:
 +
@@ -1961,8 +1991,8 @@ index 0000000..a36d1b2
 +
 + * compile:
 +
-+  $ git clone git://github.com/karelzak/mutt-kz.git
-+  $ cd mutt-kz
++  $ git clone https://github.com/neomutt/neomutt
++  $ cd neomutt
 +  $ ./prepare
 +  $ ./configure --enable-notmuch [--enable-debug]
 +  $ make
@@ -2417,11 +2447,11 @@ index 0000000..1df36c0
 ++ %g and %Gx index_format and pager_format formatting sequences
 diff --git c/VERSION w/VERSION
 deleted file mode 100644
-index bd8bf88..0000000
+index 943f9cb..0000000
 --- c/VERSION
 +++ /dev/null
 @@ -1 +0,0 @@
--1.7.0
+-1.7.1
 diff --git c/account.c w/account.c
 index ce71180..ca0ee8e 100644
 --- c/account.c
@@ -2590,7 +2620,7 @@ index 928408a..071f22c 100644
  
  #endif /* _ATTACH_H_ */
 diff --git c/browser.c w/browser.c
-index 15eccc5..5c99127 100644
+index 8829bc8..29f99d3 100644
 --- c/browser.c
 +++ w/browser.c
 @@ -29,9 +29,16 @@
@@ -2643,30 +2673,37 @@ index 15eccc5..5c99127 100644
  static char LastDir[_POSIX_PATH_MAX] = "";
  static char LastDirBackup[_POSIX_PATH_MAX] = "";
  
-@@ -85,6 +107,16 @@ static int browser_compare_subject (const void *a, const void *b)
-   return ((BrowserSort & SORT_REVERSE) ? -r : r);
- }
+@@ -80,7 +102,21 @@ static int browser_compare_subject (const void *a, const void *b)
+   struct folder_file *pa = (struct folder_file *) a;
+   struct folder_file *pb = (struct folder_file *) b;
  
+-  int r = mutt_strcoll (pa->name, pb->name);
++  /* inbox should be sorted ahead of its siblings */
++  int same_path = mutt_same_path (pa->name, pb->name);
++  int r = (same_path && mutt_is_inbox (pa->name)) ? -1 :
++          (same_path && mutt_is_inbox (pb->name)) ?  1 :
++          mutt_strcoll  (pa->name, pb->name);
++
++  return ((BrowserSort & SORT_REVERSE) ? -r : r);
++}
++
 +static int browser_compare_desc (const void *a, const void *b)
 +{
 +  struct folder_file *pa = (struct folder_file *) a;
 +  struct folder_file *pb = (struct folder_file *) b;
 +
 +  int r = mutt_strcoll (pa->desc, pb->desc);
-+
-+  return ((BrowserSort & SORT_REVERSE) ? -r : r);
-+}
-+
- static int browser_compare_date (const void *a, const void *b)
- {
-   struct folder_file *pa = (struct folder_file *) a;
-@@ -105,26 +137,93 @@ static int browser_compare_size (const void *a, const void *b)
+ 
+   return ((BrowserSort & SORT_REVERSE) ? -r : r);
+ }
+@@ -105,26 +141,93 @@ static int browser_compare_size (const void *a, const void *b)
    return ((BrowserSort & SORT_REVERSE) ? -r : r);
  }
  
 -static void browser_sort (struct browser_state *state)
 +static int browser_compare_count (const void *a, const void *b)
-+{
+ {
+-  int (*f) (const void *, const void *);
 +  struct folder_file *pa = (struct folder_file *) a;
 +  struct folder_file *pb = (struct folder_file *) b;
 +
@@ -2682,8 +2719,7 @@ index 15eccc5..5c99127 100644
 +}
 +
 +static int browser_compare_count_new (const void *a, const void *b)
- {
--  int (*f) (const void *, const void *);
++{
 +  struct folder_file *pa = (struct folder_file *) a;
 +  struct folder_file *pb = (struct folder_file *) b;
 +
@@ -2764,16 +2800,7 @@ index 15eccc5..5c99127 100644
  }
  
  static int link_is_dir (const char *folder, const char *path)
-@@ -146,7 +245,7 @@ folder_format_str (char *dest, size_t destlen, size_t col, int cols, char op, co
- 		   unsigned long data, format_flag flags)
- {
-   char fn[SHORT_STRING], tmp[SHORT_STRING], permission[11];
--  char date[16], *t_fmt;
-+  char date[SHORT_STRING], *t_fmt;
-   time_t tnow;
-   FOLDER *folder = (FOLDER *) data;
-   struct passwd *pw;
-@@ -176,11 +275,12 @@ folder_format_str (char *dest, size_t destlen, size_t col, int cols, char op, co
+@@ -176,11 +279,12 @@ folder_format_str (char *dest, size_t destlen, size_t col, int cols, char op, co
  	  tnow = time (NULL);
  	  t_fmt = tnow - folder->ff->mtime < 31536000 ? "%b %d %H:%M" : "%b %d  %Y";
  	}
@@ -2791,7 +2818,7 @@ index 15eccc5..5c99127 100644
  
  	mutt_format_s (dest, destlen, fmt, date);
        }
-@@ -191,6 +291,12 @@ folder_format_str (char *dest, size_t destlen, size_t col, int cols, char op, co
+@@ -191,6 +295,12 @@ folder_format_str (char *dest, size_t destlen, size_t col, int cols, char op, co
      case 'f':
      {
        char *s;
@@ -2804,7 +2831,7 @@ index 15eccc5..5c99127 100644
  #ifdef USE_IMAP
        if (folder->ff->imap)
  	s = NONULL (folder->ff->desc);
-@@ -340,8 +446,112 @@ folder_format_str (char *dest, size_t destlen, size_t col, int cols, char op, co
+@@ -340,8 +450,112 @@ folder_format_str (char *dest, size_t destlen, size_t col, int cols, char op, co
    return (src);
  }
  
@@ -2918,7 +2945,7 @@ index 15eccc5..5c99127 100644
  {
    if (state->entrylen == state->entrymax)
    {
-@@ -365,6 +575,8 @@ static void add_folder (MUTTMENU *m, struct browser_state *state,
+@@ -365,6 +579,8 @@ static void add_folder (MUTTMENU *m, struct browser_state *state,
      
      (state->entry)[state->entrylen].local = 1;
    }
@@ -2927,7 +2954,7 @@ index 15eccc5..5c99127 100644
  
    if (b)
    {
-@@ -375,10 +587,14 @@ static void add_folder (MUTTMENU *m, struct browser_state *state,
+@@ -375,10 +591,14 @@ static void add_folder (MUTTMENU *m, struct browser_state *state,
    }
  
    (state->entry)[state->entrylen].name = safe_strdup (name);
@@ -2943,7 +2970,7 @@ index 15eccc5..5c99127 100644
    (state->entrylen)++;
  }
  
-@@ -394,9 +610,35 @@ static void init_state (struct browser_state *state, MUTTMENU *menu)
+@@ -394,9 +614,35 @@ static void init_state (struct browser_state *state, MUTTMENU *menu)
      menu->data = state->entry;
  }
  
@@ -2979,7 +3006,7 @@ index 15eccc5..5c99127 100644
    struct stat s;
    DIR *dp;
    struct dirent *de;
-@@ -463,17 +705,67 @@ static int examine_directory (MUTTMENU *menu, struct browser_state *state,
+@@ -463,17 +709,67 @@ static int examine_directory (MUTTMENU *menu, struct browser_state *state,
        tmp->msg_count = Context->msgcount;
        tmp->msg_unread = Context->unread;
      }
@@ -3048,7 +3075,7 @@ index 15eccc5..5c99127 100644
    BUFFY *tmp = Incoming;
  
    if (!Incoming)
-@@ -494,14 +786,21 @@ static int examine_mailboxes (MUTTMENU *menu, struct browser_state *state)
+@@ -494,14 +790,21 @@ static int examine_mailboxes (MUTTMENU *menu, struct browser_state *state)
  #ifdef USE_IMAP
      if (mx_is_imap (tmp->path))
      {
@@ -3072,7 +3099,7 @@ index 15eccc5..5c99127 100644
        continue;
      }
  #endif
-@@ -530,18 +829,30 @@ static int examine_mailboxes (MUTTMENU *menu, struct browser_state *state)
+@@ -530,18 +833,30 @@ static int examine_mailboxes (MUTTMENU *menu, struct browser_state *state)
      strfcpy (buffer, NONULL(tmp->path), sizeof (buffer));
      mutt_pretty_mailbox (buffer, sizeof (buffer));
  
@@ -3104,7 +3131,7 @@ index 15eccc5..5c99127 100644
  static void folder_entry (char *s, size_t slen, MUTTMENU *menu, int num)
  {
    FOLDER folder;
-@@ -549,10 +860,48 @@ static void folder_entry (char *s, size_t slen, MUTTMENU *menu, int num)
+@@ -549,10 +864,48 @@ static void folder_entry (char *s, size_t slen, MUTTMENU *menu, int num)
    folder.ff = &((struct folder_file *) menu->data)[num];
    folder.num = num;
    
@@ -3153,7 +3180,7 @@ index 15eccc5..5c99127 100644
  static void init_menu (struct browser_state *state, MUTTMENU *menu, char *title,
  		       size_t titlelen, int buffy)
  {
-@@ -569,21 +918,76 @@ static void init_menu (struct browser_state *state, MUTTMENU *menu, char *title,
+@@ -569,21 +922,76 @@ static void init_menu (struct browser_state *state, MUTTMENU *menu, char *title,
  
    menu->tagged = 0;
    
@@ -3240,7 +3267,7 @@ index 15eccc5..5c99127 100644
    menu->redraw = REDRAW_FULL;
  }
  
-@@ -603,6 +1007,23 @@ static int file_tag (MUTTMENU *menu, int n, int m)
+@@ -603,6 +1011,23 @@ static int file_tag (MUTTMENU *menu, int n, int m)
    return ff->tagged - ot;
  }
  
@@ -3264,7 +3291,7 @@ index 15eccc5..5c99127 100644
  void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *numfiles)
  {
    char buf[_POSIX_PATH_MAX];
-@@ -617,6 +1038,11 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -617,6 +1042,11 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
    int folder   = (flags & MUTT_SEL_FOLDER) ? 1 : 0;
    int buffy    = (flags & MUTT_SEL_BUFFY)  ? 1 : 0;
  
@@ -3276,7 +3303,7 @@ index 15eccc5..5c99127 100644
    buffy = buffy && folder;
    
    memset (&state, 0, sizeof (struct browser_state));
-@@ -624,6 +1050,31 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -624,6 +1054,31 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
    if (!folder)
      strfcpy (LastDirBackup, LastDir, sizeof (LastDirBackup));
  
@@ -3308,7 +3335,16 @@ index 15eccc5..5c99127 100644
    if (*f)
    {
      mutt_expand_path (f, flen);
-@@ -671,13 +1122,86 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -634,6 +1089,8 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+       state.imap_browse = 1;
+       if (!imap_browse (f, &state))
+         strfcpy (LastDir, state.folder, sizeof (LastDir));
++      else
++        browser_sort (&state);
+     }
+     else
+     {
+@@ -671,13 +1128,86 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
      }
  #endif
    }
@@ -3399,7 +3435,7 @@ index 15eccc5..5c99127 100644
  #ifdef USE_IMAP
      if (!buffy && mx_is_imap (LastDir))
      {
-@@ -699,6 +1223,12 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -699,6 +1229,12 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
  
    *f = 0;
  
@@ -3412,7 +3448,7 @@ index 15eccc5..5c99127 100644
    if (buffy)
    {
      if (examine_mailboxes (NULL, &state) == -1)
-@@ -708,9 +1238,10 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -708,9 +1244,10 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
  #ifdef USE_IMAP
    if (!state.imap_browse)
  #endif
@@ -3424,7 +3460,7 @@ index 15eccc5..5c99127 100644
    menu = mutt_new_menu (MENU_FOLDER);
    menu->make_entry = folder_entry;
    menu->search = select_file_search;
-@@ -719,7 +1250,18 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -719,7 +1256,18 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
    if (multiple)
      menu->tag = file_tag;
  
@@ -3443,7 +3479,7 @@ index 15eccc5..5c99127 100644
      FolderHelp);
  
    init_menu (&state, menu, title, sizeof (title), buffy);
-@@ -765,8 +1307,6 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -765,8 +1313,6 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
  #endif
  	    )
  	  {
@@ -3452,7 +3488,7 @@ index 15eccc5..5c99127 100644
  	    /* save the old directory */
  	    strfcpy (OldLastDir, LastDir, sizeof (OldLastDir));
  
-@@ -851,14 +1391,19 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -851,14 +1397,19 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
  		goto bail;
  	      }
  	    }
@@ -3474,7 +3510,7 @@ index 15eccc5..5c99127 100644
  	{
  	  strfcpy (f, state.entry[menu->current].name, flen);
  	  mutt_expand_path (f, flen);
-@@ -867,6 +1412,10 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -867,6 +1418,10 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
  	else if (state.imap_browse)
            strfcpy (f, state.entry[menu->current].name, flen);
  #endif
@@ -3485,7 +3521,7 @@ index 15eccc5..5c99127 100644
  	else
  	  mutt_concat_path (f, LastDir, state.entry[menu->current].name, flen);
  
-@@ -916,14 +1465,6 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -916,14 +1471,6 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
          break;
  
  #ifdef USE_IMAP
@@ -3500,7 +3536,7 @@ index 15eccc5..5c99127 100644
        case OP_BROWSER_TOGGLE_LSUB:
  	if (option (OPTIMAPLSUB))
  	  unset_option (OPTIMAPLSUB);
-@@ -950,8 +1491,7 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -950,8 +1497,7 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
  	  imap_browse (LastDir, &state);
  	  browser_sort (&state);
  	  menu->data = state.entry;
@@ -3510,7 +3546,7 @@ index 15eccc5..5c99127 100644
  	  init_menu (&state, menu, title, sizeof (title), buffy);
  	  MAYBE_REDRAW (menu->redraw);
  	}
-@@ -973,8 +1513,7 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -973,8 +1519,7 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
  	    imap_browse (LastDir, &state);
  	    browser_sort (&state);
  	    menu->data = state.entry;
@@ -3520,7 +3556,7 @@ index 15eccc5..5c99127 100644
  	    init_menu (&state, menu, title, sizeof (title), buffy);
  	    MAYBE_REDRAW (menu->redraw);
  	  }
-@@ -1026,6 +1565,11 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -1026,6 +1571,11 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
        
        case OP_CHANGE_DIRECTORY:
  
@@ -3532,7 +3568,7 @@ index 15eccc5..5c99127 100644
  	strfcpy (buf, LastDir, sizeof (buf));
  #ifdef USE_IMAP
  	if (!state.imap_browse)
-@@ -1052,8 +1596,7 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -1052,8 +1602,7 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
  	    imap_browse (LastDir, &state);
  	    browser_sort (&state);
  	    menu->data = state.entry;
@@ -3542,7 +3578,7 @@ index 15eccc5..5c99127 100644
  	    init_menu (&state, menu, title, sizeof (title), buffy);
  	  }
  	  else
-@@ -1083,8 +1626,7 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -1083,8 +1632,7 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
  		    goto bail;
  		  }
  		}
@@ -3552,7 +3588,7 @@ index 15eccc5..5c99127 100644
  		init_menu (&state, menu, title, sizeof (title), buffy);
  	      }
  	      else
-@@ -1172,9 +1714,9 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -1172,9 +1720,9 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
  	  int reverse = (i == OP_SORT_REVERSE);
  	  
  	  switch (mutt_multi_choice ((reverse) ?
@@ -3565,7 +3601,7 @@ index 15eccc5..5c99127 100644
  	  {
  	    case -1: /* abort */
  	      resort = 0;
-@@ -1192,7 +1734,19 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -1192,7 +1740,19 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
  	      BrowserSort = SORT_SIZE;
  	      break;
  
@@ -3586,7 +3622,7 @@ index 15eccc5..5c99127 100644
  	      BrowserSort = SORT_ORDER;
  	      resort = 0;
  	      break;
-@@ -1201,6 +1755,7 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -1201,6 +1761,7 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
  	  {
  	    BrowserSort |= reverse ? SORT_REVERSE : 0;
  	    browser_sort (&state);
@@ -3594,7 +3630,7 @@ index 15eccc5..5c99127 100644
  	    menu->redraw = REDRAW_FULL;
  	  }
  	  break;
-@@ -1209,7 +1764,32 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -1209,7 +1770,32 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
        case OP_TOGGLE_MAILBOXES:
  	buffy = 1 - buffy;
  
@@ -3627,7 +3663,7 @@ index 15eccc5..5c99127 100644
  	destroy_state (&state);
  	prefix[0] = 0;
  	killPrefix = 0;
-@@ -1291,6 +1871,209 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -1291,6 +1877,209 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
  	  else
  	    mutt_error _("Error trying to view file");
  	}
@@ -3837,7 +3873,7 @@ index 15eccc5..5c99127 100644
      }
    }
    
-@@ -1298,5 +2081,6 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
+@@ -1298,5 +2087,6 @@ void _mutt_select_file (char *f, size_t flen, int flags, char ***files, int *num
    
    if (!folder)
      strfcpy (LastDir, LastDirBackup, sizeof (LastDir));
@@ -6057,7 +6093,7 @@ index 0000000..26beae6
 +
 +#endif /* _COMPRESS_H_ */
 diff --git c/configure.ac w/configure.ac
-index 75517f6..473fed7 100644
+index aff9479..5f9db6e 100644
 --- c/configure.ac
 +++ w/configure.ac
 @@ -3,15 +3,15 @@ dnl Process this file with autoconf to produce a configure script.
@@ -6068,7 +6104,7 @@ index 75517f6..473fed7 100644
 +CFLAGS=$CFLAGS
 +LDFLAGS=$LDFLAGS
 +
-+AC_INIT([NeoMutt], [20161003], [neomutt-devel@neomutt.org], [mutt], [http://www.neomutt.org])
++AC_INIT([NeoMutt], [20161014], [neomutt-devel@neomutt.org], [mutt], [https://www.neomutt.org])
  AC_CONFIG_SRCDIR(mutt.h)
  AM_INIT_AUTOMAKE
  AC_CONFIG_HEADERS([config.h])
@@ -6077,7 +6113,7 @@ index 75517f6..473fed7 100644
 -
 -MUTT_VERSION=`env sh "$srcdir/version.sh"`
 -AC_DEFINE_UNQUOTED(MUTT_VERSION,"$MUTT_VERSION", [Full textual version string.])
-+AC_DEFINE(MUTT_VERSION, "1.7.0", [Version of upstream Mutt])
++AC_DEFINE(MUTT_VERSION, "1.7.1", [Version of upstream Mutt])
  
  AC_USE_SYSTEM_EXTENSIONS
  
@@ -6240,20 +6276,7 @@ index 75517f6..473fed7 100644
  AC_REPLACE_FUNCS([strcasestr mkdtemp])
  
  AC_CHECK_FUNC(getopt)
-@@ -588,6 +617,12 @@ need_socket="no"
- 
- dnl -- socket dependencies --
- 
-+dnl getaddrinfo is used by getdomain.c, and requires libnsl and
-+dnl libsocket on some platforms
-+AC_CHECK_FUNC(gethostent, , AC_CHECK_LIB(nsl, gethostent))
-+AC_CHECK_FUNC(setsockopt, , AC_CHECK_LIB(socket, setsockopt))
-+AC_CHECK_FUNCS(getaddrinfo)
-+
- AC_ARG_ENABLE(pop,  AS_HELP_STRING([--enable-pop],[Enable POP3 support]),
- [       if test x$enableval = xyes ; then
-                 AC_DEFINE(USE_POP,1,[ Define if you want support for the POP3 protocol. ])
-@@ -610,6 +645,15 @@ AC_ARG_ENABLE(imap, AS_HELP_STRING([--enable-imap],[Enable IMAP support]),
+@@ -616,6 +645,15 @@ AC_ARG_ENABLE(imap, AS_HELP_STRING([--enable-imap],[Enable IMAP support]),
  ])
  AM_CONDITIONAL(BUILD_IMAP, test x$need_imap = xyes)
  
@@ -6269,7 +6292,7 @@ index 75517f6..473fed7 100644
  AC_ARG_ENABLE(smtp, AS_HELP_STRING([--enable-smtp],[include internal SMTP relay support]),
  	[if test $enableval = yes; then
  		AC_DEFINE(USE_SMTP, 1, [Include internal SMTP relay support])
-@@ -617,7 +661,7 @@ AC_ARG_ENABLE(smtp, AS_HELP_STRING([--enable-smtp],[include internal SMTP relay
+@@ -623,7 +661,7 @@ AC_ARG_ENABLE(smtp, AS_HELP_STRING([--enable-smtp],[include internal SMTP relay
  		need_socket="yes"
  	fi])
  
@@ -6278,17 +6301,7 @@ index 75517f6..473fed7 100644
    MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS bcache.o"
  fi
  
-@@ -631,9 +675,6 @@ then
-                 AC_MSG_RESULT([no])
-                 AC_DEFINE(socklen_t,int,
-                         [ Define to 'int' if <sys/socket.h> doesn't have it. ]))
--        AC_CHECK_FUNC(gethostent, , AC_CHECK_LIB(nsl, gethostent))
--        AC_CHECK_FUNC(setsockopt, , AC_CHECK_LIB(socket, setsockopt))
--        AC_CHECK_FUNCS(getaddrinfo)
-         AC_DEFINE(USE_SOCKET,1,
-                 [ Include code for socket support. Set automatically if you enable POP3 or IMAP ])
-         MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS account.o mutt_socket.o mutt_tunnel.o"
-@@ -686,13 +727,16 @@ AC_ARG_WITH(ssl, AS_HELP_STRING([--with-ssl@<:@=PFX@:>@],[Enable TLS support usi
+@@ -689,13 +727,16 @@ AC_ARG_WITH(ssl, AS_HELP_STRING([--with-ssl@<:@=PFX@:>@],[Enable TLS support usi
  
              crypto_libs=""
              AC_CHECK_LIB(z, deflate, [crypto_libs=-lz])
@@ -6307,7 +6320,7 @@ index 75517f6..473fed7 100644
  
              AC_DEFINE(USE_SSL,1,[ Define if you want support for SSL. ])
              AC_DEFINE(USE_SSL_OPENSSL,1,[ Define if you want support for SSL via OpenSSL. ])
-@@ -860,11 +904,14 @@ AC_ARG_ENABLE(exact-address, AS_HELP_STRING([--enable-exact-address],[Enable reg
+@@ -863,11 +904,14 @@ AC_ARG_ENABLE(exact-address, AS_HELP_STRING([--enable-exact-address],[Enable reg
  dnl -- start cache --
  db_found=no
  db_requested=auto
@@ -6322,7 +6335,7 @@ index 75517f6..473fed7 100644
  
  db_found=no
  if test x$enable_hcache = xyes
-@@ -880,7 +927,16 @@ then
+@@ -883,7 +927,16 @@ then
  
      if test -n "$with_tokyocabinet" && test "$with_tokyocabinet" != "no"
      then
@@ -6340,7 +6353,7 @@ index 75517f6..473fed7 100644
      fi
      if test -n "$with_qdbm" && test "$with_qdbm" != "no"
      then
-@@ -888,7 +944,7 @@ then
+@@ -891,7 +944,7 @@ then
        then
          AC_MSG_ERROR([more than one header cache engine requested.])
        else
@@ -6349,7 +6362,7 @@ index 75517f6..473fed7 100644
        fi
      fi
      if test -n "$with_gdbm" && test "$with_gdbm" != "no"
-@@ -897,7 +953,7 @@ then
+@@ -900,7 +953,7 @@ then
        then
          AC_MSG_ERROR([more than one header cache engine requested.])
        else
@@ -6358,7 +6371,7 @@ index 75517f6..473fed7 100644
        fi
      fi
      if test -n "$with_bdb" && test "$with_bdb" != "no"
-@@ -906,13 +962,22 @@ then
+@@ -909,13 +962,22 @@ then
        then
          AC_MSG_ERROR([more than one header cache engine requested.])
        else
@@ -6383,7 +6396,7 @@ index 75517f6..473fed7 100644
      then
        if test -n "$with_tokyocabinet" && test "$with_tokyocabinet" != "yes"
        then
-@@ -924,7 +989,7 @@ then
+@@ -927,7 +989,7 @@ then
        AC_CHECK_LIB(tokyocabinet, tcbdbopen,
          [MUTTLIBS="$MUTTLIBS -ltokyocabinet"
           AC_DEFINE(HAVE_TC, 1, [Tokyo Cabinet Support])
@@ -6392,7 +6405,7 @@ index 75517f6..473fed7 100644
          [CPPFLAGS="$OLDCPPFLAGS"
           LDFLAGS="$OLDLDFLAGS"]))
        if test "$db_requested" != auto && test "$db_found" != "$db_requested"
-@@ -933,9 +998,32 @@ then
+@@ -936,9 +998,32 @@ then
        fi
      fi
  
@@ -6426,7 +6439,7 @@ index 75517f6..473fed7 100644
      then
        if test -n "$with_qdbm" && test "$with_qdbm" != "yes"
        then
-@@ -956,7 +1044,7 @@ then
+@@ -959,7 +1044,7 @@ then
        AC_CHECK_LIB(qdbm, vlopen,
          [MUTTLIBS="$MUTTLIBS -lqdbm"
           AC_DEFINE(HAVE_QDBM, 1, [QDBM Support])
@@ -6435,7 +6448,7 @@ index 75517f6..473fed7 100644
          [CPPFLAGS="$OLDCPPFLAGS"
           LDFLAGS="$OLDLDFLAGS"])
        LIBS="$saved_LIBS"
-@@ -968,7 +1056,7 @@ then
+@@ -971,7 +1056,7 @@ then
  
      dnl -- GDBM --
      if test x$with_gdbm != xno && test $db_found = no \
@@ -6444,7 +6457,7 @@ index 75517f6..473fed7 100644
      then
          if test "$with_gdbm" != "yes"
          then
-@@ -986,7 +1074,7 @@ then
+@@ -989,7 +1074,7 @@ then
          then
            AC_DEFINE(HAVE_GDBM, 1, [GDBM Support])
            MUTTLIBS="$MUTTLIBS -lgdbm"
@@ -6453,7 +6466,7 @@ index 75517f6..473fed7 100644
          fi
          if test "$db_requested" != auto && test "$db_found" != "$db_requested"
          then
-@@ -996,7 +1084,8 @@ then
+@@ -999,7 +1084,8 @@ then
  
      dnl -- BDB --
      ac_bdb_prefix="$with_bdb"
@@ -6463,7 +6476,7 @@ index 75517f6..473fed7 100644
      then
          if test x$ac_bdb_prefix = xyes || test x$ac_bdb_prefix = x
          then
-@@ -1046,17 +1135,46 @@ then
+@@ -1049,17 +1135,46 @@ then
              CPPFLAGS="$OLDCPPFLAGS -I$BDB_INCLUDE_DIR"
              LIBS="$OLDLIBS -L$BDB_LIB_DIR -l$BDB_LIB"
              AC_DEFINE(HAVE_DB4, 1, [Berkeley DB4 Support])
@@ -6512,7 +6525,7 @@ index 75517f6..473fed7 100644
  dnl -- end cache --
  
  AM_CONDITIONAL(BUILD_HCACHE, test x$db_found != xno)
-@@ -1075,6 +1193,7 @@ AC_SUBST(MUTTLIBS)
+@@ -1078,6 +1193,7 @@ AC_SUBST(MUTTLIBS)
  AC_SUBST(MUTT_LIB_OBJECTS)
  AC_SUBST(LIBIMAP)
  AC_SUBST(LIBIMAPDEPS)
@@ -6520,7 +6533,7 @@ index 75517f6..473fed7 100644
  
  dnl -- iconv/gettext --
  
-@@ -1318,6 +1437,21 @@ if test $mutt_cv_langinfo_yesexpr = yes; then
+@@ -1321,6 +1437,21 @@ if test $mutt_cv_langinfo_yesexpr = yes; then
    AC_DEFINE(HAVE_LANGINFO_YESEXPR,1,[ Define if you have <langinfo.h> and nl_langinfo(YESEXPR). ])
  fi
  
@@ -6542,7 +6555,7 @@ index 75517f6..473fed7 100644
  dnl Documentation tools
  have_openjade="no"
  AC_PATH_PROG([OSPCAT], [ospcat], [none])
-@@ -1353,5 +1487,24 @@ fi
+@@ -1356,5 +1487,24 @@ fi
  
  AC_CONFIG_FILES(Makefile contrib/Makefile doc/Makefile imap/Makefile
          intl/Makefile m4/Makefile po/Makefile.in
@@ -6569,20 +6582,10 @@ index 75517f6..473fed7 100644
 +  Header Cache:      $hcache_db_used
 +])
 diff --git c/contrib/Makefile.am w/contrib/Makefile.am
-index 4abd2c7..69c2ea8 100644
+index 3ca99a0..69c2ea8 100644
 --- c/contrib/Makefile.am
 +++ w/contrib/Makefile.am
-@@ -3,29 +3,45 @@
- subdir = contrib
- 
- SAMPLES = Mush.rc Pine.rc gpg.rc pgp2.rc pgp5.rc pgp6.rc Tin.rc \
--	sample.muttrc  sample.mailcap sample.muttrc-tlr \
--	colors.default colors.linux smime.rc \
-+	sample.mailcap sample.muttrc sample.muttrc-sidebar sample.muttrc-tlr \
-+	sample.vimrc-sidebar colors.default colors.linux smime.rc \
- 	ca-bundle.crt smime_keys_test.pl mutt_xtitle
- 
- EXTRA_DIST = language.txt language50.txt  \
+@@ -11,21 +11,37 @@ EXTRA_DIST = language.txt language50.txt  \
  	patch.slang-1.2.2.keypad.1	\
  	$(SAMPLES) \
  	iconv/README \
@@ -6709,7 +6712,7 @@ index 0000000..5caf908
 --- /dev/null
 +++ w/contrib/keybase/attachmentView.png
 @@ -0,0 +1,957 @@
-+Image: /tmp/LCUXoE_attachmentView.png
++Image: /tmp/y2kRg7_attachmentView.png
 +  Format: PNG (Portable Network Graphics)
 +  Mime type: image/png
 +  Class: DirectClass
@@ -7643,8 +7646,8 @@ index 0000000..5caf908
 +  Compression: Zip
 +  Orientation: Undefined
 +  Properties:
-+    date:create: 2016-08-28T15:23:12+01:00
-+    date:modify: 2016-08-28T15:23:12+01:00
++    date:create: 2016-10-09T11:26:13+01:00
++    date:modify: 2016-10-09T11:26:13+01:00
 +    png:bKGD: chunk was found (see Background color, above)
 +    png:IHDR.bit-depth-orig: 8
 +    png:IHDR.bit_depth: 8
@@ -7657,7 +7660,7 @@ index 0000000..5caf908
 +    png:tIME: 2016-08-08T21:04:28Z
 +    signature: 1d6beb4912b57dccdbe07d81279a116d866fdd29bc955f5e79215ac148b0ae75
 +  Artifacts:
-+    filename: /tmp/LCUXoE_attachmentView.png
++    filename: /tmp/y2kRg7_attachmentView.png
 +    verbose: true
 +  Tainted: False
 +  Filesize: 57.5KB
@@ -7819,7 +7822,7 @@ index 0000000..52d5989
 --- /dev/null
 +++ w/contrib/keybase/pagerMode.png
 @@ -0,0 +1,854 @@
-+Image: /tmp/Mp3D2x_pagerMode.png
++Image: /tmp/xwhHwV_pagerMode.png
 +  Format: PNG (Portable Network Graphics)
 +  Mime type: image/png
 +  Class: DirectClass
@@ -8650,8 +8653,8 @@ index 0000000..52d5989
 +  Compression: Zip
 +  Orientation: Undefined
 +  Properties:
-+    date:create: 2016-08-28T15:23:13+01:00
-+    date:modify: 2016-08-28T15:23:13+01:00
++    date:create: 2016-10-09T11:26:14+01:00
++    date:modify: 2016-10-09T11:26:14+01:00
 +    png:bKGD: chunk was found (see Background color, above)
 +    png:IHDR.bit-depth-orig: 8
 +    png:IHDR.bit_depth: 8
@@ -8664,12 +8667,12 @@ index 0000000..52d5989
 +    png:tIME: 2016-08-08T21:05:17Z
 +    signature: 1cb6d25c9949160285c5bb8d7dc13f0a3cc97c568b7cdc54eacb598b00e0de6f
 +  Artifacts:
-+    filename: /tmp/Mp3D2x_pagerMode.png
++    filename: /tmp/xwhHwV_pagerMode.png
 +    verbose: true
 +  Tainted: False
 +  Filesize: 54.4KB
 +  Number pixels: 2.074M
-+  Pixels per second: 518.4GB
++  Pixels per second: 414.72GB
 +  User time: 0.000u
 +  Elapsed time: 0:01.000
 +  Version: ImageMagick 6.9.3-0 Q16 x86_64 2016-02-03 http://www.imagemagick.org
@@ -8930,7 +8933,7 @@ index 4d6fc54..b47c7fb 100644
  
  int mutt_copy_hdr (FILE *, FILE *, LOFF_T, LOFF_T, int, const char *);
 diff --git c/crypt-gpgme.c w/crypt-gpgme.c
-index ff74d68..d5c6f33 100644
+index 6d8f333..d5c6f33 100644
 --- c/crypt-gpgme.c
 +++ w/crypt-gpgme.c
 @@ -869,14 +869,12 @@ static void print_time(time_t t, STATE *s)
@@ -9294,15 +9297,6 @@ index ff74d68..d5c6f33 100644
  }
  
  
-@@ -3708,7 +3704,7 @@ static char *list_to_pattern (LIST *list)
-     {
-       for(s = l->data; *s; s++)
-         {
--          if (*s == '%')
-+          if (*s == '%' || *s == '+')
-             n += 2;
-           n++;
-         }
 diff --git c/crypt.c w/crypt.c
 index 7659fdc..ba2290a 100644
 --- c/crypt.c
@@ -9588,7 +9582,7 @@ index 8b21c43..e829959 100644
      {
        if (k == (size_t)(-1))
 diff --git c/curs_main.c w/curs_main.c
-index 8e0f52a..35bfde1 100644
+index 8e0f52a..897c3d4 100644
 --- c/curs_main.c
 +++ w/curs_main.c
 @@ -22,6 +22,7 @@
@@ -9630,7 +9624,7 @@ index 8e0f52a..35bfde1 100644
  
  void index_make_entry (char *s, size_t l, MUTTMENU *menu, int num)
  {
-+  if (!Context || !menu)
++  if (!Context || !menu || (num < 0))
 +    return;
 +
    format_flag flag = MUTT_FORMAT_MAKEPRINT | MUTT_FORMAT_ARROWCURSOR | MUTT_FORMAT_INDEX;
@@ -9640,7 +9634,7 @@ index 8e0f52a..35bfde1 100644
  
  int index_color (int index_no)
  {
-+  if (!Context)
++  if (!Context || (index_no < 0))
 +    return 0;
 +
    HEADER *h = Context->hdrs[Context->v2r[index_no]];
@@ -10699,7 +10693,7 @@ index 8e0f52a..35bfde1 100644
      {
        mutt_clear_pager_position ();
 diff --git c/doc/Makefile.am w/doc/Makefile.am
-index bc8f856..a051229 100644
+index bc8f856..2a42b83 100644
 --- c/doc/Makefile.am
 +++ w/doc/Makefile.am
 @@ -14,7 +14,6 @@ noinst_PROGRAMS = makedoc
@@ -10820,7 +10814,7 @@ index bc8f856..a051229 100644
 -	  sed -e "s/@VERSION\@/`cat $(top_srcdir)/VERSION` ($$date)/" $(srcdir)/manual.xml.head && \
 +               $(srcdir)/gen-map-doc
 +	( date=`head -n 1 $(top_srcdir)/ChangeLog.neomutt | LC_ALL=C cut -b 1-10` && \
-+	  sed -e "s/@VERSION\@/$(PACKAGE_VERSION) (1.7.0)/" $(srcdir)/manual.xml.head && \
++	  sed -e "s/@VERSION\@/$(PACKAGE_VERSION) (1.7.1)/" $(srcdir)/manual.xml.head && \
  	  $(MAKEDOC_CPP) $(top_srcdir)/init.h | ./makedoc$(EXEEXT) -s && \
  	  $(MAKEDOC_CPP) $(top_srcdir)/functions.h | \
  	    perl $(srcdir)/gen-map-doc $(srcdir)/manual.xml.tail $(top_srcdir)/OPS* \
@@ -10855,7 +10849,7 @@ index e2fadac..416ae9e 100644
      die "unknown key $binding" if $binding =~ /\\[^\\]|<|>/;
      die "unknown OP $op" unless $OPS{$op};
 diff --git c/doc/manual.xml.head w/doc/manual.xml.head
-index ac22afa..51b5c61 100644
+index 46c152b..892aa70 100644
 --- c/doc/manual.xml.head
 +++ w/doc/manual.xml.head
 @@ -412,6 +412,594 @@ <sect2 id="intro-sidebar">
@@ -11502,9 +11496,9 @@ index ac22afa..51b5c61 100644
 +    <tbody>
 +      <row><entry>$XDG_CONFIG_DIRS/neomutt/config</entry></row>
 +      <row><entry>/etc/NeoMuttrc</entry></row>
-+      <row><entry>/etc/Muttrc-1.7.0-neo</entry></row>
++      <row><entry>/etc/Muttrc-1.7.1-neo</entry></row>
 +      <row><entry>/etc/Muttrc</entry></row>
-+      <row><entry>/share/mutt/Muttrc-1.7.0-neo</entry></row>
++      <row><entry>/share/mutt/Muttrc-1.7.1-neo</entry></row>
 +      <row><entry>/share/mutt/Muttrc</entry></row>
 +    </tbody>
 +  </tgroup>
@@ -11537,9 +11531,9 @@ index ac22afa..51b5c61 100644
 +      <row><entry>$XDG_CONFIG_HOME/neomutt/config</entry></row>
 +      <row><entry>~/.neomuttrc</entry></row>
 +      <row><entry>~/.mutt/neomuttrc</entry></row>
-+      <row><entry>~/.muttrc-1.7.0-neo</entry></row>
++      <row><entry>~/.muttrc-1.7.1-neo</entry></row>
 +      <row><entry>~/.muttrc</entry></row>
-+      <row><entry>~/.mutt/muttrc-1.7.0-neo</entry></row>
++      <row><entry>~/.mutt/muttrc-1.7.1-neo</entry></row>
 +      <row><entry>~/.mutt/muttrc</entry></row>
 +    </tbody>
 +  </tgroup>
@@ -11656,17 +11650,6 @@ index ac22afa..51b5c61 100644
  language of the attributions and signatures based upon the recipients.
  </para>
  
-@@ -3837,8 +4487,8 @@ <sect1 id="score-command">
- <emphasis>pattern</emphasis> is a string in the format described in the
- <link linkend="patterns">patterns</link> section (note: For efficiency
- reasons, patterns which scan information not available in the index,
--such as <literal>~b</literal>, <literal>~B</literal> or
--<literal>~h</literal>, may not be used).  <emphasis>value</emphasis> is
-+such as <literal>~b</literal>, <literal>~B</literal>, <literal>~h</literal>,
-+or <literal>~X</literal> may not be used).  <emphasis>value</emphasis> is
- a positive or negative integer.  A message's final score is the sum
- total of all matching <command>score</command> entries.  However, you
- may optionally prefix <emphasis>value</emphasis> with an equal sign
 @@ -4541,8 +5191,8 @@ <sect2 id="formatstrings-basics">
  symbol (<literal>=</literal>) as a numeric prefix (like the minus
  above), it will force the string to be centered within its minimum space
@@ -11935,7 +11918,7 @@ index ac22afa..51b5c61 100644
 +Mutt may also be <quote>patched</quote> to support smaller features.
 +These patches should add a free-form string to the end Mutt's version string.
 +Running <literal>mutt -v</literal> might show:
-+<screen>patch-1.7.0.sidebar.20160709</screen>
++<screen>patch-1.7.1.sidebar.20160709</screen>
 +</para>
 +</sect2>
 +
@@ -11951,7 +11934,7 @@ index ac22afa..51b5c61 100644
  </para>
  
  <para>
-@@ -8129,286 +8946,4889 @@ <sect1 id="sending-mixmaster">
+@@ -8129,288 +8946,4882 @@ <sect1 id="sending-mixmaster">
  
  </sect1>
  
@@ -11981,7 +11964,7 @@ index ac22afa..51b5c61 100644
 -    <title>Variables</title>
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
  
 -    <table id="table-sidebar-variables">
@@ -12044,11 +12027,6 @@ index ac22afa..51b5c61 100644
 -	    <entry><literal>sidebar_visible</literal></entry>
 -	    <entry>boolean</entry>
 -	    <entry><literal>no</literal></entry>
--	  </row>
--	  <row>
--	    <entry><literal>sidebar_whitelist</literal></entry>
--	    <entry>list</entry>
--	    <entry>(empty)</entry>
 -	  </row>
 -	  <row>
 -	    <entry><literal>sidebar_width</literal></entry>
@@ -12142,13 +12120,13 @@ index ac22afa..51b5c61 100644
 -	<replaceable class="parameter">mailbox</replaceable>
 -      </arg>
 -    </cmdsynopsis>
--  </sect2>
 +  <sect2 id="attach-headers-color-usage">
 +    <title>Usage</title>
  
--  <sect2 id="sidebar-colors">
--    <title>Colors</title>
-+    <para>
+     <para>
+-      This command specifies mailboxes that will always be displayed
+-      in the sidebar, even if <link
+-      linkend="sidebar-new-mail-only">$sidebar_new_mail_only</link>
 +        The <literal>attach_headers</literal> color should be used just like the <literal>body</literal>
 +        color.
 +    </para>
@@ -12228,7 +12206,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -12323,7 +12301,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -12686,7 +12664,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +      <listitem><para><link linkend="nested-if">nested-if patch</link></para></listitem>
 +    </itemizedlist>
 +
@@ -13071,7 +13049,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -13198,7 +13176,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +      <listitem><para><literal>open_memstream()</literal>, <literal>fmemopen()</literal> from glibc</para></listitem>
 +    </itemizedlist>
 +
@@ -13274,7 +13252,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -13308,7 +13286,7 @@ index ac22afa..51b5c61 100644
 +          <row>
 +            <entry><literal>attach_keyword</literal></entry>
 +            <entry>regular expression</entry>
-+            <entry><literal>\\&lt;attach(|ed|ments?)\\&gt;</literal></entry>
++            <entry><literal>\\&lt;(attach|attached|attachments?)\\&gt;</literal></entry>
 +          </row>
 +          <row>
 +            <entry><literal>abort_noattach</literal></entry>
@@ -13396,7 +13374,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -13533,7 +13511,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +      <listitem><para><link linkend="status-color">status-color patch</link></para></listitem>
 +    </itemizedlist>
 +
@@ -13735,7 +13713,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -13839,7 +13817,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -14069,7 +14047,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +      <listitem><para><ulink url="http://fallabs.com/kyotocabinet/">Kyoto Cabinet libraries</ulink></para></listitem>
 +    </itemizedlist>
 +
@@ -14125,7 +14103,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -14225,7 +14203,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -14286,7 +14264,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -14352,7 +14330,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -14550,7 +14528,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -14686,7 +14664,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -15107,7 +15085,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +      <listitem><para><link linkend="quasi-delete">quasi-delete patch</link></para></listitem>
 +      <listitem><para><link linkend="index-color">index-color patch</link></para></listitem>
 +      <listitem><para>Notmuch libraries</para></listitem>
@@ -15127,13 +15105,6 @@ index ac22afa..51b5c61 100644
 +      <listitem><para>For more information, see:
 +      <ulink url="http://notmuchmail.org/">http://notmuchmail.org/</ulink>
 +      </para></listitem>
-+      <listitem><para>Home page (wiki) and git:
-+      <ulink url="https://github.com/karelzak/mutt-kz">https://github.com/karelzak/mutt-kz</ulink>
-+      </para></listitem>
-+      <listitem><para>Mailing list:
-+      <ulink url="https://admin.fedoraproject.org/mailman/listinfo/mutt-kz">https://admin.fedoraproject.org/mailman/listinfo/mutt-kz</ulink>
-+      </para></listitem>
-+
 +      <listitem><para>More examples:
 +      <ulink url="http://notmuchmail.org/mutttips/">http://notmuchmail.org/mutttips/</ulink>
 +      </para></listitem>
@@ -15687,7 +15658,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -15782,7 +15753,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -15880,7 +15851,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -15960,7 +15931,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -16082,7 +16053,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -16278,8 +16249,8 @@ index ac22afa..51b5c61 100644
 +      This command specifies mailboxes that will always be displayed
 +      in the sidebar, even if <link
 +      linkend="sidebar-new-mail-only">$sidebar_new_mail_only</link>
-+      is set and the mailbox does not contain new mail.
-+    </para>
+       is set and the mailbox does not contain new mail.
+     </para>
 +
 +    <para>
 +      The <quote>unsidebar_whitelist</quote> command is used to remove a mailbox from
@@ -16537,10 +16508,10 @@ index ac22afa..51b5c61 100644
 +    <para>
 +      None
 +    </para>
-+  </sect2>
+   </sect2>
  
--    <table id="table-sidebar-colors">
--      <title>Sidebar Colors</title>
+-  <sect2 id="sidebar-colors">
+-    <title>Colors</title>
 +  <sect2 id="sidebar-credits">
 +    <title>Credits</title>
 +    <itemizedlist>
@@ -16558,7 +16529,9 @@ index ac22afa..51b5c61 100644
 +    </itemizedlist>
 +  </sect2>
 +</sect1>
-+
+ 
+-    <table id="table-sidebar-colors">
+-      <title>Sidebar Colors</title>
 +<sect1 id="skip-quoted-patch">
 +  <title>Skip-Quoted Feature</title>
 +  <subtitle>Leave some context visible</subtitle>
@@ -16574,7 +16547,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -16714,7 +16687,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -16940,7 +16913,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
 +    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
@@ -17022,7 +16995,7 @@ index ac22afa..51b5c61 100644
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
-+      <listitem><para>mutt-1.7.0</para></listitem>
++      <listitem><para>mutt-1.7.1</para></listitem>
 +      <listitem><para>OpenSSL</para></listitem>
 +    </itemizedlist>
 +
@@ -17083,7 +17056,7 @@ index ac22afa..51b5c61 100644
  </sect1>
  
  </chapter>
-@@ -8953,6 +14373,18 @@ <sect1 id="commands">
+@@ -8955,6 +14366,18 @@ <sect1 id="commands">
  
  <listitem>
  <cmdsynopsis>
@@ -17102,7 +17075,7 @@ index ac22afa..51b5c61 100644
  <command><link linkend="auto-view">auto_view</link></command>
  <arg choice="plain">
  <replaceable>mimetype</replaceable>
-@@ -9014,6 +14446,18 @@ <sect1 id="commands">
+@@ -9016,6 +14439,18 @@ <sect1 id="commands">
  
  <listitem>
  <cmdsynopsis>
@@ -17121,7 +17094,7 @@ index ac22afa..51b5c61 100644
  <command><link linkend="color">color</link></command>
  <arg choice="plain">
  <replaceable class="parameter">object</replaceable>
-@@ -9083,6 +14527,18 @@ <sect1 id="commands">
+@@ -9085,6 +14520,18 @@ <sect1 id="commands">
  
  <listitem>
  <cmdsynopsis>
@@ -17140,7 +17113,7 @@ index ac22afa..51b5c61 100644
  <command><link linkend="crypt-hook">crypt-hook</link></command>
  <arg choice="plain">
  <replaceable class="parameter">regexp</replaceable>
-@@ -9204,6 +14660,18 @@ <sect1 id="commands">
+@@ -9206,6 +14653,18 @@ <sect1 id="commands">
  
  <listitem>
  <cmdsynopsis>
@@ -17159,7 +17132,7 @@ index ac22afa..51b5c61 100644
  <command><link linkend="ignore">ignore</link></command>
  <arg choice="plain">
  <replaceable class="parameter">pattern</replaceable>
-@@ -9569,13 +15037,24 @@ <sect1 id="commands">
+@@ -9571,13 +15030,24 @@ <sect1 id="commands">
  <cmdsynopsis>
  <command><link linkend="sidebar-whitelist">sidebar_whitelist</link></command>
  <arg choice="plain">
@@ -18374,7 +18347,7 @@ index 0000000..887dbe2
 +# vim: syntax=muttrc
 diff --git c/doc/muttrc.forgotten-attachment w/doc/muttrc.forgotten-attachment
 new file mode 100644
-index 0000000..270118b
+index 0000000..daadcf9
 --- /dev/null
 +++ w/doc/muttrc.forgotten-attachment
 @@ -0,0 +1,30 @@
@@ -18396,7 +18369,7 @@ index 0000000..270118b
 +# Search for the following regular expression in the body of the email
 +
 +# English: attach, attached, attachment, attachments
-+set attach_keyword = "\\<attach(|ed|ments?)\\>"
++set attach_keyword = "\\<(attach|attached|attachments?)\\>"
 +
 +# Nederlands:
 +# set attach_keyword = "\\<(bijvoegen|bijgevoegd|bijlage|bijlagen)\\>"
@@ -19406,7 +19379,7 @@ index 0000000..fe32359
 +syntax keyword muttrcCommand    timeout-hook
 +
 diff --git c/dotlock.c w/dotlock.c
-index 5bf0348..dc14396 100644
+index 5bf0348..56a2bae 100644
 --- c/dotlock.c
 +++ w/dotlock.c
 @@ -53,7 +53,7 @@
@@ -19418,6 +19391,15 @@ index 5bf0348..dc14396 100644
  #endif
  
  #define MAXLINKS 1024 /* maximum link depth */
+@@ -63,7 +63,7 @@
+ # define LONG_STRING 1024
+ # define MAXLOCKATTEMPT 5
+ 
+-# define strfcpy(A,B,C) strncpy (A,B,C), *(A+(C)-1)=0
++#define strfcpy(DST,SRC,LEN) do { if ((LEN) > 0) { *(DST+(LEN)-1)=0; strncpy(DST,SRC,(LEN)-1); } } while (0)
+ 
+ # ifdef USE_SETGID
+ 
 @@ -339,7 +339,7 @@ END_PRIVILEGED (void)
  static void 
  usage (const char *av0)
@@ -19857,43 +19839,6 @@ index abc06ca..835a191 100644
    { "append",		OP_MIX_APPEND,	"a"       },
    { "insert",		OP_MIX_INSERT,	"i"       },
    { "delete",		OP_MIX_DELETE,  "d"	  },
-diff --git c/getdomain.c w/getdomain.c
-index 9dfda2b..15803af 100644
---- c/getdomain.c
-+++ w/getdomain.c
-@@ -31,19 +31,21 @@
- 
- int getdnsdomainname (char *d, size_t len)
- {
--  /* A DNS name can actually be only 253 octets, string is 256 */
-+  int ret = -1;
-+
-+#ifdef HAVE_GETADDRINFO
-   char *node;
-   long node_len;
-   struct addrinfo hints;
-   struct addrinfo *h;
-   char *p;
--  int ret;
- 
-   *d = '\0';
-   memset(&hints, 0, sizeof (struct addrinfo));
-   hints.ai_flags = AI_CANONNAME;
-   hints.ai_family = AF_UNSPEC;
- 
-+  /* A DNS name can actually be only 253 octets, string is 256 */
-   if ((node_len = sysconf(_SC_HOST_NAME_MAX)) == -1)
-     node_len = STRING;
-   node = safe_malloc(node_len + 1);
-@@ -64,6 +66,8 @@ int getdnsdomainname (char *d, size_t len)
-     freeaddrinfo(h);
-   }
-   FREE (&node);
-+#endif
-+
-   return ret;
- }
- 
 diff --git c/git-version-gen w/git-version-gen
 new file mode 100755
 index 0000000..bd2c4b6
@@ -20339,7 +20284,7 @@ index 7ce53f9..014268f 100644
      }
    }
 diff --git c/hash.c w/hash.c
-index 08f7171..34b96ef 100644
+index 08f7171..d7ffc55 100644
 --- c/hash.c
 +++ w/hash.c
 @@ -57,6 +57,7 @@ HASH *hash_create (int nelem, int lower)
@@ -20396,7 +20341,28 @@ index 08f7171..34b96ef 100644
    }
    return h;
  }
-@@ -142,6 +168,7 @@ void hash_delete_hash (HASH * table, int hash, const char *key, const void *data
+@@ -127,6 +153,20 @@ void *hash_find_hash (const HASH * table, int hash, const char *key)
+   return NULL;
+ }
+ 
++void hash_set_data (HASH *table, const char *key, void *data)
++{
++  if (!table)
++    return;
++
++  unsigned int hash = table->hash_string ((unsigned char *) key, table->nelem);
++
++  struct hash_elem *ptr = table->table[hash];
++  if (!ptr)
++    return;
++
++  ptr->data = data;
++}
++
+ void hash_delete_hash (HASH * table, int hash, const char *key, const void *data,
+ 		       void (*destroy) (void *))
+ {
+@@ -142,6 +182,7 @@ void hash_delete_hash (HASH * table, int hash, const char *key, const void *data
        if (destroy)
  	destroy (ptr->data);
        FREE (&ptr);
@@ -20404,7 +20370,7 @@ index 08f7171..34b96ef 100644
        
        ptr = *last;
      }
-@@ -176,3 +203,30 @@ void hash_destroy (HASH **ptr, void (*destroy) (void *))
+@@ -176,3 +217,30 @@ void hash_destroy (HASH **ptr, void (*destroy) (void *))
    FREE (&pptr->table);
    FREE (ptr);		/* __FREE_CHECKED__ */
  }
@@ -20436,7 +20402,7 @@ index 08f7171..34b96ef 100644
 +}
 +
 diff --git c/hash.h w/hash.h
-index fb77d0c..c944660 100644
+index fb77d0c..5dbdb7e 100644
 --- c/hash.h
 +++ w/hash.h
 @@ -28,7 +28,7 @@ struct hash_elem
@@ -20448,7 +20414,7 @@ index fb77d0c..c944660 100644
    struct hash_elem **table;
    unsigned int (*hash_string)(const unsigned char *, unsigned int);
    int (*cmp_string)(const char *, const char *);
-@@ -41,9 +41,17 @@ HASH;
+@@ -41,9 +41,18 @@ HASH;
  
  HASH *hash_create (int nelem, int lower);
  int hash_insert (HASH * table, const char *key, void *data, int allow_dup);
@@ -20457,14 +20423,15 @@ index fb77d0c..c944660 100644
  void hash_delete_hash (HASH * table, int hash, const char *key, const void *data,
  		       void (*destroy) (void *));
  void hash_destroy (HASH ** hash, void (*destroy) (void *));
- 
++void hash_set_data (HASH *table, const char *key, void *data);
++
 +struct hash_walk_state {
 +  int index;
 +  struct hash_elem *last;
 +};
 +
 +struct hash_elem *hash_walk(const HASH *table, struct hash_walk_state *state);
-+
+ 
  #endif
 diff --git c/hcache.c w/hcache.c
 index fb6a561..870e054 100644
@@ -21551,10 +21518,22 @@ index eef19e6..5a7695f 100644
      default:
        snprintf (dest, destlen, "%%%s%c", prefix, op);
 diff --git c/headers.c w/headers.c
-index 0a75998..130b9b2 100644
+index 0a75998..b174cd7 100644
 --- c/headers.c
 +++ w/headers.c
-@@ -114,6 +114,9 @@ void mutt_edit_headers (const char *editor,
+@@ -28,6 +28,11 @@
+ #include <string.h>
+ #include <ctype.h>
+ 
++/* The labels are used as keys in the Labels hash.
++ * The keys must have a longer lifespan than the hash.
++ */
++static LIST *LabelList = NULL;
++
+ void mutt_edit_headers (const char *editor,
+ 			const char *body,
+ 			HEADER *msg,
+@@ -114,6 +119,9 @@ void mutt_edit_headers (const char *editor,
       $edit_headers set, we remove References: as they're likely invalid;
       we can simply compare strings as we don't generate References for
       multiple Message-Ids in IRT anyways */
@@ -21564,10 +21543,69 @@ index 0a75998..130b9b2 100644
    if (msg->env->in_reply_to &&
        (!n->in_reply_to || mutt_strcmp (n->in_reply_to->data,
  				       msg->env->in_reply_to->data) != 0))
-@@ -211,3 +214,195 @@ void mutt_edit_headers (const char *editor,
+@@ -211,3 +219,272 @@ void mutt_edit_headers (const char *editor,
      }
    }
  }
++
++/**
++ * label_add - Add to a list of all labels
++ * @label: Label name to keep
++ *
++ * Add an item to our LIST of all labels.
++ *
++ * The keys in the Label HASH must have a longer lifespan than the HASH itself.
++ * We keep them in an (inefficient) linked list.
++ *
++ * Note: We don't check for duplicates.
++ *
++ * Returns:
++ *      NULL  on error
++ *      LIST* new LIST item, on success
++ */
++static LIST *label_add (const char *label)
++{
++  if (!label)
++    return NULL;
++
++  LIST *n = mutt_new_list();
++
++  /* Insert our new LIST item at the front */
++  n->data = safe_strdup (label);
++  n->next = LabelList;
++  LabelList = n;
++
++  return n;
++}
++
++/**
++ * label_delete - Delete from a list of all labels
++ * @label: Label name to remove
++ *
++ * Delete an item from our LIST of all labels.
++ *
++ * The keys in the Label HASH must have a longer lifespan than the HASH itself.
++ * We keep them in an (inefficient) linked list.
++ */
++static void label_delete (const char *label)
++{
++  if (!label || !LabelList)
++    return;
++
++  LIST *l;
++  LIST **prev;
++
++  for (l = LabelList, prev = &LabelList; l; prev = &l->next, l = l->next)
++  {
++    if (mutt_strcmp (label, l->data) == 0)
++    {
++      *prev = l->next;
++      FREE(&l->data);
++      FREE(&l);
++      break;
++    }
++  }
++}
 +
 +void mutt_label_ref_dec(ENVELOPE *env)
 +{
@@ -21581,14 +21619,21 @@ index 0a75998..130b9b2 100644
 +  {
 +    if (label->data == NULL)
 +      continue;
++
 +    count = (uintptr_t)hash_find(Labels, label->data);
-+    if (count)
++    count--;
++    if (count > 0)
 +    {
-+      hash_delete(Labels, label->data, NULL, NULL);
-+      count--;
-+      if (count > 0)
-+        hash_insert(Labels, label->data, (void *)count, 0);
++      /* Existing label, decrease refcount */
++      hash_set_data (Labels, label->data, (void*) count);
 +    }
++    else
++    {
++      /* Old label */
++      hash_delete(Labels, label->data, NULL, NULL);
++      label_delete (label->data);
++    }
++
 +    dprint(1, (debugfile, "--label %s: %d\n", label->data, count));
 +  }
 +}
@@ -21605,11 +21650,22 @@ index 0a75998..130b9b2 100644
 +  {
 +    if (label->data == NULL)
 +      continue;
-+    count = (uintptr_t)hash_find(Labels, label->data);
-+    if (count)
-+      hash_delete(Labels, label->data, NULL, NULL);
-+    count++;  /* was zero if not found */
-+    hash_insert(Labels, label->data, (void *)count, 0);
++
++    count = (uintptr_t) hash_find(Labels, label->data);
++    count++;
++    if (count > 1)
++    {
++      /* Existing label, increase refcount */
++      hash_set_data (Labels, label->data, (void*) count);
++    }
++    else
++    {
++      /* New label */
++      const char *dup_label = safe_strdup (label->data);
++      label_add (dup_label);
++      hash_insert(Labels, dup_label, (void *) count, 0);
++    }
++
 +    dprint(1, (debugfile, "++label %s: %d\n", label->data, count));
 +  }
 +}
@@ -21841,6 +21897,54 @@ index 1b906c3..dbf78d5 100644
 +  }
 +}
 +
+diff --git c/imap/browse.c w/imap/browse.c
+index acda9f9..00fcbc1 100644
+--- c/imap/browse.c
++++ w/imap/browse.c
+@@ -35,7 +35,6 @@ static int browse_add_list_result (IMAP_DATA* idata, const char* cmd,
+   struct browser_state* state, short isparent);
+ static void imap_add_folder (char delim, char *folder, int noselect,
+   int noinferiors, struct browser_state *state, short isparent);
+-static int compare_names(struct folder_file *a, struct folder_file *b);
+ 
+ /* imap_browse: IMAP hook into the folder browser, fills out browser_state,
+  *   given a current folder to browse */
+@@ -48,7 +47,6 @@ int imap_browse (char* path, struct browser_state* state)
+   char munged_mbox[LONG_STRING];
+   char list_cmd[5];
+   int n;
+-  int nsup;
+   char ctmp;
+   short showparents = 0;
+   int save_lsub;
+@@ -175,8 +173,6 @@ int imap_browse (char* path, struct browser_state* state)
+     state->folder = safe_strdup (buf);
+   }
+ 
+-  nsup = state->entrylen;
+-
+   dprint (3, (debugfile, "imap_browse: Quoting mailbox scan: %s -> ", mbox));
+   snprintf (buf, sizeof (buf), "%s%%", mbox);
+   imap_munge_mbox_name (idata, munged_mbox, sizeof (munged_mbox), buf);
+@@ -193,9 +189,6 @@ int imap_browse (char* path, struct browser_state* state)
+ 
+   mutt_clear_error ();
+ 
+-  qsort(&(state->entry[nsup]),state->entrylen-nsup,sizeof(state->entry[0]),
+-	(int (*)(const void*,const void*)) compare_names);
+-
+   if (save_lsub)
+     set_option (OPTIMAPCHECKSUBSCRIBED);
+ 
+@@ -446,8 +439,3 @@ static void imap_add_folder (char delim, char *folder, int noselect,
+ 
+   FREE (&mx.mbox);
+ }
+-
+-static int compare_names(struct folder_file *a, struct folder_file *b) 
+-{
+-  return mutt_strcmp(a->name, b->name);
+-}
 diff --git c/imap/command.c w/imap/command.c
 index 4d34d24..5177475 100644
 --- c/imap/command.c
@@ -21859,7 +21963,7 @@ index 4d34d24..5177475 100644
    if (rc == IMAP_CMD_NO && (flags & IMAP_CMD_FAIL_OK))
      return -2;
 diff --git c/imap/imap.c w/imap/imap.c
-index 2e3d27d..f560161 100644
+index 2e3d27d..e65d531 100644
 --- c/imap/imap.c
 +++ w/imap/imap.c
 @@ -306,7 +306,7 @@ static int imap_check_capabilities (IMAP_DATA* idata)
@@ -21888,6 +21992,21 @@ index 2e3d27d..f560161 100644
        }
      }
    }
+@@ -2116,6 +2117,14 @@ int imap_fast_trash (CONTEXT* ctx, char* dest)
+   /* loop in case of TRYCREATE */
+   do
+   {
++    rc = imap_exec_msgset (idata, "UID STORE", "+FLAGS.SILENT (\\Seen)",
++                           MUTT_TRASH, 0, 0);
++    if (rc < 0)
++    {
++      dprint (1, (debugfile, "imap_fast_trash: Unable to mark messages as seen\n"));
++      goto out;
++    }
++
+     rc = imap_exec_msgset (idata, "UID COPY", mmbox, MUTT_TRASH, 0, 0);
+     if (!rc)
+     {
 diff --git c/imap/imap.h w/imap/imap.h
 index 94506ea..584982d 100644
 --- c/imap/imap.h
@@ -22035,7 +22154,7 @@ index 924d573..cb911a1 100644
  static int imap_hcache_namer (const char* path, char* dest, size_t dlen)
  {
 diff --git c/init.c w/init.c
-index 0586638..95e2a7d 100644
+index 0586638..b26fea1 100644
 --- c/init.c
 +++ w/init.c
 @@ -32,12 +32,15 @@
@@ -22194,7 +22313,32 @@ index 0586638..95e2a7d 100644
  static int parse_unignore (BUFFER *buf, BUFFER *s, unsigned long data, BUFFER *err)
  {
    do
-@@ -2253,7 +2381,7 @@ static int parse_set (BUFFER *tmp, BUFFER *s, unsigned long data, BUFFER *err)
+@@ -1576,6 +1704,7 @@ static void mutt_restore_default (struct option_t *p)
+ 
+ 	if (p->init)
+ 	{
++	  int retval;
+ 	  char *s = (char *) p->init;
+ 
+ 	  pp->rx = safe_calloc (1, sizeof (regex_t));
+@@ -1587,10 +1716,15 @@ static void mutt_restore_default (struct option_t *p)
+ 	    s++;
+ 	    pp->not = 1;
+ 	  }
+-	  if (REGCOMP (pp->rx, s, flags) != 0)
++	  retval = REGCOMP (pp->rx, s, flags);
++	  if (retval != 0)
+ 	  {
++	    char msgbuf[STRING];
++	    regerror (retval, pp->rx, msgbuf, sizeof (msgbuf));
+ 	    fprintf (stderr, _("mutt_restore_default(%s): error in regexp: %s\n"),
+ 		     p->option, pp->pattern);
++	    fprintf (stderr, "%s\n", msgbuf);
++	    mutt_sleep (0);
+ 	    FREE (&pp->pattern);
+ 	    FREE (&pp->rx);
+ 	  }
+@@ -2253,7 +2387,7 @@ static int parse_set (BUFFER *tmp, BUFFER *s, unsigned long data, BUFFER *err)
  static int source_rc (const char *rcfile, BUFFER *err)
  {
    FILE *f;
@@ -22203,7 +22347,7 @@ index 0586638..95e2a7d 100644
    BUFFER token;
    char *linebuf = NULL;
    char *currentline = NULL;
-@@ -2282,17 +2410,17 @@ static int source_rc (const char *rcfile, BUFFER *err)
+@@ -2282,17 +2416,17 @@ static int source_rc (const char *rcfile, BUFFER *err)
      else 
        currentline=linebuf;
  
@@ -22226,7 +22370,7 @@ index 0586638..95e2a7d 100644
        if (rc < 0)
          rc = -1;
      }
-@@ -2347,7 +2475,7 @@ static int parse_source (BUFFER *tmp, BUFFER *s, unsigned long data, BUFFER *err
+@@ -2347,7 +2481,7 @@ static int parse_source (BUFFER *tmp, BUFFER *s, unsigned long data, BUFFER *err
     err		where to write error messages */
  int mutt_parse_rc_line (/* const */ char *line, BUFFER *token, BUFFER *err)
  {
@@ -22235,7 +22379,7 @@ index 0586638..95e2a7d 100644
    BUFFER expn;
  
    if (!line || !*line)
-@@ -2374,22 +2502,24 @@ int mutt_parse_rc_line (/* const */ char *line, BUFFER *token, BUFFER *err)
+@@ -2374,22 +2508,24 @@ int mutt_parse_rc_line (/* const */ char *line, BUFFER *token, BUFFER *err)
      {
        if (!mutt_strcmp (token->data, Commands[i].name))
        {
@@ -22266,7 +22410,7 @@ index 0586638..95e2a7d 100644
  }
  
  
-@@ -2648,6 +2778,178 @@ int mutt_var_value_complete (char *buffer, size_t len, int pos)
+@@ -2648,6 +2784,178 @@ int mutt_var_value_complete (char *buffer, size_t len, int pos)
    return 0;
  }
  
@@ -22445,7 +22589,7 @@ index 0586638..95e2a7d 100644
  static int var_to_string (int idx, char* val, size_t len)
  {
    char tmp[LONG_STRING];
-@@ -2851,8 +3153,8 @@ static void start_debug (void)
+@@ -2851,8 +3159,8 @@ static void start_debug (void)
    if ((debugfile = safe_fopen(buf, "w")) != NULL)
    {
      setbuf (debugfile, NULL); /* don't buffer the debugging output! */
@@ -22456,7 +22600,7 @@ index 0586638..95e2a7d 100644
    }
  }
  #endif
-@@ -2867,7 +3169,7 @@ static int mutt_execute_commands (LIST *p)
+@@ -2867,7 +3175,7 @@ static int mutt_execute_commands (LIST *p)
    mutt_buffer_init (&token);
    for (; p; p = p->next)
    {
@@ -22465,7 +22609,7 @@ index 0586638..95e2a7d 100644
      {
        fprintf (stderr, _("Error in command line: %s\n"), err.data);
        FREE (&token.data);
-@@ -2882,23 +3184,6 @@ static int mutt_execute_commands (LIST *p)
+@@ -2882,23 +3190,6 @@ static int mutt_execute_commands (LIST *p)
    return 0;
  }
  
@@ -22489,7 +22633,7 @@ index 0586638..95e2a7d 100644
  void mutt_init (int skip_sys_rc, LIST *commands)
  {
    struct passwd *pw;
-@@ -2915,15 +3200,15 @@ void mutt_init (int skip_sys_rc, LIST *commands)
+@@ -2915,15 +3206,15 @@ void mutt_init (int skip_sys_rc, LIST *commands)
  
    Groups = hash_create (1031, 0);
    ReverseAlias = hash_create (1031, 1);
@@ -22511,7 +22655,7 @@ index 0586638..95e2a7d 100644
    
    /* on one of the systems I use, getcwd() does not return the same prefix
       as is listed in the passwd file */
-@@ -3017,6 +3302,28 @@ void mutt_init (int skip_sys_rc, LIST *commands)
+@@ -3017,6 +3308,28 @@ void mutt_init (int skip_sys_rc, LIST *commands)
      Fqdn = safe_strdup(utsname.nodename);
  
  
@@ -22540,7 +22684,7 @@ index 0586638..95e2a7d 100644
    if ((p = getenv ("MAIL")))
      Spoolfile = safe_strdup (p);
    else if ((p = getenv ("MAILDIR")))
-@@ -3109,33 +3416,42 @@ void mutt_init (int skip_sys_rc, LIST *commands)
+@@ -3109,33 +3422,42 @@ void mutt_init (int skip_sys_rc, LIST *commands)
     */
    add_to_list(&MailtoAllow, "body");
    add_to_list(&MailtoAllow, "subject");
@@ -22608,7 +22752,7 @@ index 0586638..95e2a7d 100644
  
      default_rc = 1;
      Muttrc = safe_strdup (buffer);
-@@ -3154,14 +3470,30 @@ void mutt_init (int skip_sys_rc, LIST *commands)
+@@ -3154,14 +3476,30 @@ void mutt_init (int skip_sys_rc, LIST *commands)
       requested not to via "-n".  */
    if (!skip_sys_rc)
    {
@@ -22647,7 +22791,7 @@ index 0586638..95e2a7d 100644
      {
        if (source_rc (buffer, &err) != 0)
        {
-@@ -3203,6 +3535,11 @@ void mutt_init (int skip_sys_rc, LIST *commands)
+@@ -3203,6 +3541,11 @@ void mutt_init (int skip_sys_rc, LIST *commands)
  
    mutt_read_histfile ();
  
@@ -22659,7 +22803,7 @@ index 0586638..95e2a7d 100644
  #if 0
    set_option (OPTWEED); /* turn weeding on by default */
  #endif
-@@ -3250,6 +3587,70 @@ static int parse_group_context (group_context_t **ctx, BUFFER *buf, BUFFER *s, u
+@@ -3250,6 +3593,70 @@ static int parse_group_context (group_context_t **ctx, BUFFER *buf, BUFFER *s, u
    return -1;
  }
  
@@ -22730,7 +22874,7 @@ index 0586638..95e2a7d 100644
  static void myvar_set (const char* var, const char* val)
  {
    myvar_t** cur;
-@@ -3297,3 +3698,58 @@ static const char* myvar_get (const char* var)
+@@ -3297,3 +3704,58 @@ static const char* myvar_get (const char* var)
  
    return NULL;
  }
@@ -22790,7 +22934,7 @@ index 0586638..95e2a7d 100644
 +}
 +
 diff --git c/init.h w/init.h
-index 3f3f96d..0c76cd0 100644
+index 3c4256c..461bc6c 100644
 --- c/init.h
 +++ w/init.h
 @@ -86,6 +86,15 @@ struct option_t
@@ -22834,7 +22978,7 @@ index 3f3f96d..0c76cd0 100644
    ** .pp
    ** For an explanation of ``soft-fill'', see the $$index_format documentation.
    */
-+  { "attach_keyword",  DT_RX,  R_NONE, UL &AttachKeyword, UL "\\<attach(|ed|ments?)\\>" },
++  { "attach_keyword",  DT_RX,  R_NONE, UL &AttachKeyword, UL "\\<(attach|attached|attachments?)\\>" },
 +  /*
 +  ** .pp
 +  ** If $abort_noattach is not set to no, then the body of the message
@@ -23055,8 +23199,10 @@ index 3f3f96d..0c76cd0 100644
    */
 -  { "locale",		DT_STR,  R_BOTH, UL &Locale, UL "C" },
 +  { "keywords_legacy", DT_BOOL, R_NONE, OPTKEYWORDSLEGACY, 1 },
-+  /*
-+  ** .pp
+   /*
+   ** .pp
+-  ** The locale used by \fCstrftime(3)\fP to format dates. Legal values are
+-  ** the strings your system accepts for the locale environment variable \fC$$$LC_TIME\fP.
 +  ** If \fIset\fP, keywords/labels/tags will be written to whatever
 +  ** legacy, nonstandard headers (X-Label, X-Keywords, X-Mozilla-Keys)
 +  ** they were sourced from.
@@ -23066,10 +23212,8 @@ index 3f3f96d..0c76cd0 100644
 +  ** to legacy headers to ensure that it does not lose your labels.
 +  */
 +  { "keywords_standard", DT_BOOL, R_NONE, OPTKEYWORDSSTANDARD, 0 },
-   /*
-   ** .pp
--  ** The locale used by \fCstrftime(3)\fP to format dates. Legal values are
--  ** the strings your system accepts for the locale environment variable \fC$$$LC_TIME\fP.
++  /*
++  ** .pp
 +  ** If \fIset\fP, keywords/labels/tags will be written to the
 +  ** RFC2822-standard Keywords: header; this may imply a conversion from
 +  ** legacy headers.
@@ -23291,19 +23435,14 @@ index 3f3f96d..0c76cd0 100644
    { "resolve",		DT_BOOL, R_NONE, OPTRESOLVE, 1 },
    /*
    ** .pp
-@@ -2692,14 +3012,29 @@ struct option_t MuttVars[] = {
+@@ -2692,6 +3012,28 @@ struct option_t MuttVars[] = {
    ** Command to use when spawning a subshell.  By default, the user's login
    ** shell from \fC/etc/passwd\fP is used.
    */
--#ifdef USE_SIDEBAR
--  { "sidebar_divider_char", DT_STR, R_SIDEBAR, UL &SidebarDividerChar, UL "|" },
 +#ifdef USE_NNTP
 +  { "save_unsubscribed", DT_BOOL, R_NONE, OPTSAVEUNSUB, 0 },
-   /*
-   ** .pp
--  ** This specifies the characters to be drawn between the sidebar (when
--  ** visible) and the other Mutt panels. ASCII and Unicode line-drawing
--  ** characters are supported.
++  /*
++  ** .pp
 +  ** When \fIset\fP, info about unsubscribed newsgroups will be saved into
 +  ** ``newsrc'' file and into cache.
 +  */
@@ -23320,26 +23459,11 @@ index 3f3f96d..0c76cd0 100644
 +  ** .pp
 +  ** If \fIset\fP, only subscribed newsgroups that contain unread articles
 +  ** will be displayed in browser.
-   */
++  */
 +#endif
-+#ifdef USE_SIDEBAR
+ #ifdef USE_SIDEBAR
    { "sidebar_delim_chars", DT_STR, R_SIDEBAR, UL &SidebarDelimChars, UL "/." },
    /*
-   ** .pp
-@@ -2718,6 +3053,13 @@ struct option_t MuttVars[] = {
-   ** .pp
-   ** \fBSee also:\fP $$sidebar_short_path, $$sidebar_folder_indent, $$sidebar_indent_string.
-   */
-+  { "sidebar_divider_char", DT_STR, R_SIDEBAR, UL &SidebarDividerChar, UL "|" },
-+  /*
-+  ** .pp
-+  ** This specifies the characters to be drawn between the sidebar (when
-+  ** visible) and the other Mutt panels. ASCII and Unicode line-drawing
-+  ** characters are supported.
-+  */
-   { "sidebar_folder_indent", DT_BOOL, R_SIDEBAR, OPTSIDEBARFOLDERINDENT, 0 },
-   /*
-   ** .pp
 @@ -2780,6 +3122,11 @@ struct option_t MuttVars[] = {
    ** \fC<sidebar-prev-new>\fP command is similarly affected, wrapping around to
    ** the end of the list.
@@ -23656,7 +23780,7 @@ index 8b8b972..cd8c9a0 100644
  
    /* edit-to (default "t") hides generic tag-entry in Compose menu
 diff --git c/lib.c w/lib.c
-index 224232b..5f7c38f 100644
+index 224232b..28c2937 100644
 --- c/lib.c
 +++ w/lib.c
 @@ -219,8 +219,10 @@ int safe_fsync_close (FILE **f)
@@ -23686,6 +23810,57 @@ index 224232b..5f7c38f 100644
    return 0;
  }
  
+@@ -1083,3 +1087,28 @@ int mutt_atol (const char *str, long *dst)
+     return -1;
+   return 0;
+ }
++
++int mutt_is_inbox (const char *path)
++{
++  size_t plen = mutt_strlen (path);
++  return ((plen >= 5) && (mutt_strcasecmp (path + plen - 5, "inbox") == 0));
++}
++
++int mutt_same_path (const char *a, const char *b)
++{
++  const char *a_end = strrchr (a, '/');
++  const char *b_end = strrchr (b, '/');
++
++  /* If one path contains a '/', but not the other */
++  if (!a_end ^ !b_end)
++    return 0;
++
++  /* If neither path contains a '/' */
++  if (!a_end)
++    return 1;
++
++  /* Compare the paths */
++  size_t a_len = a_end - a;
++  return ((a_len == (b_end - b)) && (mutt_strncasecmp (a, b, a_len) == 0));
++}
++
+diff --git c/lib.h w/lib.h
+index 84d33b5..120a0f0 100644
+--- c/lib.h
++++ w/lib.h
+@@ -77,7 +77,7 @@
+ # define FREE(x) safe_free(x)
+ # define NONULL(x) x?x:""
+ # define ISSPACE(c) isspace((unsigned char)c)
+-# define strfcpy(A,B,C) strncpy(A,B,C), *(A+(C)-1)=0
++# define strfcpy(DST,SRC,LEN) do { if ((LEN) > 0) { *(DST+(LEN)-1)=0; strncpy(DST,SRC,(LEN)-1); } } while (0)
+ 
+ # undef MAX
+ # undef MIN
+@@ -221,6 +221,8 @@ void mutt_str_adjust (char **p);
+ void mutt_unlink (const char *);
+ void safe_free (void *);
+ void safe_realloc (void *, size_t);
++int  mutt_is_inbox (const char *path);
++int  mutt_same_path (const char *a, const char *b);
+ 
+ const char *mutt_strsysexit(int e);
+ #endif
 diff --git c/mailbox.h w/mailbox.h
 index 35fb601..9b2443c 100644
 --- c/mailbox.h
@@ -25336,10 +25511,10 @@ index b229fd4..be4165d 100644
  #endif /* _MUTT_MENU_H_ */
 diff --git c/mutt_notmuch.c w/mutt_notmuch.c
 new file mode 100644
-index 0000000..e592dbd
+index 0000000..097ec02
 --- /dev/null
 +++ w/mutt_notmuch.c
-@@ -0,0 +1,2028 @@
+@@ -0,0 +1,2080 @@
 +/*
 + * Notmuch support for mutt
 + *
@@ -26662,6 +26837,57 @@ index 0000000..e592dbd
 +	return 0;
 +}
 +
++/* TODO: extract parsing of string to separate function, join
++ * update_header_tags and update_header_flags, which are given an array of
++ * tags. */
++static int update_header_flags(CONTEXT *ctx, HEADER *hdr, const char *tags)
++{
++	char *tag = NULL, *end = NULL, *p;
++	char *buf = safe_strdup(tags);
++
++	if (!buf)
++		return -1;
++
++	for (p = buf; p && *p; p++) {
++		if (!tag && isspace(*p))
++			continue;
++		if (!tag)
++			tag = p;		/* begin of the tag */
++		if (*p == ',' || *p == ' ')
++			end = p;		/* terminate the tag */
++		else if (*(p + 1) == '\0')
++			end = p + 1;		/* end of optstr */
++		if (!tag || !end)
++			continue;
++		if (tag >= end)
++			break;
++
++		*end = '\0';
++
++		if (*tag == '-') {
++			tag = tag + 1;
++			if (strcmp(tag, "unread") == 0)
++				mutt_set_flag (ctx, hdr, MUTT_READ, 1);
++			else if (strcmp(tag, "replied") == 0)
++				mutt_set_flag (ctx, hdr, MUTT_REPLIED, 0);
++			else if (strcmp(tag, "flagged") == 0)
++				mutt_set_flag (ctx, hdr, MUTT_FLAG, 0);
++		} else {
++			tag = *tag == '+' ? tag + 1 : tag;
++			if (strcmp(tag, "unread") == 0)
++				mutt_set_flag (ctx, hdr, MUTT_READ, 0);
++			else if (strcmp(tag, "replied") == 0)
++				mutt_set_flag (ctx, hdr, MUTT_REPLIED, 1);
++			else if (strcmp(tag, "flagged") == 0)
++				mutt_set_flag (ctx, hdr, MUTT_FLAG, 1);
++		}
++		end = tag = NULL;
++	}
++
++	FREE(&buf);
++	return 0;
++}
++
 +int nm_modify_message_tags(CONTEXT *ctx, HEADER *hdr, char *buf)
 +{
 +	struct nm_ctxdata *data = get_ctxdata(ctx);
@@ -26678,6 +26904,7 @@ index 0000000..e592dbd
 +	dprint(1, (debugfile, "nm: tags modify: '%s'\n", buf));
 +
 +	update_tags(msg, buf);
++	update_header_flags(ctx, hdr, buf);
 +	update_header_tags(hdr, msg);
 +	mutt_set_header_color(ctx, hdr);
 +
@@ -28005,7 +28232,7 @@ index b429fae..0000000
 -done
 -
 diff --git c/muttlib.c w/muttlib.c
-index 209c7ab..b5bf1c1 100644
+index 7439f44..560c0ab 100644
 --- c/muttlib.c
 +++ w/muttlib.c
 @@ -32,11 +32,18 @@
@@ -28046,7 +28273,7 @@ index 209c7ab..b5bf1c1 100644
  BODY *mutt_new_body (void)
  {
    BODY *p = (BODY *) safe_calloc (1, sizeof (BODY));
-@@ -311,6 +330,26 @@ void mutt_free_list (LIST **list)
+@@ -314,6 +333,26 @@ void mutt_free_list (LIST **list)
    }
  }
  
@@ -28073,7 +28300,7 @@ index 209c7ab..b5bf1c1 100644
  HEADER *mutt_dup_header(HEADER *h)
  {
    HEADER *hnew;
-@@ -331,7 +370,9 @@ void mutt_free_header (HEADER **h)
+@@ -334,7 +373,9 @@ void mutt_free_header (HEADER **h)
  #ifdef MIXMASTER
    mutt_free_list (&(*h)->chain);
  #endif
@@ -28084,7 +28311,7 @@ index 209c7ab..b5bf1c1 100644
    FREE (&(*h)->data);
  #endif
    FREE (h);		/* __FREE_CHECKED__ */
-@@ -442,6 +483,11 @@ char *_mutt_expand_path (char *s, size_t slen, int rx)
+@@ -445,6 +486,11 @@ char *_mutt_expand_path (char *s, size_t slen, int rx)
  	  strfcpy (p, NONULL (Maildir), sizeof (p));
  	else
  #endif
@@ -28096,7 +28323,7 @@ index 209c7ab..b5bf1c1 100644
  	if (Maildir && *Maildir && Maildir[strlen (Maildir) - 1] == '/')
  	  strfcpy (p, NONULL (Maildir), sizeof (p));
  	else
-@@ -716,12 +762,21 @@ void mutt_free_envelope (ENVELOPE **p)
+@@ -719,12 +765,21 @@ void mutt_free_envelope (ENVELOPE **p)
    FREE (&(*p)->supersedes);
    FREE (&(*p)->date);
    FREE (&(*p)->x_label);
@@ -28118,7 +28345,7 @@ index 209c7ab..b5bf1c1 100644
    FREE (p);		/* __FREE_CHECKED__ */
  }
  
-@@ -744,7 +799,8 @@ void mutt_merge_envelopes(ENVELOPE* base, ENVELOPE** extra)
+@@ -747,7 +802,8 @@ void mutt_merge_envelopes(ENVELOPE* base, ENVELOPE** extra)
    MOVE_ELEM(message_id);
    MOVE_ELEM(supersedes);
    MOVE_ELEM(date);
@@ -28128,7 +28355,7 @@ index 209c7ab..b5bf1c1 100644
    if (!base->refs_changed)
    {
      MOVE_ELEM(references);
-@@ -773,12 +829,73 @@ void mutt_merge_envelopes(ENVELOPE* base, ENVELOPE** extra)
+@@ -776,12 +832,73 @@ void mutt_merge_envelopes(ENVELOPE* base, ENVELOPE** extra)
    mutt_free_envelope(extra);
  }
  
@@ -28204,7 +28431,7 @@ index 209c7ab..b5bf1c1 100644
        suffix ? "." : "", NONULL (suffix));
    if (n >= slen)
      dprint (1, (debugfile, "%s:%d: ERROR: insufficient buffer space to hold temporary filename! slen=%zu but need %zu\n",
-@@ -821,6 +938,11 @@ void mutt_pretty_mailbox (char *s, size_t buflen)
+@@ -824,6 +941,11 @@ void mutt_pretty_mailbox (char *s, size_t buflen)
    }
  #endif
  
@@ -28216,7 +28443,7 @@ index 209c7ab..b5bf1c1 100644
    /* if s is an url, only collapse path component */
    if (scheme != U_UNKNOWN)
    {
-@@ -1216,8 +1338,34 @@ void mutt_FormatString (char *dest,		/* output buffer */
+@@ -1219,8 +1341,34 @@ void mutt_FormatString (char *dest,		/* output buffer */
  
        if (*src == '?')
        {
@@ -28251,7 +28478,7 @@ index 209c7ab..b5bf1c1 100644
        }
        else
        {
-@@ -1233,15 +1381,17 @@ void mutt_FormatString (char *dest,		/* output buffer */
+@@ -1236,15 +1384,17 @@ void mutt_FormatString (char *dest,		/* output buffer */
  	  count++;
  	}
  	*cp = 0;
@@ -28273,7 +28500,7 @@ index 209c7ab..b5bf1c1 100644
          if (*src != '?')
            break; /* bad format */
          src++;
-@@ -1249,8 +1399,20 @@ void mutt_FormatString (char *dest,		/* output buffer */
+@@ -1252,8 +1402,20 @@ void mutt_FormatString (char *dest,		/* output buffer */
          /* eat the `if' part of the string */
          cp = ifstring;
  	count = 0;
@@ -28296,7 +28523,7 @@ index 209c7ab..b5bf1c1 100644
            *cp++ = *src++;
  	  count++;
  	}
-@@ -1261,9 +1423,20 @@ void mutt_FormatString (char *dest,		/* output buffer */
+@@ -1264,9 +1426,20 @@ void mutt_FormatString (char *dest,		/* output buffer */
  	  src++; /* skip the & */
  	cp = elsestring;
  	count = 0;
@@ -28320,7 +28547,7 @@ index 209c7ab..b5bf1c1 100644
  	  count++;
  	}
  	*cp = 0;
-@@ -1271,7 +1444,7 @@ void mutt_FormatString (char *dest,		/* output buffer */
+@@ -1274,7 +1447,7 @@ void mutt_FormatString (char *dest,		/* output buffer */
  	if (!*src)
  	  break; /* bad format */
  
@@ -28329,7 +28556,7 @@ index 209c7ab..b5bf1c1 100644
        }
  
        /* handle generic cases first */
-@@ -1545,6 +1718,14 @@ int mutt_save_confirm (const char *s, struct stat *st)
+@@ -1548,6 +1721,14 @@ int mutt_save_confirm (const char *s, struct stat *st)
      }
    }
  
@@ -28344,7 +28571,7 @@ index 209c7ab..b5bf1c1 100644
    if (stat (s, st) != -1)
    {
      if (magic == -1)
-@@ -1827,8 +2008,8 @@ void mutt_set_mtime (const char* from, const char* to)
+@@ -1830,8 +2011,8 @@ void mutt_set_mtime (const char* from, const char* to)
  const char *mutt_make_version (void)
  {
    static char vstring[STRING];
@@ -28355,7 +28582,7 @@ index 209c7ab..b5bf1c1 100644
    return vstring;
  }
  
-@@ -1979,3 +2160,56 @@ void mutt_encode_path (char *dest, size_t dlen, const char *src)
+@@ -1982,3 +2163,56 @@ void mutt_encode_path (char *dest, size_t dlen, const char *src)
    strfcpy (dest, (rc == 0) ? NONULL(p) : NONULL(src), dlen);
    FREE (&p);
  }
@@ -28413,7 +28640,7 @@ index 209c7ab..b5bf1c1 100644
 +}
 +
 diff --git c/mx.c w/mx.c
-index fbe82e4..78f29c6 100644
+index 8f1b397..12d70d8 100644
 --- c/mx.c
 +++ w/mx.c
 @@ -33,6 +33,10 @@
@@ -28562,7 +28789,17 @@ index fbe82e4..78f29c6 100644
    ctx->mx_ops = mx_get_ops (ctx->magic);
    if (!ctx->mx_ops || !ctx->mx_ops->open_append)
      return -1;
-@@ -700,6 +779,19 @@ static int sync_mailbox (CONTEXT *ctx, int *index_hint)
+@@ -539,6 +618,9 @@ CONTEXT *mx_open_mailbox (const char *path, int flags, CONTEXT *pctx)
+   CONTEXT *ctx = pctx;
+   int rc;
+ 
++  if (!path || !path[0])
++    return NULL;
++
+   if (!ctx)
+     ctx = safe_malloc (sizeof (CONTEXT));
+   memset (ctx, 0, sizeof (CONTEXT));
+@@ -700,6 +782,19 @@ static int sync_mailbox (CONTEXT *ctx, int *index_hint)
        rc = pop_sync_mailbox (ctx, index_hint);
        break;
  #endif /* USE_POP */
@@ -28582,7 +28819,7 @@ index fbe82e4..78f29c6 100644
    }
  
  #if 0
-@@ -709,6 +801,14 @@ static int sync_mailbox (CONTEXT *ctx, int *index_hint)
+@@ -709,6 +804,14 @@ static int sync_mailbox (CONTEXT *ctx, int *index_hint)
    
    if (tmp && tmp->new == 0)
      mutt_update_mailbox (tmp);
@@ -28597,7 +28834,7 @@ index fbe82e4..78f29c6 100644
    return rc;
  }
  
-@@ -810,6 +910,25 @@ int mx_close_mailbox (CONTEXT *ctx, int *index_hint)
+@@ -810,6 +913,25 @@ int mx_close_mailbox (CONTEXT *ctx, int *index_hint)
      return 0;
    }
  
@@ -28623,7 +28860,7 @@ index fbe82e4..78f29c6 100644
    for (i = 0; i < ctx->msgcount; i++)
    {
      if (!ctx->hdrs[i]->deleted && ctx->hdrs[i]->read 
-@@ -823,6 +942,12 @@ int mx_close_mailbox (CONTEXT *ctx, int *index_hint)
+@@ -823,6 +945,12 @@ int mx_close_mailbox (CONTEXT *ctx, int *index_hint)
  #endif
    }
  
@@ -28636,7 +28873,7 @@ index fbe82e4..78f29c6 100644
    if (read_msgs && quadoption (OPT_MOVE) != MUTT_NO)
    {
      char *p;
-@@ -1014,6 +1139,10 @@ int mx_close_mailbox (CONTEXT *ctx, int *index_hint)
+@@ -1014,6 +1142,10 @@ int mx_close_mailbox (CONTEXT *ctx, int *index_hint)
    return 0;
  }
  
@@ -28647,7 +28884,7 @@ index fbe82e4..78f29c6 100644
  
  /* update a Context structure's internal tables. */
  
-@@ -1033,9 +1162,10 @@ void mx_update_tables(CONTEXT *ctx, int committing)
+@@ -1033,9 +1165,10 @@ void mx_update_tables(CONTEXT *ctx, int committing)
  #define this_body ctx->hdrs[j]->content
    for (i = 0, j = 0; i < ctx->msgcount; i++)
    {
@@ -28660,52 +28897,7 @@ index fbe82e4..78f29c6 100644
      {
        if (i != j)
        {
-@@ -1241,7 +1371,7 @@ MESSAGE *mx_open_new_message (CONTEXT *dest, HEADER *hdr, int flags)
-   ADDRESS *p = NULL;
-   MESSAGE *msg;
- 
--  if (!dest->mx_ops->open_new_msg)
-+  if (!dest->mx_ops || !dest->mx_ops->open_new_msg)
-   {
-       dprint (1, (debugfile, "mx_open_new_message(): function unimplemented for mailbox type %d.\n",
-               dest->magic));
-@@ -1293,7 +1423,7 @@ MESSAGE *mx_open_new_message (CONTEXT *dest, HEADER *hdr, int flags)
- /* check for new mail */
- int mx_check_mailbox (CONTEXT *ctx, int *index_hint)
- {
--  if (!ctx)
-+  if (!ctx || !ctx->mx_ops)
-   {
-     dprint (1, (debugfile, "mx_check_mailbox: null or invalid context.\n"));
-     return -1;
-@@ -1307,7 +1437,7 @@ MESSAGE *mx_open_message (CONTEXT *ctx, int msgno)
- {
-   MESSAGE *msg;
- 
--  if (!ctx->mx_ops->open_msg)
-+  if (!ctx->mx_ops || !ctx->mx_ops->open_msg)
-   {
-     dprint (1, (debugfile, "mx_open_message(): function not implemented for mailbox type %d.\n", ctx->magic));
-     return NULL;
-@@ -1324,7 +1454,7 @@ MESSAGE *mx_open_message (CONTEXT *ctx, int msgno)
- 
- int mx_commit_message (MESSAGE *msg, CONTEXT *ctx)
- {
--  if (!ctx->mx_ops->commit_msg)
-+  if (!ctx->mx_ops || !ctx->mx_ops->commit_msg)
-     return -1;
- 
-   if (!(msg->write && ctx->append))
-@@ -1342,7 +1472,7 @@ int mx_close_message (CONTEXT *ctx, MESSAGE **msg)
- {
-   int r = 0;
- 
--  if (ctx->mx_ops->close_msg)
-+  if (ctx->mx_ops && ctx->mx_ops->close_msg)
-     r = ctx->mx_ops->close_msg (ctx, *msg);
- 
-   if ((*msg)->path)
-@@ -1353,6 +1483,7 @@ int mx_close_message (CONTEXT *ctx, MESSAGE **msg)
+@@ -1353,6 +1486,7 @@ int mx_close_message (CONTEXT *ctx, MESSAGE **msg)
      FREE (&(*msg)->path);
    }
  
@@ -32674,7 +32866,7 @@ index 0000000..9db9ef5
 +
 +#endif /* _NNTP_H_ */
 diff --git c/pager.c w/pager.c
-index d7674eb..b2e360d 100644
+index d7674eb..7bc1fa6 100644
 --- c/pager.c
 +++ w/pager.c
 @@ -29,6 +29,7 @@
@@ -32888,7 +33080,7 @@ index d7674eb..b2e360d 100644
        {
  	menu_status_line (buffer, sizeof (buffer), index, NONULL (TSStatusFormat));
  	mutt_ts_status(buffer);
-@@ -1878,12 +1971,11 @@ mutt_pager (const char *banner, const char *fname, int flags, pager_t *extra)
+@@ -1878,19 +1971,18 @@ mutt_pager (const char *banner, const char *fname, int flags, pager_t *extra)
        }
      }
  
@@ -32905,7 +33097,15 @@ index d7674eb..b2e360d 100644
  
        /* print out the index status bar */
        menu_status_line (buffer, sizeof (buffer), index, NONULL(Status));
-@@ -1922,6 +2014,40 @@ mutt_pager (const char *banner, const char *fname, int flags, pager_t *extra)
+  
+       mutt_window_move (index_status_window, 0, 0);
+       SETCOLOR (MT_COLOR_STATUS);
+-      mutt_paddstr (index_status_window->cols, buffer);
++      mutt_draw_statusline (index_status_window->cols, buffer, sizeof (buffer));
+       NORMAL_COLOR;
+     }
+ 
+@@ -1922,6 +2014,46 @@ mutt_pager (const char *banner, const char *fname, int flags, pager_t *extra)
        mutt_clear_error ();
      mutt_curs_set (1);
  
@@ -32926,27 +33126,33 @@ index d7674eb..b2e360d 100644
 +      else if ((check == MUTT_NEW_MAIL) || (check == MUTT_REOPENED) || (check == MUTT_FLAGS))
 +      {
 +        oldcount = Context ? Context->msgcount : 0;
++	index->max = Context ? Context->vcount : 0;
++	index_hint = (Context->vcount && (index->current >= 0) && (index->current < Context->vcount)) ? Context->hdrs[Context->v2r[index->current]]->index : 0;
 +        update_index (index, Context, check, oldcount, index_hint);
-+      }
-+      /* notify user of newly arrived mail */
-+      if (mutt_buffy_notify())
-+      {
-+        redraw |= REDRAW_STATUS;
-+        if (option (OPTBEEPNEW))
-+          beep();
-+        if (NewMailCmd)
-+        {
-+          char cmd[LONG_STRING];
-+          menu_status_line (cmd, sizeof (cmd), index, NONULL (NewMailCmd));
-+          mutt_system (cmd);
-+        }
++
++	/* notify user of newly arrived mail */
++	if (check == MUTT_NEW_MAIL)
++	{
++	  mutt_message _("New mail in this mailbox.");
++	  redraw = REDRAW_FULL;
++	  if (option (OPTBEEPNEW))
++	    beep();
++	  if (NewMailCmd)
++	  {
++	    char cmd[LONG_STRING];
++	    menu_status_line (cmd, sizeof (cmd), index, NONULL (NewMailCmd));
++	    mutt_system (cmd);
++	  }
++
++	  set_option (OPTSEARCHINVALID);
++	}
 +      }
 +    }
 +
      if (SigInt)
      {
        mutt_query_exit ();
-@@ -2307,11 +2433,11 @@ search_next:
+@@ -2307,11 +2439,11 @@ search_next:
  	  int dretval = 0;
  	  int new_topline = topline;
  
@@ -32960,7 +33166,7 @@ index d7674eb..b2e360d 100644
  	    new_topline++;
  
  	  if (dretval < 0)
-@@ -2320,11 +2446,11 @@ search_next:
+@@ -2320,11 +2452,11 @@ search_next:
  	    break;
  	  }
  
@@ -32974,7 +33180,7 @@ index d7674eb..b2e360d 100644
  	    new_topline++;
  
  	  if (dretval < 0)
-@@ -2389,6 +2515,11 @@ search_next:
+@@ -2389,6 +2521,11 @@ search_next:
          redraw = REDRAW_FULL;
          break;
  
@@ -32986,7 +33192,7 @@ index d7674eb..b2e360d 100644
        case OP_CHECK_TRADITIONAL:
          CHECK_MODE (IsHeader (extra));
          if (!(WithCrypto & APPLICATION_PGP))
-@@ -2444,19 +2575,26 @@ search_next:
+@@ -2444,19 +2581,26 @@ search_next:
  
        case OP_DELETE_THREAD:
        case OP_DELETE_SUBTHREAD:
@@ -33019,7 +33225,7 @@ index d7674eb..b2e360d 100644
  	  if (option (OPTRESOLVE))
  	  {
  	    rc = OP_MAIN_NEXT_UNDELETED;
-@@ -2603,6 +2741,60 @@ search_next:
+@@ -2603,6 +2747,60 @@ search_next:
  	redraw = REDRAW_FULL;
  	break;
  
@@ -33080,7 +33286,7 @@ index d7674eb..b2e360d 100644
        case OP_REPLY:
  	CHECK_MODE(IsHeader (extra) || IsMsgAttach (extra));
          CHECK_ATTACH;      
-@@ -2649,7 +2841,7 @@ search_next:
+@@ -2649,7 +2847,7 @@ search_next:
          CHECK_ATTACH;
          if (IsMsgAttach (extra))
  	  mutt_attach_forward (extra->fp, extra->hdr, extra->idx,
@@ -33089,7 +33295,7 @@ index d7674eb..b2e360d 100644
          else
  	  ci_send_message (SENDFORWARD, NULL, NULL, extra->ctx, extra->hdr);
  	redraw = REDRAW_FULL;
-@@ -2707,11 +2899,14 @@ search_next:
+@@ -2707,11 +2905,14 @@ search_next:
  
        case OP_TAG:
  	CHECK_MODE(IsHeader (extra));
@@ -33108,7 +33314,7 @@ index d7674eb..b2e360d 100644
  
  	redraw = REDRAW_STATUS | REDRAW_INDEX;
  	if (option (OPTRESOLVE))
-@@ -2802,11 +2997,24 @@ search_next:
+@@ -2802,11 +3003,24 @@ search_next:
  	}
  	CHECK_MODE(IsHeader (extra));
  	mutt_view_attachments (extra->hdr);
@@ -33134,7 +33340,7 @@ index d7674eb..b2e360d 100644
  
        case OP_MAIL_KEY:
          if (!(WithCrypto & APPLICATION_PGP))
-@@ -2866,13 +3074,18 @@ search_next:
+@@ -2866,13 +3080,18 @@ search_next:
    safe_fclose (&fp);
    if (IsHeader (extra))
    {
@@ -33169,7 +33375,7 @@ index 36c8725..ae8866f 100644
  int mutt_pager (const char *, const char *, int, pager_t *);
 +void update_index (MUTTMENU *menu, CONTEXT *ctx, int check, int oldcount, int index_hint);
 diff --git c/parse.c w/parse.c
-index 92cfeb0..c75a8b1 100644
+index 0ae5594..c75a8b1 100644
 --- c/parse.c
 +++ w/parse.c
 @@ -94,7 +94,7 @@ char *mutt_read_rfc822_line (FILE *f, char *line, size_t *linelen)
@@ -33366,19 +33572,6 @@ index 92cfeb0..c75a8b1 100644
  
      if (e->subject)
      {
-@@ -1455,6 +1567,12 @@ ENVELOPE *mutt_read_rfc822_header (FILE *f, HEADER *hdr, short user_hdrs,
- 	e->real_subj = e->subject;
-     }
- 
-+    if (hdr->received < 0)
-+    {
-+      dprint(1,(debugfile,"read_rfc822_header(): resetting invalid received time to 0\n"));
-+      hdr->received = 0;
-+    }
-+
-     /* check for missing or invalid date */
-     if (hdr->date_sent <= 0)
-     {
 diff --git c/patchlist.sh w/patchlist.sh
 index 2914b87..d2dab1f 100755
 --- c/patchlist.sh
@@ -33393,7 +33586,7 @@ index 2914b87..d2dab1f 100755
  done
  
 diff --git c/pattern.c w/pattern.c
-index 85d38b5..c225377 100644
+index 1248e14..c225377 100644
 --- c/pattern.c
 +++ w/pattern.c
 @@ -42,6 +42,10 @@
@@ -33524,15 +33717,7 @@ index 85d38b5..c225377 100644
      }
    }
  
-@@ -1142,6 +1193,7 @@ mutt_pattern_exec (struct pattern_t *pat, pattern_exec_flag flags, CONTEXT *ctx,
-       /*
-        * ctx can be NULL in certain cases, such as when replying to a message from the attachment menu and
-        * the user has a reply-hook using "~h" (bug #2190).
-+       * This is also the case when message scoring.
-        */
-       if (!ctx)
- 	      return 0;
-@@ -1209,12 +1261,34 @@ mutt_pattern_exec (struct pattern_t *pat, pattern_exec_flag flags, CONTEXT *ctx,
+@@ -1210,7 +1261,27 @@ mutt_pattern_exec (struct pattern_t *pat, pattern_exec_flag flags, CONTEXT *ctx,
         break;
       return (pat->not ^ ((h->security & APPLICATION_PGP) && (h->security & PGPKEY)));
      case MUTT_XLABEL:
@@ -33560,14 +33745,7 @@ index 85d38b5..c225377 100644
      case MUTT_HORMEL:
        return (pat->not ^ (h->env->spam && h->env->spam->data && patmatch (pat, h->env->spam->data) == 0));
      case MUTT_DUPLICATED:
-       return (pat->not ^ (h->thread && h->thread->duplicate_thread));
-     case MUTT_MIMEATTACH:
-+      if (!ctx)
-+        return 0;
-       {
-       int count = mutt_count_body_parts (ctx, h);
-       return (pat->not ^ (count >= pat->min && (pat->max == MUTT_MAXRANGE ||
-@@ -1222,6 +1296,10 @@ mutt_pattern_exec (struct pattern_t *pat, pattern_exec_flag flags, CONTEXT *ctx,
+@@ -1225,6 +1296,10 @@ mutt_pattern_exec (struct pattern_t *pat, pattern_exec_flag flags, CONTEXT *ctx,
        }
      case MUTT_UNREFERENCED:
        return (pat->not ^ (h->thread && !h->thread->child));
@@ -33578,7 +33756,7 @@ index 85d38b5..c225377 100644
    }
    mutt_error (_("error: unknown op %d (report this error)."), pat->op);
    return (-1);
-@@ -1294,6 +1372,76 @@ void mutt_check_simple (char *s, size_t len, const char *simple)
+@@ -1297,6 +1372,76 @@ void mutt_check_simple (char *s, size_t len, const char *simple)
    }
  }
  
@@ -33655,7 +33833,7 @@ index 85d38b5..c225377 100644
  int mutt_pattern_func (int op, char *prompt)
  {
    pattern_t *pat;
-@@ -1303,6 +1451,7 @@ int mutt_pattern_func (int op, char *prompt)
+@@ -1306,6 +1451,7 @@ int mutt_pattern_func (int op, char *prompt)
    progress_t progress;
  
    strfcpy (buf, NONULL (Context->pattern), sizeof (buf));
@@ -33688,34 +33866,6 @@ index 46661b7..36a92ae 100644
  
  	snprintf (fmt, sizeof (fmt), "%%%ss", prefix);
  	snprintf (dest, destlen, fmt, buf2);
-diff --git c/pgppubring.c w/pgppubring.c
-index 8da3bbb..b045518 100644
---- c/pgppubring.c
-+++ w/pgppubring.c
-@@ -341,19 +341,15 @@ static pgp_key_t pgp_parse_pgp3_key (unsigned char *buff, size_t l)
-   p->algorithm = pgp_pkalgbytype (alg);
-   p->flags |= pgp_get_abilities (alg);
- 
--  if (alg == 17)
--    skip_bignum (buff, l, j, &j, 3);
--  else if (alg == 16 || alg == 20)
--    skip_bignum (buff, l, j, &j, 2);
--
-   len = (buff[j] << 8) + buff[j + 1];
-   p->keylen = len;
- 
--
-   if (alg >= 1 && alg <= 3)
-     skip_bignum (buff, l, j, &j, 2);
--  else if (alg == 17 || alg == 16 || alg == 20)
--    skip_bignum (buff, l, j, &j, 1);
-+  else if (alg == 16 || alg == 20)
-+    skip_bignum (buff, l, j, &j, 3);
-+  else if (alg == 17)
-+    skip_bignum (buff, l, j, &j, 4);
- 
-   pgp_make_pgp3_fingerprint (buff, j, digest);
-   if (dump_fingerprints)
 diff --git c/po/POTFILES.in w/po/POTFILES.in
 index 2d01add..1e499ec 100644
 --- c/po/POTFILES.in
@@ -33737,82 +33887,1916 @@ index 2d01add..1e499ec 100644
  pager.c
  parse.c
  pattern.c
-diff --git c/po/de.po w/po/de.po
-index f0d7589..afc6e62 100644
---- c/po/de.po
-+++ w/po/de.po
-@@ -1371,6 +1371,7 @@ msgstr ""
- "PGP (v)erschl., (s)ign., sign. (a)ls, (b)eides, s/(m)ime, (u)nverschl.?"
- 
- #: crypt-gpgme.c:4733
-+#, fuzzy
- msgid "samfco"
+diff --git c/po/ca.po w/po/ca.po
+index 4b17944..f85df8c 100644
+--- c/po/ca.po
++++ w/po/ca.po
+@@ -47,7 +47,7 @@
+ # <https://www.softcatala.org/recursos/quality/gnutools.html>.
+ msgid ""
  msgstr ""
- 
-@@ -1407,6 +1408,7 @@ msgstr ""
- "S/MIME (v)erschl., (s)ign., sign. (a)ls, (b)eides, (p)gp, (u)nverschl.?"
- 
- #: crypt-gpgme.c:4764
-+#, fuzzy
- msgid "esabpfc"
- msgstr "vsabpku"
- 
-@@ -1417,6 +1419,7 @@ msgstr ""
- "PGP (v)erschl., (s)ign., sign. (a)ls, (b)eides, s/(m)ime, (u)nverschl.?"
- 
- #: crypt-gpgme.c:4770
-+#, fuzzy
- msgid "esabmfc"
- msgstr "vsabmku"
- 
-diff --git c/po/es.po w/po/es.po
-index ca1e402..0cfcb23 100644
---- c/po/es.po
-+++ w/po/es.po
-@@ -1419,6 +1419,7 @@ msgid "PGP (s)ign, sign (a)s, s/(m)ime, (c)lear, or (o)ppenc mode off? "
- msgstr "�co(d)ificar, f(i)rmar (c)omo, amb(o)s, inc(l)uido, o ca(n)celar? "
- 
- #: crypt-gpgme.c:4733
-+#, fuzzy
- msgid "samfco"
+-"Project-Id-Version: mutt 1.7.0\n"
++"Project-Id-Version: mutt 1.7.1\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2016-10-08 12:54-0700\n"
+ "PO-Revision-Date: 2016-08-10 09:13+0200\n"
+diff --git c/po/cs.po w/po/cs.po
+index 550db0b..ed7f817 100644
+--- c/po/cs.po
++++ w/po/cs.po
+@@ -8,10 +8,10 @@
+ #
+ msgid ""
  msgstr ""
+-"Project-Id-Version: mutt ec1ebdf1e088\n"
++"Project-Id-Version: mutt 8262503d1991\n"
+ "Report-Msgid-Bugs-To: \n"
+-"POT-Creation-Date: 2016-10-08 12:54-0700\n"
+-"PO-Revision-Date: 2016-03-19 21:53+01:00\n"
++"POT-Creation-Date: 2016-10-05 21:17+0200\n"
++"PO-Revision-Date: 2016-10-05 21:20+02:00\n"
+ "Last-Translator: Petr Písař <petr.pisar@atlas.cz>\n"
+ "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
+ "Language: cs\n"
+@@ -46,8 +46,8 @@ msgstr "Obnovit"
+ msgid "Select"
+ msgstr "Volba"
  
-diff --git c/po/it.po w/po/it.po
-index bbbb6ed..0054a92 100644
---- c/po/it.po
-+++ w/po/it.po
-@@ -1358,6 +1358,7 @@ msgstr ""
+-#: addrbook.c:41 browser.c:49 compose.c:96 crypt-gpgme.c:4023 curs_main.c:493
+-#: mutt_ssl.c:1084 mutt_ssl_gnutls.c:1003 pager.c:1656 pgpkey.c:523
++#: addrbook.c:41 browser.c:49 compose.c:96 crypt-gpgme.c:4019 curs_main.c:493
++#: mutt_ssl.c:1076 mutt_ssl_gnutls.c:1003 pager.c:1656 pgpkey.c:522
+ #: postpone.c:44 query.c:53 recvattach.c:57 smime.c:440
+ msgid "Help"
+ msgstr "Nápověda"
+@@ -77,7 +77,7 @@ msgstr "Pozor: :Takto pojmenovaný alias nemusí fungovat, mám to napravit?"
+ msgid "Address: "
+ msgstr "Adresa: "
+ 
+-#: alias.c:307 send.c:206
++#: alias.c:307 send.c:207
+ #, c-format
+ msgid "Error: '%s' is a bad IDN."
+ msgstr "Chyba: „%s“ není platné IDN."
+@@ -117,8 +117,8 @@ msgstr "Shodu pro jmenný vzor nelze nalézt, pokračovat?"
+ msgid "Mailcap compose entry requires %%s"
+ msgstr "Položka mailcapu „compose“ vyžaduje %%s"
+ 
+-#: attach.c:134 attach.c:266 commands.c:223 compose.c:1208 curs_lib.c:204
+-#: curs_lib.c:723
++#: attach.c:134 attach.c:266 commands.c:223 compose.c:1208 curs_lib.c:205
++#: curs_lib.c:724
+ #, c-format
+ msgid "Error running \"%s\"!"
+ msgstr "Chyba při běhu programu \"%s\"!"
+@@ -183,7 +183,7 @@ msgid "---Attachment: %s"
+ msgstr "--–Příloha: %s"
+ 
+ #: attach.c:631 attach.c:663 attach.c:958 attach.c:1016 handler.c:1363
+-#: pgpkey.c:572 pgpkey.c:761
++#: pgpkey.c:571 pgpkey.c:760
+ msgid "Can't create filter"
+ msgstr "Filtr nelze vytvořit"
+ 
+@@ -203,96 +203,96 @@ msgstr "Změnit adresář"
+ msgid "Mask"
+ msgstr "Maska"
+ 
+-#: browser.c:425 browser.c:1091
++#: browser.c:426 browser.c:1092
+ #, c-format
+ msgid "%s is not a directory."
+ msgstr "%s není adresářem."
+ 
+-#: browser.c:573
++#: browser.c:574
+ #, c-format
+ msgid "Mailboxes [%d]"
+ msgstr "Schránky [%d]"
+ 
+-#: browser.c:580
++#: browser.c:581
+ #, c-format
+ msgid "Subscribed [%s], File mask: %s"
+ msgstr "Přihlášená schránka [%s], Souborová maska: %s"
+ 
+-#: browser.c:584
++#: browser.c:585
+ #, c-format
+ msgid "Directory [%s], File mask: %s"
+ msgstr "Adresář [%s], Souborová maska: %s"
+ 
+-#: browser.c:596
++#: browser.c:597
+ msgid "Can't attach a directory!"
+ msgstr "Adresář nelze připojit!"
+ 
+-#: browser.c:735 browser.c:1159 browser.c:1257
++#: browser.c:736 browser.c:1160 browser.c:1258
+ msgid "No files match the file mask"
+ msgstr "Souborové masce nevyhovuje žádný soubor."
+ 
+-#: browser.c:939
++#: browser.c:940
+ msgid "Create is only supported for IMAP mailboxes"
+ msgstr "Vytváření funguje pouze u IMAP schránek."
+ 
+-#: browser.c:963
++#: browser.c:964
+ msgid "Rename is only supported for IMAP mailboxes"
+ msgstr "Přejmenování funguje pouze u IMAP schránek."
+ 
+-#: browser.c:986
++#: browser.c:987
+ msgid "Delete is only supported for IMAP mailboxes"
+ msgstr "Mazání funguje pouze u IMAP schránek."
+ 
+-#: browser.c:996
++#: browser.c:997
+ msgid "Cannot delete root folder"
+ msgstr "Kořenovou složku nelze smazat"
+ 
+-#: browser.c:999
++#: browser.c:1000
+ #, c-format
+ msgid "Really delete mailbox \"%s\"?"
+ msgstr "Skutečně chcete smazat schránku \"%s\"?"
+ 
+-#: browser.c:1015
++#: browser.c:1016
+ msgid "Mailbox deleted."
+ msgstr "Schránka byla smazána."
+ 
+-#: browser.c:1021
++#: browser.c:1022
+ msgid "Mailbox not deleted."
+ msgstr "Schránka nebyla smazána."
+ 
+-#: browser.c:1040
++#: browser.c:1041
+ msgid "Chdir to: "
+ msgstr "Nastavit pracovní adresář na: "
+ 
+-#: browser.c:1079 browser.c:1152
++#: browser.c:1080 browser.c:1153
+ msgid "Error scanning directory."
+ msgstr "Chyba při načítání adresáře."
+ 
+-#: browser.c:1103
++#: browser.c:1104
+ msgid "File Mask: "
+ msgstr "Souborová maska: "
+ 
+-#: browser.c:1175
++#: browser.c:1176
+ msgid "Reverse sort by (d)ate, (a)lpha, si(z)e or do(n)'t sort? "
+ msgstr "Obrácené řazení dle (d)ata, (p)ísmena, (v)elikosti či (n)eřadit?"
+ 
+-#: browser.c:1176
++#: browser.c:1177
+ msgid "Sort by (d)ate, (a)lpha, si(z)e or do(n)'t sort? "
+ msgstr "Řadit dle (d)ata, (p)ísmena, (v)elikosti či (n)eřadit?"
+ 
+-#: browser.c:1177
++#: browser.c:1178
+ msgid "dazn"
+ msgstr "dpvn"
+ 
+-#: browser.c:1244
++#: browser.c:1245
+ msgid "New file name: "
+ msgstr "Nové jméno souboru: "
+ 
+-#: browser.c:1275
++#: browser.c:1276
+ msgid "Can't view a directory"
+ msgstr "Adresář nelze zobrazit"
+ 
+-#: browser.c:1292
++#: browser.c:1293
+ msgid "Error trying to view file"
+ msgstr "Chyba při zobrazování souboru"
+ 
+@@ -626,9 +626,8 @@ msgid " (OppEnc mode)"
+ msgstr " (příležitostné šifrování)"
+ 
+ #: compose.c:153 compose.c:157
+-#, fuzzy
+ msgid "sign as: "
+-msgstr " podepsat jako: "
++msgstr "podepsat jako: "
+ 
+ #: compose.c:153 compose.c:157
+ msgid "<default>"
+@@ -641,7 +640,7 @@ msgstr "Zašifrovat pomocí: "
+ #. L10N: "Mix" refers to the MixMaster chain for anonymous email
+ #: compose.c:179
+ msgid "Mix: "
+-msgstr ""
++msgstr "Mix: "
+ 
+ #: compose.c:219
+ #, c-format
+@@ -666,7 +665,7 @@ msgstr "Pozor: „%s“ není platné IDN."
+ msgid "You may not delete the only attachment."
+ msgstr "Nemůžete smazat jedinou přílohu."
+ 
+-#: compose.c:614 send.c:1681
++#: compose.c:614 send.c:1664
+ #, c-format
+ msgid "Bad IDN in \"%s\": '%s'"
+ msgstr "Neplatné IDN v \"%s\": „%s“"
+@@ -794,7 +793,7 @@ msgstr "chybě při zapínání CMS protokolu: %s\n"
+ msgid "error creating gpgme data object: %s\n"
+ msgstr "chybě při vytváření gpgme datového objektu: %s\n"
+ 
+-#: crypt-gpgme.c:489 crypt-gpgme.c:507 crypt-gpgme.c:1538 crypt-gpgme.c:2248
++#: crypt-gpgme.c:489 crypt-gpgme.c:507 crypt-gpgme.c:1536 crypt-gpgme.c:2251
+ #, c-format
+ msgid "error allocating data object: %s\n"
+ msgstr "chybě při alokování datového objektu: %s\n"
+@@ -809,7 +808,7 @@ msgstr "chyba při přetáčení datového objektu: %s\n"
+ msgid "error reading data object: %s\n"
+ msgstr "chyba při čtení datového objektu: %s\n"
+ 
+-#: crypt-gpgme.c:573 crypt-gpgme.c:3637 pgpkey.c:560 pgpkey.c:741
++#: crypt-gpgme.c:573 crypt-gpgme.c:3633 pgpkey.c:559 pgpkey.c:740
+ msgid "Can't create temporary file"
+ msgstr "Dočasný soubor nelze vytvořit."
+ 
+@@ -843,136 +842,136 @@ msgstr "chyba při nastavování PKA podpisové poznámky: %s\n"
+ msgid "error encrypting data: %s\n"
+ msgstr "chyba při dešifrování dat: %s\n"
+ 
+-#: crypt-gpgme.c:937
++#: crypt-gpgme.c:935
+ #, c-format
+ msgid "error signing data: %s\n"
+ msgstr "chyba při podepisování dat: %s\n"
+ 
+-#: crypt-gpgme.c:948
++#: crypt-gpgme.c:946
+ msgid "$pgp_sign_as unset and no default key specified in ~/.gnupg/gpg.conf"
+ msgstr ""
+ "$pgp_sign_as není nastaveno a v ~/.gnupg/gpg.conf není určen výchozí klíč"
+ 
+-#: crypt-gpgme.c:1144
++#: crypt-gpgme.c:1142
+ msgid "Warning: One of the keys has been revoked\n"
+ msgstr "Pozor: Jeden z klíčů byl zneplatněn\n"
+ 
+-#: crypt-gpgme.c:1153
++#: crypt-gpgme.c:1151
+ msgid "Warning: The key used to create the signature expired at: "
+ msgstr "Pozor: Klíči použitému k podepsání vypršela platnost: "
+ 
+-#: crypt-gpgme.c:1159
++#: crypt-gpgme.c:1157
+ msgid "Warning: At least one certification key has expired\n"
+ msgstr "Pozor: Platnost alespoň jednoho certifikátu vypršela\n"
+ 
+-#: crypt-gpgme.c:1175
++#: crypt-gpgme.c:1173
+ msgid "Warning: The signature expired at: "
+ msgstr "Pozor: Podpis pozbyl platnosti: "
+ 
+-#: crypt-gpgme.c:1181
++#: crypt-gpgme.c:1179
+ msgid "Can't verify due to a missing key or certificate\n"
+ msgstr "Nelze ověřit, protože chybí klíč nebo certifikát\n"
+ 
+-#: crypt-gpgme.c:1186
++#: crypt-gpgme.c:1184
+ msgid "The CRL is not available\n"
+ msgstr "CRL není dostupný\n"
+ 
+-#: crypt-gpgme.c:1192
++#: crypt-gpgme.c:1190
+ msgid "Available CRL is too old\n"
+ msgstr "Dostupný CRL je příliš starý\n"
+ 
+-#: crypt-gpgme.c:1197
++#: crypt-gpgme.c:1195
+ msgid "A policy requirement was not met\n"
+ msgstr "Požadavky bezpečnostní politiky nebyly splněny\n"
+ 
+-#: crypt-gpgme.c:1206
++#: crypt-gpgme.c:1204
+ msgid "A system error occurred"
+ msgstr "Došlo k systémové chybě"
+ 
+-#: crypt-gpgme.c:1240
++#: crypt-gpgme.c:1238
+ msgid "WARNING: PKA entry does not match signer's address: "
+ msgstr "POZOR: Položka PKA se neshoduje s adresou podepsaného: "
+ 
+-#: crypt-gpgme.c:1247
++#: crypt-gpgme.c:1245
+ msgid "PKA verified signer's address is: "
+ msgstr "Adresa podepsaného ověřená pomocí PKA je: "
+ 
+ #. L10N: DOTFILL
+-#: crypt-gpgme.c:1264 crypt-gpgme.c:3468
++#: crypt-gpgme.c:1262 crypt-gpgme.c:3467
+ msgid "Fingerprint: "
+ msgstr "Otisk klíče: "
+ 
+-#: crypt-gpgme.c:1324
++#: crypt-gpgme.c:1322
+ msgid ""
+ "WARNING: We have NO indication whether the key belongs to the person named "
+ "as shown above\n"
+ msgstr "POZOR: Nemáme ŽÁDNÝ důkaz, že klíč patří výše jmenované osobě\n"
+ 
+-#: crypt-gpgme.c:1331
++#: crypt-gpgme.c:1329
+ msgid "WARNING: The key does NOT BELONG to the person named as shown above\n"
+ msgstr "POZOR: Klíč NEPATŘÍ výše jmenované osobě\n"
+ 
+-#: crypt-gpgme.c:1335
++#: crypt-gpgme.c:1333
+ msgid ""
+ "WARNING: It is NOT certain that the key belongs to the person named as shown "
+ "above\n"
+ msgstr "POZOR: NENÍ jisté, zda klíč patří výše jmenované osobě\n"
+ 
+-#: crypt-gpgme.c:1370
++#: crypt-gpgme.c:1368
+ msgid "aka: "
+ msgstr "alias: "
+ 
+-#: crypt-gpgme.c:1380
++#: crypt-gpgme.c:1378
+ msgid "KeyID "
+ msgstr "ID klíče "
+ 
+-#: crypt-gpgme.c:1390
++#: crypt-gpgme.c:1388
+ msgid "created: "
+ msgstr "vytvořen: "
+ 
+-#: crypt-gpgme.c:1462
++#: crypt-gpgme.c:1460
+ #, c-format
+ msgid "Error getting key information for KeyID %s: %s\n"
+ msgstr "Chyba při získávání podrobností o klíči s ID %s: %s\n"
+ 
+-#: crypt-gpgme.c:1469 crypt-gpgme.c:1484
++#: crypt-gpgme.c:1467 crypt-gpgme.c:1482
+ msgid "Good signature from:"
+ msgstr "Dobrý podpis od:"
+ 
+-#: crypt-gpgme.c:1476
++#: crypt-gpgme.c:1474
+ msgid "*BAD* signature from:"
+ msgstr "*ŠPATNÝ* podpis od:"
+ 
+-#: crypt-gpgme.c:1492
++#: crypt-gpgme.c:1490
+ msgid "Problem signature from:"
+ msgstr "Problematický podpis od:"
+ 
+ #. L10N:
+ #. This is trying to match the width of the
+ #. "Problem signature from:" translation just above.
+-#: crypt-gpgme.c:1499
++#: crypt-gpgme.c:1497
+ msgid "               expires: "
+ msgstr "                vyprší: "
+ 
+-#: crypt-gpgme.c:1546 crypt-gpgme.c:1764 crypt-gpgme.c:2465
++#: crypt-gpgme.c:1544 crypt-gpgme.c:1767 crypt-gpgme.c:2468
+ msgid "[-- Begin signature information --]\n"
+ msgstr "[-- Začátek podrobností o podpisu --]\n"
+ 
+-#: crypt-gpgme.c:1558
++#: crypt-gpgme.c:1556
+ #, c-format
+ msgid "Error: verification failed: %s\n"
+ msgstr "Chyba: ověření selhalo: %s\n"
+ 
+-#: crypt-gpgme.c:1607
++#: crypt-gpgme.c:1610
+ #, c-format
+ msgid "*** Begin Notation (signature by: %s) ***\n"
+ msgstr "*** Začátek zápisu (podepsáno: %s) ***\n"
+ 
+-#: crypt-gpgme.c:1629
++#: crypt-gpgme.c:1632
+ msgid "*** End Notation ***\n"
+ msgstr "*** Konec zápisu ***\n"
+ 
+-#: crypt-gpgme.c:1637 crypt-gpgme.c:1777 crypt-gpgme.c:2478
++#: crypt-gpgme.c:1640 crypt-gpgme.c:1780 crypt-gpgme.c:2481
+ msgid ""
+ "[-- End signature information --]\n"
+ "\n"
+@@ -980,7 +979,7 @@ msgstr ""
+ "[-- Konec podrobností o podpisu --]\n"
+ "\n"
+ 
+-#: crypt-gpgme.c:1732
++#: crypt-gpgme.c:1735
+ #, c-format
+ msgid ""
+ "[-- Error: decryption failed: %s --]\n"
+@@ -989,20 +988,20 @@ msgstr ""
+ "[-- Chyba: dešifrování selhalo: %s --]\n"
+ "\n"
+ 
+-#: crypt-gpgme.c:2255
++#: crypt-gpgme.c:2258
+ msgid "Error extracting key data!\n"
+ msgstr "Chyba při získávání podrobností o klíči!\n"
+ 
+-#: crypt-gpgme.c:2441
++#: crypt-gpgme.c:2444
+ #, c-format
+ msgid "Error: decryption/verification failed: %s\n"
+ msgstr "Chyba: dešifrování/ověřování selhalo: %s\n"
+ 
+-#: crypt-gpgme.c:2486
++#: crypt-gpgme.c:2489
+ msgid "Error: copy data failed\n"
+ msgstr "Chyba: selhalo kopírování dat\n"
+ 
+-#: crypt-gpgme.c:2507 pgp.c:519
++#: crypt-gpgme.c:2510 pgp.c:519
+ msgid ""
+ "[-- BEGIN PGP MESSAGE --]\n"
+ "\n"
+@@ -1010,11 +1009,11 @@ msgstr ""
+ "[-- ZAČÁTEK PGP ZPRÁVY --]\n"
+ "\n"
+ 
+-#: crypt-gpgme.c:2509 pgp.c:521
++#: crypt-gpgme.c:2512 pgp.c:521
+ msgid "[-- BEGIN PGP PUBLIC KEY BLOCK --]\n"
+ msgstr "[--ZAČÁTEK VEŘEJNÉHO KLÍČE PGP --]\n"
+ 
+-#: crypt-gpgme.c:2512 pgp.c:523
++#: crypt-gpgme.c:2515 pgp.c:523
+ msgid ""
+ "[-- BEGIN PGP SIGNED MESSAGE --]\n"
+ "\n"
+@@ -1022,19 +1021,19 @@ msgstr ""
+ "[-- ZAČÁTEK PODEPSANÉ PGP ZPRÁVY --]\n"
+ "\n"
+ 
+-#: crypt-gpgme.c:2539 pgp.c:566
++#: crypt-gpgme.c:2542 pgp.c:566
+ msgid "[-- END PGP MESSAGE --]\n"
+ msgstr "[-- KONEC PGP ZPRÁVY --]\n"
+ 
+-#: crypt-gpgme.c:2541 pgp.c:573
++#: crypt-gpgme.c:2544 pgp.c:573
+ msgid "[-- END PGP PUBLIC KEY BLOCK --]\n"
+ msgstr "[-- KONEC VEŘEJNÉHO KLÍČE PGP --]\n"
+ 
+-#: crypt-gpgme.c:2543 pgp.c:575
++#: crypt-gpgme.c:2546 pgp.c:575
+ msgid "[-- END PGP SIGNED MESSAGE --]\n"
+ msgstr "[-- KONEC PODEPSANÉ PGP ZPRÁVY --]\n"
+ 
+-#: crypt-gpgme.c:2566 pgp.c:608
++#: crypt-gpgme.c:2569 pgp.c:608
+ msgid ""
+ "[-- Error: could not find beginning of PGP message! --]\n"
+ "\n"
+@@ -1042,11 +1041,11 @@ msgstr ""
+ "[-- Chyba: nelze najít začátek PGP zprávy! --]\n"
+ "\n"
+ 
+-#: crypt-gpgme.c:2597 crypt-gpgme.c:2670 pgp.c:1091
++#: crypt-gpgme.c:2600 crypt-gpgme.c:2673 pgp.c:1091
+ msgid "[-- Error: could not create temporary file! --]\n"
+ msgstr "[-- Chyba: dočasný soubor nelze vytvořit! --]\n"
+ 
+-#: crypt-gpgme.c:2609
++#: crypt-gpgme.c:2612
+ msgid ""
+ "[-- The following data is PGP/MIME signed and encrypted --]\n"
+ "\n"
+@@ -1054,7 +1053,7 @@ msgstr ""
+ "[-- Následující data jsou podepsána a zašifrována ve formátu PGP/MIME --]\n"
+ "\n"
+ 
+-#: crypt-gpgme.c:2610 pgp.c:1100
++#: crypt-gpgme.c:2613 pgp.c:1100
+ msgid ""
+ "[-- The following data is PGP/MIME encrypted --]\n"
+ "\n"
+@@ -1062,23 +1061,23 @@ msgstr ""
+ "[-- Následující data jsou zašifrována ve formátu PGP/MIME --]\n"
+ "\n"
+ 
+-#: crypt-gpgme.c:2632
++#: crypt-gpgme.c:2635
+ msgid "[-- End of PGP/MIME signed and encrypted data --]\n"
+ msgstr "[-- Konec dat podepsaných a zašifrovaných ve formátu PGP/MIME --]\n"
+ 
+-#: crypt-gpgme.c:2633 pgp.c:1120
++#: crypt-gpgme.c:2636 pgp.c:1120
+ msgid "[-- End of PGP/MIME encrypted data --]\n"
+ msgstr "[-- Konec dat zašifrovaných ve formátu PGP/MIME --]\n"
+ 
+-#: crypt-gpgme.c:2638 pgp.c:570 pgp.c:1125
++#: crypt-gpgme.c:2641 pgp.c:570 pgp.c:1125
+ msgid "PGP message successfully decrypted."
+ msgstr "PGP zpráva byla úspěšně dešifrována."
+ 
+-#: crypt-gpgme.c:2642 pgp.c:505 pgp.c:568 pgp.c:1129
++#: crypt-gpgme.c:2645 pgp.c:505 pgp.c:568 pgp.c:1129
+ msgid "Could not decrypt PGP message"
+ msgstr "PGP zprávu nelze dešifrovat"
+ 
+-#: crypt-gpgme.c:2682
++#: crypt-gpgme.c:2685
+ msgid ""
+ "[-- The following data is S/MIME signed --]\n"
+ "\n"
+@@ -1086,7 +1085,7 @@ msgstr ""
+ "[-- Následují data podepsaná pomocí S/MIME --]\n"
+ "\n"
+ 
+-#: crypt-gpgme.c:2683
++#: crypt-gpgme.c:2686
+ msgid ""
+ "[-- The following data is S/MIME encrypted --]\n"
+ "\n"
+@@ -1094,23 +1093,23 @@ msgstr ""
+ "[-- Následující data jsou zašifrována pomocí S/MIME --]\n"
+ "\n"
+ 
+-#: crypt-gpgme.c:2713
++#: crypt-gpgme.c:2716
+ msgid "[-- End of S/MIME signed data --]\n"
+ msgstr "[-- Konec dat podepsaných pomocí S/MIME --]\n"
+ 
+-#: crypt-gpgme.c:2714
++#: crypt-gpgme.c:2717
+ msgid "[-- End of S/MIME encrypted data --]\n"
+ msgstr "[-- Konec dat zašifrovaných ve formátu S/MIME --]\n"
+ 
+-#: crypt-gpgme.c:3299
++#: crypt-gpgme.c:3301
+ msgid "[Can't display this user ID (unknown encoding)]"
+ msgstr "[Nelze zobrazit ID tohoto uživatele (neznámé kódování)]"
+ 
+-#: crypt-gpgme.c:3301
++#: crypt-gpgme.c:3303
+ msgid "[Can't display this user ID (invalid encoding)]"
+ msgstr "[Nelze zobrazit ID tohoto uživatele (neplatné kódování)]"
+ 
+-#: crypt-gpgme.c:3306
++#: crypt-gpgme.c:3308
+ msgid "[Can't display this user ID (invalid DN)]"
+ msgstr "[Nelze zobrazit ID tohoto uživatele (neplatné DN)]"
+ 
+@@ -1118,152 +1117,152 @@ msgstr "[Nelze zobrazit ID tohoto uživatele (neplatné DN)]"
+ #. Fill dots to make the DOTFILL entries the same length.
+ #. In English, msgid "Fingerprint: " is the longest entry for this menu.
+ #. Your language may vary.
+-#: crypt-gpgme.c:3389
++#: crypt-gpgme.c:3388
+ msgid " aka ......: "
+ msgstr " aka ......: "
+ 
+-#: crypt-gpgme.c:3389
++#: crypt-gpgme.c:3388
+ msgid "Name ......: "
+ msgstr "Jméno .....: "
+ 
+-#: crypt-gpgme.c:3392 crypt-gpgme.c:3539
++#: crypt-gpgme.c:3391 crypt-gpgme.c:3538
+ msgid "[Invalid]"
+ msgstr "[Neplatný]"
+ 
+ #. L10N: DOTFILL
+-#: crypt-gpgme.c:3413 crypt-gpgme.c:3564
++#: crypt-gpgme.c:3412 crypt-gpgme.c:3563
+ #, c-format
+ msgid "Valid From : %s\n"
+ msgstr "Platný od .: %s\n"
+ 
+ #. L10N: DOTFILL
+-#: crypt-gpgme.c:3427 crypt-gpgme.c:3578
++#: crypt-gpgme.c:3426 crypt-gpgme.c:3577
+ #, c-format
+ msgid "Valid To ..: %s\n"
+ msgstr "Platný do .: %s\n"
+ 
+ #. L10N: DOTFILL
+-#: crypt-gpgme.c:3441 crypt-gpgme.c:3592
++#: crypt-gpgme.c:3440 crypt-gpgme.c:3591
+ #, c-format
+ msgid "Key Type ..: %s, %lu bit %s\n"
+ msgstr "Druh klíče : %s, %lu bit %s\n"
+ 
+ #. L10N: DOTFILL
+-#: crypt-gpgme.c:3444 crypt-gpgme.c:3595
++#: crypt-gpgme.c:3443 crypt-gpgme.c:3594
+ #, c-format
+ msgid "Key Usage .: "
+ msgstr "Účel klíče : "
+ 
+-#: crypt-gpgme.c:3449 crypt-gpgme.c:3600
++#: crypt-gpgme.c:3448 crypt-gpgme.c:3599
+ msgid "encryption"
+ msgstr "šifrovaní"
+ 
+-#: crypt-gpgme.c:3450 crypt-gpgme.c:3455 crypt-gpgme.c:3460 crypt-gpgme.c:3601
+-#: crypt-gpgme.c:3606 crypt-gpgme.c:3611
++#: crypt-gpgme.c:3449 crypt-gpgme.c:3454 crypt-gpgme.c:3459 crypt-gpgme.c:3600
++#: crypt-gpgme.c:3605 crypt-gpgme.c:3610
+ msgid ", "
+ msgstr ", "
+ 
+-#: crypt-gpgme.c:3454 crypt-gpgme.c:3605
++#: crypt-gpgme.c:3453 crypt-gpgme.c:3604
+ msgid "signing"
+ msgstr "podepisování"
+ 
+-#: crypt-gpgme.c:3459 crypt-gpgme.c:3610
++#: crypt-gpgme.c:3458 crypt-gpgme.c:3609
+ msgid "certification"
+ msgstr "ověřování"
+ 
+ #. L10N: DOTFILL
+-#: crypt-gpgme.c:3501
++#: crypt-gpgme.c:3500
+ #, c-format
+ msgid "Serial-No .: 0x%s\n"
+ msgstr "Sériové č. : 0x%s\n"
+ 
+ #. L10N: DOTFILL
+-#: crypt-gpgme.c:3510
++#: crypt-gpgme.c:3509
+ #, c-format
+ msgid "Issued By .: "
+ msgstr "Vydal .....: "
+ 
+ #. L10N: DOTFILL
+-#: crypt-gpgme.c:3530
++#: crypt-gpgme.c:3529
+ #, c-format
+ msgid "Subkey ....: 0x%s"
+ msgstr "Podklíč ...: 0x%s"
+ 
+-#: crypt-gpgme.c:3534
++#: crypt-gpgme.c:3533
+ msgid "[Revoked]"
+ msgstr "[Odvolaný]"
+ 
+-#: crypt-gpgme.c:3544
++#: crypt-gpgme.c:3543
+ msgid "[Expired]"
+ msgstr "[Platnost vypršela]"
+ 
+-#: crypt-gpgme.c:3549
++#: crypt-gpgme.c:3548
+ msgid "[Disabled]"
+ msgstr "[Zakázán]"
+ 
+-#: crypt-gpgme.c:3640
++#: crypt-gpgme.c:3636
+ msgid "Collecting data..."
+ msgstr "Sbírám údaje…"
+ 
+-#: crypt-gpgme.c:3666
++#: crypt-gpgme.c:3662
+ #, c-format
+ msgid "Error finding issuer key: %s\n"
+ msgstr "Chyba při vyhledávání klíče vydavatele: %s\n"
+ 
+-#: crypt-gpgme.c:3676
++#: crypt-gpgme.c:3672
+ msgid "Error: certification chain too long - stopping here\n"
+ msgstr "Chyba: řetězec certifikátů je příliš dlouhý – zde se končí\n"
+ 
+-#: crypt-gpgme.c:3687 pgpkey.c:582
++#: crypt-gpgme.c:3683 pgpkey.c:581
+ #, c-format
+ msgid "Key ID: 0x%s"
+ msgstr "ID klíče: 0x%s"
+ 
+-#: crypt-gpgme.c:3770
++#: crypt-gpgme.c:3766
+ #, c-format
+ msgid "gpgme_new failed: %s"
+ msgstr "gpgme_new selhala: %s"
+ 
+-#: crypt-gpgme.c:3809 crypt-gpgme.c:3884
++#: crypt-gpgme.c:3805 crypt-gpgme.c:3880
+ #, c-format
+ msgid "gpgme_op_keylist_start failed: %s"
+ msgstr "gpgme_op_keylist_start selhala: %s"
+ 
+-#: crypt-gpgme.c:3871 crypt-gpgme.c:3915
++#: crypt-gpgme.c:3867 crypt-gpgme.c:3911
+ #, c-format
+ msgid "gpgme_op_keylist_next failed: %s"
+ msgstr "gpgme_op_keylist_next selhala: %s"
+ 
+-#: crypt-gpgme.c:3986
++#: crypt-gpgme.c:3982
+ msgid "All matching keys are marked expired/revoked."
+ msgstr "Všem vyhovujícím klíčům vypršela platnost nebo byly zneplatněny."
+ 
+-#: crypt-gpgme.c:4015 mutt_ssl.c:1082 mutt_ssl_gnutls.c:1001 pgpkey.c:516
++#: crypt-gpgme.c:4011 mutt_ssl.c:1074 mutt_ssl_gnutls.c:1001 pgpkey.c:515
+ #: smime.c:435
+ msgid "Exit  "
+ msgstr "Ukončit  "
+ 
+-#: crypt-gpgme.c:4017 pgpkey.c:518 smime.c:437
++#: crypt-gpgme.c:4013 pgpkey.c:517 smime.c:437
+ msgid "Select  "
+ msgstr "Zvolit "
+ 
+-#: crypt-gpgme.c:4020 pgpkey.c:521
++#: crypt-gpgme.c:4016 pgpkey.c:520
+ msgid "Check key  "
+ msgstr "Kontrolovat klíč  "
+ 
+-#: crypt-gpgme.c:4036
++#: crypt-gpgme.c:4032
+ msgid "PGP and S/MIME keys matching"
+ msgstr "PGP a S/MIME klíče vyhovující"
+ 
+-#: crypt-gpgme.c:4038
++#: crypt-gpgme.c:4034
+ msgid "PGP keys matching"
+ msgstr "PGP klíče vyhovující"
+ 
+-#: crypt-gpgme.c:4040
++#: crypt-gpgme.c:4036
+ msgid "S/MIME keys matching"
+ msgstr "S/MIME klíče vyhovující"
+ 
+-#: crypt-gpgme.c:4042
++#: crypt-gpgme.c:4038
+ msgid "keys matching"
+ msgstr "klíče vyhovující"
+ 
+@@ -1271,63 +1270,63 @@ msgstr "klíče vyhovující"
+ #. %1$s is one of the previous four entries.
+ #. %2$s is an address.
+ #. e.g. "S/MIME keys matching <me@mutt.org>."
+-#: crypt-gpgme.c:4049
++#: crypt-gpgme.c:4045
+ #, c-format
+ msgid "%s <%s>."
+ msgstr "%s <%s>."
+ 
+ #. L10N:
+ #. e.g. 'S/MIME keys matching "Michael Elkins".'
+-#: crypt-gpgme.c:4053
++#: crypt-gpgme.c:4049
+ #, c-format
+ msgid "%s \"%s\"."
+ msgstr "%s \"%s\"."
+ 
+-#: crypt-gpgme.c:4080 pgpkey.c:602
++#: crypt-gpgme.c:4076 pgpkey.c:601
+ msgid "This key can't be used: expired/disabled/revoked."
+ msgstr "Klíč nelze použít: vypršela jeho platnost, nebo byl zakázán či stažen."
+ 
+-#: crypt-gpgme.c:4094 pgpkey.c:614 smime.c:467
++#: crypt-gpgme.c:4090 pgpkey.c:613 smime.c:467
+ msgid "ID is expired/disabled/revoked."
+ msgstr "Tomuto ID vypršela platnost, nebo bylo zakázáno či staženo."
+ 
+-#: crypt-gpgme.c:4102 pgpkey.c:618 smime.c:470
++#: crypt-gpgme.c:4098 pgpkey.c:617 smime.c:470
+ msgid "ID has undefined validity."
+ msgstr "ID nemá definovanou důvěryhodnost"
+ 
+-#: crypt-gpgme.c:4105 pgpkey.c:621
++#: crypt-gpgme.c:4101 pgpkey.c:620
+ msgid "ID is not valid."
+ msgstr "Toto ID není důvěryhodné."
+ 
+-#: crypt-gpgme.c:4108 pgpkey.c:624
++#: crypt-gpgme.c:4104 pgpkey.c:623
+ msgid "ID is only marginally valid."
+ msgstr "Důvěryhodnost tohoto ID je pouze částečná."
+ 
+-#: crypt-gpgme.c:4117 pgpkey.c:628 smime.c:477
++#: crypt-gpgme.c:4113 pgpkey.c:627 smime.c:477
+ #, c-format
+ msgid "%s Do you really want to use the key?"
+ msgstr "%s Opravdu chcete tento klíč použít?"
+ 
+-#: crypt-gpgme.c:4178 crypt-gpgme.c:4312 pgpkey.c:839 pgpkey.c:966
++#: crypt-gpgme.c:4174 crypt-gpgme.c:4308 pgpkey.c:838 pgpkey.c:965
+ #, c-format
+ msgid "Looking for keys matching \"%s\"..."
+ msgstr "Hledám klíče vyhovující \"%s\"…"
+ 
+-#: crypt-gpgme.c:4467 pgp.c:1304
++#: crypt-gpgme.c:4463 pgp.c:1304
+ #, c-format
+ msgid "Use keyID = \"%s\" for %s?"
+ msgstr "Použít ID klíče = \"%s\" pro %s?"
+ 
+-#: crypt-gpgme.c:4525 pgp.c:1353 smime.c:796 smime.c:902
++#: crypt-gpgme.c:4521 pgp.c:1353 smime.c:796 smime.c:902
+ #, c-format
+ msgid "Enter keyID for %s: "
+ msgstr "Zadejte ID klíče pro %s: "
+ 
+-#: crypt-gpgme.c:4602 pgpkey.c:726
++#: crypt-gpgme.c:4598 pgpkey.c:725
+ msgid "Please enter the key ID: "
+ msgstr "Zadejte ID klíče: "
+ 
+-#: crypt-gpgme.c:4615
++#: crypt-gpgme.c:4611
+ #, c-format
+ msgid "Error exporting key: %s\n"
+ msgstr "Chyba při exportu klíče: %s\n"
+@@ -1336,20 +1335,20 @@ msgstr "Chyba při exportu klíče: %s\n"
+ #. MIME description for exported (attached) keys.
+ #. You can translate this entry to a non-ASCII string (it will be encoded),
+ #. but it may be safer to keep it untranslated.
+-#: crypt-gpgme.c:4635
++#: crypt-gpgme.c:4631
+ #, c-format
+ msgid "PGP Key 0x%s."
+ msgstr "Klíč PGP 0x%s."
+ 
+-#: crypt-gpgme.c:4677
++#: crypt-gpgme.c:4673
+ msgid "GPGME: OpenPGP protocol not available"
+ msgstr "GPGME: Protokol OpenGPG není dostupný"
+ 
+-#: crypt-gpgme.c:4685
++#: crypt-gpgme.c:4681
+ msgid "GPGME: CMS protocol not available"
+ msgstr "GPGME: Protokol CMS není dostupný"
+ 
+-#: crypt-gpgme.c:4722
++#: crypt-gpgme.c:4718
+ msgid "S/MIME (s)ign, sign (a)s, (p)gp, (c)lear, or (o)ppenc mode off? "
+ msgstr ""
+ "S/MIME (p)odepsat, podepsat (j)ako, p(g)p, (n)ic či vypnout pří(l)ež. šifr.? "
+@@ -1358,20 +1357,20 @@ msgstr ""
+ #. 'clear'.  Please use a corresponding letter in your language.
  #. Alternatively, you may duplicate the letter 'c' is translated to.
  #. This comment also applies to the five following letter sequences.
- #: crypt-gpgme.c:4727
-+#, fuzzy
+-#: crypt-gpgme.c:4727
++#: crypt-gpgme.c:4723
  msgid "sapfco"
+ msgstr "pjgfnl"
+ 
+-#: crypt-gpgme.c:4732
++#: crypt-gpgme.c:4728
+ msgid "PGP (s)ign, sign (a)s, s/(m)ime, (c)lear, or (o)ppenc mode off? "
  msgstr ""
+ "PGP (p)odepsat, podepsat (j)ako, s/(m)ime, (n)ic či vypnout pří(l)ež. šifr.? "
  
-@@ -1368,6 +1369,7 @@ msgstr ""
- "PGP: cifra(e), firma(s), firma (c)ome, entram(b)i, s/(m)ime, annullare(c)?"
- 
- #: crypt-gpgme.c:4733
-+#, fuzzy
+-#: crypt-gpgme.c:4733
++#: crypt-gpgme.c:4729
  msgid "samfco"
+ msgstr "pjmfnl"
+ 
+-#: crypt-gpgme.c:4745
++#: crypt-gpgme.c:4741
+ msgid ""
+ "S/MIME (e)ncrypt, (s)ign, sign (a)s, (b)oth, (p)gp, (c)lear, or (o)ppenc "
+ "mode? "
+@@ -1381,11 +1380,11 @@ msgstr ""
+ 
+ # `f` means forget it. The absolute order must be preserved. Therefore `f'
+ # has to be injected on 6th position.
+-#: crypt-gpgme.c:4746
++#: crypt-gpgme.c:4742
+ msgid "esabpfco"
+ msgstr "rpjogfnl"
+ 
+-#: crypt-gpgme.c:4751
++#: crypt-gpgme.c:4747
+ msgid ""
+ "PGP (e)ncrypt, (s)ign, sign (a)s, (b)oth, s/(m)ime, (c)lear, or (o)ppenc "
+ "mode? "
+@@ -1395,91 +1394,91 @@ msgstr ""
+ 
+ # `f` means forget it. The absolute order must be preserved. Therefore `f'
+ # has to be injected on 6th position.
+-#: crypt-gpgme.c:4752
++#: crypt-gpgme.c:4748
+ msgid "esabmfco"
+ msgstr "rpjomfnl"
+ 
+-#: crypt-gpgme.c:4763
++#: crypt-gpgme.c:4759
+ msgid "S/MIME (e)ncrypt, (s)ign, sign (a)s, (b)oth, (p)gp or (c)lear? "
  msgstr ""
+ "S/MIME šif(r)ovat, (p)odepsat, podepsat (j)ako, (o)bojí, p(g)p či (n)ic? "
  
-@@ -1404,6 +1406,7 @@ msgstr ""
- "S/MIME cifra(e), firma(s), firma (c)ome, entram(b)i, (p)gp, annullare(c)?"
- 
- #: crypt-gpgme.c:4764
-+#, fuzzy
+ # `f` means forget it. The absolute order must be preserved. Therefore `f'
+ # has to be injected on 6th position.
+-#: crypt-gpgme.c:4764
++#: crypt-gpgme.c:4760
  msgid "esabpfc"
- msgstr "esabpfc"
+ msgstr "rpjogfn"
  
-@@ -1414,6 +1417,7 @@ msgstr ""
- "PGP: cifra(e), firma(s), firma (c)ome, entram(b)i, s/(m)ime, annullare(c)?"
+-#: crypt-gpgme.c:4769
++#: crypt-gpgme.c:4765
+ msgid "PGP (e)ncrypt, (s)ign, sign (a)s, (b)oth, s/(m)ime or (c)lear? "
+ msgstr ""
+ "PGP šif(r)ovat, (p)odepsat, podepsat (j)ako, (o)bojí, s/(m)ime, či (n)ic? "
  
- #: crypt-gpgme.c:4770
-+#, fuzzy
+ # `f` means forget it. The absolute order must be preserved. Therefore `f'
+ # has to be injected on 6th position.
+-#: crypt-gpgme.c:4770
++#: crypt-gpgme.c:4766
  msgid "esabmfc"
- msgstr "esabmfc"
+ msgstr "rpjomfn"
  
+-#: crypt-gpgme.c:4795 pgp.c:1818 smime.c:2222 smime.c:2237
++#: crypt-gpgme.c:4791 pgp.c:1818 smime.c:2222 smime.c:2237
+ msgid "Sign as: "
+ msgstr "Podepsat jako: "
+ 
+-#: crypt-gpgme.c:4930
++#: crypt-gpgme.c:4926
+ msgid "Failed to verify sender"
+ msgstr "Odesílatele nelze ověřit"
+ 
+-#: crypt-gpgme.c:4933
++#: crypt-gpgme.c:4929
+ msgid "Failed to figure out sender"
+ msgstr "Nelze určit odesílatele"
+ 
+-#: crypt.c:68
++#: crypt.c:67
+ #, c-format
+ msgid " (current time: %c)"
+ msgstr " (aktuální čas: %c)"
+ 
+-#: crypt.c:74
++#: crypt.c:72
+ #, c-format
+ msgid "[-- %s output follows%s --]\n"
+ msgstr "[-- následuje výstup %s %s --]\n"
+ 
+-#: crypt.c:89
++#: crypt.c:87
+ msgid "Passphrase(s) forgotten."
+ msgstr "Šifrovací heslo(a) zapomenuto(a)."
+ 
+-#: crypt.c:152
++#: crypt.c:150
+ msgid "Inline PGP can't be used with attachments.  Revert to PGP/MIME?"
+ msgstr "PGP v textu nelze použít s přílohami. Použít PGP/MIME?"
+ 
+-#: crypt.c:154
++#: crypt.c:152
+ msgid "Mail not sent: inline PGP can't be used with attachments."
+ msgstr "E-mail neodeslán: PGP v textu nelze použít s přílohami."
+ 
+-#: crypt.c:161 cryptglue.c:110 pgpkey.c:564 pgpkey.c:754
++#: crypt.c:159 cryptglue.c:110 pgpkey.c:563 pgpkey.c:753
+ msgid "Invoking PGP..."
+ msgstr "Spouští se PGP…"
+ 
+-#: crypt.c:170
++#: crypt.c:168
+ msgid "Message can't be sent inline.  Revert to using PGP/MIME?"
+ msgstr "Zprávu nelze poslat vloženou do textu. Použít PGP/MIME?"
+ 
+-#: crypt.c:172 send.c:1609
++#: crypt.c:170 send.c:1592
+ msgid "Mail not sent."
+ msgstr "Zpráva nebyla odeslána."
+ 
+-#: crypt.c:485
++#: crypt.c:483
+ msgid "S/MIME messages with no hints on content are unsupported."
+ msgstr "S/MIME zprávy bez popisu obsahu nejsou podporovány."
+ 
+-#: crypt.c:705 crypt.c:749
++#: crypt.c:703 crypt.c:747
+ msgid "Trying to extract PGP keys...\n"
+ msgstr "Zkouším extrahovat PGP klíče…\n"
+ 
+-#: crypt.c:729 crypt.c:769
++#: crypt.c:727 crypt.c:767
+ msgid "Trying to extract S/MIME certificates...\n"
+ msgstr "Zkouším extrahovat S/MIME certifikáty…\n"
+ 
+-#: crypt.c:916
++#: crypt.c:914
+ #, c-format
+ msgid ""
+ "[-- Error: Unknown multipart/signed protocol %s! --]\n"
+@@ -1488,7 +1487,7 @@ msgstr ""
+ "[-- Chyba: 'multipart/signed' protokol %s není znám! --]\n"
+ "\n"
+ 
+-#: crypt.c:950
++#: crypt.c:948
+ msgid ""
+ "[-- Error: Inconsistent multipart/signed structure! --]\n"
+ "\n"
+@@ -1496,7 +1495,7 @@ msgstr ""
+ "[-- Chyba: Chybná struktura zprávy typu multipart/signed! --]\n"
+ "\n"
+ 
+-#: crypt.c:989
++#: crypt.c:987
+ #, c-format
+ msgid ""
+ "[-- Warning: We can't verify %s/%s signatures. --]\n"
+@@ -1505,7 +1504,7 @@ msgstr ""
+ "[-- Varování: Podpisy typu %s/%s nelze ověřit. --]\n"
+ "\n"
+ 
+-#: crypt.c:1001
++#: crypt.c:999
+ msgid ""
+ "[-- The following data is signed --]\n"
+ "\n"
+@@ -1513,7 +1512,7 @@ msgstr ""
+ "[-- Následují podepsaná data --]\n"
+ "\n"
+ 
+-#: crypt.c:1007
++#: crypt.c:1005
+ msgid ""
+ "[-- Warning: Can't find any signatures. --]\n"
+ "\n"
+@@ -1521,7 +1520,7 @@ msgstr ""
+ "[-- Varování: Nemohu nalézt žádný podpis. --]\n"
+ "\n"
+ 
+-#: crypt.c:1013
++#: crypt.c:1011
+ msgid ""
+ "\n"
+ "[-- End of signed data --]\n"
+@@ -1537,27 +1536,27 @@ msgstr "„crypt_use_gpgme“ nastaveno, ale nepřeloženo s podporou GPGME."
+ msgid "Invoking S/MIME..."
+ msgstr "Spouštím S/MIME…"
+ 
+-#: curs_lib.c:218
++#: curs_lib.c:219
+ msgid "yes"
+ msgstr "ano"
+ 
+-#: curs_lib.c:219
++#: curs_lib.c:220
+ msgid "no"
+ msgstr "ne"
+ 
+-#: curs_lib.c:326
++#: curs_lib.c:327
+ msgid "Exit Mutt?"
+ msgstr "Ukončit Mutt?"
+ 
+-#: curs_lib.c:675 mutt_socket.c:577 mutt_ssl.c:426
++#: curs_lib.c:676 mutt_socket.c:577 mutt_ssl.c:416
+ msgid "unknown error"
+ msgstr "neznámá chyba"
+ 
+-#: curs_lib.c:695
++#: curs_lib.c:696
+ msgid "Press any key to continue..."
+ msgstr "Stiskněte libovolnou klávesu…"
+ 
+-#: curs_lib.c:740
++#: curs_lib.c:741
+ msgid " ('?' for list): "
+ msgstr " ('?' pro seznam): "
+ 
+@@ -1840,7 +1839,7 @@ msgstr "Zprávu(-y) nelze označit za přečtenou(-é)"
+ msgid "Cannot undelete message"
+ msgstr "Zprávu nelze obnovit"
+ 
+-#: edit.c:41
++#: edit.c:42
+ msgid ""
+ "~~\t\tinsert a line beginning with a single ~\n"
+ "~b users\tadd users to the Bcc: field\n"
+@@ -1862,7 +1861,7 @@ msgstr ""
+ "~M zprávy\tstejné jako ~m a navíc vloží i hlavičky zpráv\n"
+ "~p\t\tvytiskne zprávu\n"
+ 
+-#: edit.c:52
++#: edit.c:53
+ msgid ""
+ "~q\t\twrite file and quit editor\n"
+ "~r file\t\tread a file into the editor\n"
+@@ -1884,20 +1883,20 @@ msgstr ""
+ "~?\t\tvypíše tuto nápovědu\n"
+ ".\t\tpokud je tento znak na řádce samotný, znamená ukončení vstupu\n"
+ 
+-#: edit.c:187
++#: edit.c:190
+ #, c-format
+ msgid "%d: invalid message number.\n"
+ msgstr "Číslo zprávy (%d) není správné.\n"
+ 
+-#: edit.c:329
++#: edit.c:332
+ msgid "(End message with a . on a line by itself)\n"
+ msgstr "(Zprávu ukončíte zapsáním samotného znaku '.' na novou řádku)\n"
+ 
+-#: edit.c:388
++#: edit.c:391
+ msgid "No mailbox.\n"
+ msgstr "Žádná schránka.\n"
+ 
+-#: edit.c:392
++#: edit.c:395
+ msgid "Message contains:\n"
+ msgstr "Zpráva obsahuje:\n"
+ 
+@@ -1906,24 +1905,24 @@ msgstr "Zpráva obsahuje:\n"
+ #. not IN the middle of the content.
+ #. So it doesn't mean "(message will continue)"
+ #. but means "(press any key to continue using mutt)".
+-#: edit.c:401 edit.c:458
++#: edit.c:404 edit.c:461
+ msgid "(continue)\n"
+ msgstr "(pokračovat)\n"
+ 
+-#: edit.c:414
++#: edit.c:417
+ msgid "missing filename.\n"
+ msgstr "Chybí jméno souboru.\n"
+ 
+-#: edit.c:434
++#: edit.c:437
+ msgid "No lines in message.\n"
+ msgstr "Zpráva neobsahuje žádné řádky.\n"
+ 
+-#: edit.c:451
++#: edit.c:454
+ #, c-format
+ msgid "Bad IDN in %s: '%s'\n"
+ msgstr "Neplatné IDN v %s: „%s“\n"
+ 
+-#: edit.c:469
++#: edit.c:472
+ #, c-format
+ msgid "%s: unknown editor command (~? for help)\n"
+ msgstr "Příkaz %s je neznámý (~? pro nápovědu)\n"
+@@ -2228,9 +2227,8 @@ msgid "Mailbox created."
+ msgstr "Schránka vytvořena."
+ 
+ #: imap/browse.c:289
+-#, fuzzy
+ msgid "Cannot rename root folder"
+-msgstr "Kořenovou složku nelze smazat"
++msgstr "Kořenovou složku nelze přejmenovat"
+ 
+ #: imap/browse.c:293
+ #, c-format
+@@ -2285,7 +2283,7 @@ msgstr "Volím %s…"
+ msgid "Error opening mailbox"
+ msgstr "Chyba při otevírání schránky"
+ 
+-#: imap/imap.c:808 imap/imap.c:2147 imap/message.c:877 muttlib.c:1568
++#: imap/imap.c:808 imap/imap.c:2147 imap/message.c:877 muttlib.c:1588
+ #, c-format
+ msgid "Create %s?"
+ msgstr "Vytvořit %s?"
+@@ -2689,7 +2687,6 @@ msgstr ""
+ "„mutt -vv“.\n"
+ 
+ #: main.c:78
+-#, fuzzy
+ msgid ""
+ "Copyright (C) 1996-2016 Michael R. Elkins <me@mutt.org>\n"
+ "Copyright (C) 1996-2002 Brandon Long <blong@fiction.net>\n"
+@@ -2704,7 +2701,7 @@ msgid ""
+ "Many others not mentioned here contributed code, fixes,\n"
+ "and suggestions.\n"
+ msgstr ""
+-"Copyright © 1996–2014 Michael R. Elkins <me@mutt.org>\n"
++"Copyright © 1996–2016 Michael R. Elkins <me@mutt.org>\n"
+ "Copyright © 1996–2002 Brandon Long <blong@fiction.net>\n"
+ "Copyright © 1997–2009 Thomas Roessler <roessler@does-not-exist.org>\n"
+ "Copyright © 1998–2005 Werner Koch <wk@isil.d.shuttle.de>\n"
+@@ -2712,7 +2709,7 @@ msgstr ""
+ "Copyright © 1999–2002 Tommi Komulainen <Tommi.Komulainen@iki.fi>\n"
+ "Copyright © 2000–2004 Edmund Grimley Evans <edmundo@rano.org>\n"
+ "Copyright © 2006–2009 Rocco Rutte <pdmef@gmx.net>\n"
+-"Copyright © 2014–2015 Kevin J. McCarthy <kevin@8t8.us>\n"
++"Copyright © 2014–2016 Kevin J. McCarthy <kevin@8t8.us>\n"
+ "\n"
+ "Mnoho dalších zde nezmíněných přispělo kódem, opravami a nápady.\n"
+ 
+@@ -2853,56 +2850,56 @@ msgstr ""
+ msgid "Error initializing terminal."
+ msgstr "Chyba při inicializaci terminálu."
+ 
+-#: main.c:679
++#: main.c:678
+ #, c-format
+ msgid "Error: value '%s' is invalid for -d.\n"
+ msgstr "Chyba: pro -d není „%s“ platná hodnota.\n"
+ 
+-#: main.c:682
++#: main.c:681
+ #, c-format
+ msgid "Debugging at level %d.\n"
+ msgstr "Úroveň ladění je %d.\n"
+ 
+-#: main.c:684
++#: main.c:683
+ msgid "DEBUG was not defined during compilation.  Ignored.\n"
+ msgstr "při překladu programu nebylo 'DEBUG' definováno. Ignoruji.\n"
+ 
+-#: main.c:862
++#: main.c:861
+ #, c-format
+ msgid "%s does not exist. Create it?"
+ msgstr "%s neexistuje. Mám ho vytvořit?"
+ 
+-#: main.c:866
++#: main.c:865
+ #, c-format
+ msgid "Can't create %s: %s."
+ msgstr "%s nelze vytvořit: %s"
+ 
+-#: main.c:906
++#: main.c:905
+ msgid "Failed to parse mailto: link\n"
+ msgstr "Rozebrání odkazu mailto: se nezdařilo\n"
+ 
+-#: main.c:918
++#: main.c:917
+ msgid "No recipients specified.\n"
+ msgstr "Nejsou specifikováni žádní příjemci.\n"
+ 
+-#: main.c:944
++#: main.c:943
+ msgid "Cannot use -E flag with stdin\n"
+ msgstr "Přepínač -E nelze se standardním vstupem použít\n"
+ 
+-#: main.c:1097
++#: main.c:1096
+ #, c-format
+ msgid "%s: unable to attach file.\n"
+ msgstr "Soubor %s nelze připojit.\n"
+ 
+-#: main.c:1178
++#: main.c:1177
+ msgid "No mailbox with new mail."
+ msgstr "V žádné schránce není nová pošta."
+ 
+-#: main.c:1187
++#: main.c:1186
+ msgid "No incoming mailboxes defined."
+ msgstr "Není definována žádná schránka přijímající novou poštu."
+ 
+-#: main.c:1215
++#: main.c:1214
+ msgid "Mailbox is empty."
+ msgstr "Schránka je prázdná."
+ 
+@@ -3038,10 +3035,8 @@ msgid "Could not flush message to disk"
+ msgstr "Zprávu nebylo možné bezpečně uložit (flush) na disk"
+ 
+ #: mh.c:1603
+-#, fuzzy
+ msgid "_maildir_commit_message(): unable to set time on file"
+-msgstr ""
+-"při volání maildir_commit_message(): nemohu nastavit datum a čas u souboru"
++msgstr "při volání _maildir_commit_message(): nelze nastavit čas na souboru"
+ 
+ #: mutt_sasl.c:196
+ msgid "Unknown SASL profile"
+@@ -3106,21 +3101,21 @@ msgstr "Připojuji se k %s…"
+ msgid "Could not connect to %s (%s)."
+ msgstr "Spojení s %s nelze navázat (%s)."
+ 
+-#: mutt_ssl.c:226
++#: mutt_ssl.c:220
+ msgid "Failed to find enough entropy on your system"
+ msgstr "Nemohu získat dostatek náhodných dat"
+ 
+-#: mutt_ssl.c:250
++#: mutt_ssl.c:244
+ #, c-format
+ msgid "Filling entropy pool: %s...\n"
+ msgstr "Připravuji zdroj náhodných dat: %s…\n"
+ 
+-#: mutt_ssl.c:258
++#: mutt_ssl.c:252
+ #, c-format
+ msgid "%s has insecure permissions!"
+ msgstr "%s má příliš volná přístupová práva!"
+ 
+-#: mutt_ssl.c:277
++#: mutt_ssl.c:271
+ msgid "SSL disabled due to the lack of entropy"
+ msgstr "SSL vypnuto kvůli nedostatku entropie"
+ 
+@@ -3128,21 +3123,20 @@ msgstr "SSL vypnuto kvůli nedostatku entropie"
+ #. *       function SSL_CTX_new().  In this case it returned NULL: an
+ #. *       error condition.
+ #.
+-#: mutt_ssl.c:344
+-#, fuzzy
++#: mutt_ssl.c:338
+ msgid "Unable to create SSL context"
+-msgstr "Chyba: nelze spustit OpenSSL jako podproces!"
++msgstr "Nelze vytvořit kontext SSL"
+ 
+-#: mutt_ssl.c:420
++#: mutt_ssl.c:410
+ msgid "I/O error"
+ msgstr "I/O chyba"
+ 
+-#: mutt_ssl.c:429
++#: mutt_ssl.c:419
+ #, c-format
+ msgid "SSL failed: %s"
+ msgstr "Chyba SSL: %s"
+ 
+-#: mutt_ssl.c:438 mutt_ssl_gnutls.c:1079 mutt_ssl_gnutls.c:1114
++#: mutt_ssl.c:428 mutt_ssl_gnutls.c:1079 mutt_ssl_gnutls.c:1114
+ #: mutt_ssl_gnutls.c:1124
+ msgid "Unable to get certificate from peer"
+ msgstr "Certifikát od serveru nelze získat"
+@@ -3151,104 +3145,104 @@ msgstr "Certifikát od serveru nelze získat"
+ #. %1$s is version (e.g. "TLSv1.2")
+ #. %2$s is cipher_version (e.g. "TLSv1/SSLv3")
+ #. %3$s is cipher_name (e.g. "ECDHE-RSA-AES128-GCM-SHA256")
+-#: mutt_ssl.c:450
++#: mutt_ssl.c:440
+ #, c-format
+ msgid "%s connection using %s (%s)"
+ msgstr "%s spojení pomocí %s (%s)"
+ 
+-#: mutt_ssl.c:576
++#: mutt_ssl.c:566
+ msgid "Unknown"
+ msgstr "Neznámý"
+ 
+-#: mutt_ssl.c:601 mutt_ssl_gnutls.c:598
++#: mutt_ssl.c:591 mutt_ssl_gnutls.c:598
+ #, c-format
+ msgid "[unable to calculate]"
+ msgstr "[nelze spočítat]"
+ 
+-#: mutt_ssl.c:619 mutt_ssl_gnutls.c:621
++#: mutt_ssl.c:609 mutt_ssl_gnutls.c:621
+ msgid "[invalid date]"
+ msgstr "[chybné datum]"
+ 
+-#: mutt_ssl.c:747
++#: mutt_ssl.c:739
+ msgid "Server certificate is not yet valid"
+ msgstr "Certifikát serveru není zatím platný"
+ 
+-#: mutt_ssl.c:754
++#: mutt_ssl.c:746
+ msgid "Server certificate has expired"
+ msgstr "Platnost certifikátu serveru vypršela."
+ 
+-#: mutt_ssl.c:876
++#: mutt_ssl.c:868
+ msgid "cannot get certificate subject"
+ msgstr "nelze zjistit, na čí jméno byl certifikát vydán"
+ 
+-#: mutt_ssl.c:886 mutt_ssl.c:895
++#: mutt_ssl.c:878 mutt_ssl.c:887
+ msgid "cannot get certificate common name"
+ msgstr "nelze získat obecné jméno (CN) certifikátu"
+ 
+-#: mutt_ssl.c:909
++#: mutt_ssl.c:901
+ #, c-format
+ msgid "certificate owner does not match hostname %s"
+ msgstr "vlastník certifikátu není totožný s názvem stroje %s"
+ 
+-#: mutt_ssl.c:950
++#: mutt_ssl.c:942
+ #, c-format
+ msgid "Certificate host check failed: %s"
+ msgstr "Kontrola certifikátu stroje selhala: %s"
+ 
+-#: mutt_ssl.c:1028 mutt_ssl_gnutls.c:860
++#: mutt_ssl.c:1020 mutt_ssl_gnutls.c:860
+ msgid "This certificate belongs to:"
+ msgstr "Tento certifikát patří:"
+ 
+-#: mutt_ssl.c:1041 mutt_ssl_gnutls.c:899
++#: mutt_ssl.c:1033 mutt_ssl_gnutls.c:899
+ msgid "This certificate was issued by:"
+ msgstr "Tento certifikát vydal:"
+ 
+-#: mutt_ssl.c:1052 mutt_ssl_gnutls.c:938
++#: mutt_ssl.c:1044 mutt_ssl_gnutls.c:938
+ #, c-format
+ msgid "This certificate is valid"
+ msgstr "Tento certifikát platí:"
+ 
+-#: mutt_ssl.c:1053 mutt_ssl_gnutls.c:941
++#: mutt_ssl.c:1045 mutt_ssl_gnutls.c:941
+ #, c-format
+ msgid "   from %s"
+ msgstr "   od %s"
+ 
+-#: mutt_ssl.c:1055 mutt_ssl_gnutls.c:945
++#: mutt_ssl.c:1047 mutt_ssl_gnutls.c:945
+ #, c-format
+ msgid "     to %s"
+ msgstr "   do %s"
+ 
+-#: mutt_ssl.c:1061
++#: mutt_ssl.c:1053
+ #, c-format
+ msgid "Fingerprint: %s"
+ msgstr "Otisk klíče: %s"
+ 
+-#: mutt_ssl.c:1064 mutt_ssl_gnutls.c:982
++#: mutt_ssl.c:1056 mutt_ssl_gnutls.c:982
+ #, c-format
+ msgid "SSL Certificate check (certificate %d of %d in chain)"
+ msgstr "Kontrola SSL certifikátu (certifikát %d z %d v řetězu)"
+ 
+-#: mutt_ssl.c:1072 mutt_ssl_gnutls.c:991
++#: mutt_ssl.c:1064 mutt_ssl_gnutls.c:991
+ msgid "(r)eject, accept (o)nce, (a)ccept always"
+ msgstr "(o)dmítnout, akceptovat pouze (t)eď, akceptovat (v)ždy "
+ 
+-#: mutt_ssl.c:1073 mutt_ssl_gnutls.c:992
++#: mutt_ssl.c:1065 mutt_ssl_gnutls.c:992
+ msgid "roa"
+ msgstr "otv"
+ 
+-#: mutt_ssl.c:1077 mutt_ssl_gnutls.c:996
++#: mutt_ssl.c:1069 mutt_ssl_gnutls.c:996
+ msgid "(r)eject, accept (o)nce"
+ msgstr "(o)dmítnout, akceptovat pouze (t)eď "
+ 
+-#: mutt_ssl.c:1078 mutt_ssl_gnutls.c:997
++#: mutt_ssl.c:1070 mutt_ssl_gnutls.c:997
+ msgid "ro"
+ msgstr "ot"
+ 
+-#: mutt_ssl.c:1109 mutt_ssl_gnutls.c:1046
++#: mutt_ssl.c:1101 mutt_ssl_gnutls.c:1046
+ msgid "Warning: Couldn't save certificate"
+ msgstr "Varování: Certifikát nelze uložit"
+ 
+-#: mutt_ssl.c:1114 mutt_ssl_gnutls.c:1051
++#: mutt_ssl.c:1106 mutt_ssl_gnutls.c:1051
+ msgid "Certificate saved"
+ msgstr "Certifikát uložen"
+ 
+@@ -3339,43 +3333,43 @@ msgstr "Chyba při komunikaci tunelem s %s (%s)"
+ #. L10N:
+ #. Means "The path you specified as the destination file is a directory."
+ #. See the msgid "Save to file: " (alias.c, recvattach.c)
+-#: muttlib.c:979
++#: muttlib.c:999
+ msgid "File is a directory, save under it? [(y)es, (n)o, (a)ll]"
+ msgstr "Soubor je adresářem. Uložit do něj? [(a)no, (n)e, (v)šechny]"
+ 
+-#: muttlib.c:979
++#: muttlib.c:999
+ msgid "yna"
+ msgstr "anv"
+ 
+ #. L10N:
+ #. Means "The path you specified as the destination file is a directory."
+ #. See the msgid "Save to file: " (alias.c, recvattach.c)
+-#: muttlib.c:998
++#: muttlib.c:1018
+ msgid "File is a directory, save under it?"
+ msgstr "Soubor je adresářem. Uložit do něj?"
+ 
+-#: muttlib.c:1002
++#: muttlib.c:1022
+ msgid "File under directory: "
+ msgstr "Zadejte jméno souboru: "
+ 
+-#: muttlib.c:1011
++#: muttlib.c:1031
+ msgid "File exists, (o)verwrite, (a)ppend, or (c)ancel?"
+ msgstr "Soubor již existuje: (p)řepsat, př(i)pojit či (z)rušit?"
+ 
+-#: muttlib.c:1011
++#: muttlib.c:1031
+ msgid "oac"
+ msgstr "piz"
+ 
+-#: muttlib.c:1534
++#: muttlib.c:1554
+ msgid "Can't save message to POP mailbox."
+ msgstr "Do POP schránek nelze ukládat zprávy."
+ 
+-#: muttlib.c:1543
++#: muttlib.c:1563
+ #, c-format
+ msgid "Append messages to %s?"
+ msgstr "Připojit zprávy do %s?"
+ 
+-#: muttlib.c:1555
++#: muttlib.c:1575
+ #, c-format
+ msgid "%s is not a mailbox!"
+ msgstr "%s není schránkou!"
+@@ -3414,14 +3408,12 @@ msgid "Could not synchronize mailbox %s!"
+ msgstr "Schránku %s nelze synchronizovat!"
+ 
+ #: mx.c:742
+-#, fuzzy
+ msgid "message(s) not deleted"
+-msgstr "Označuji zprávy ke smazání…"
++msgstr "zprávy nesmazány"
+ 
+ #: mx.c:775
+-#, fuzzy
+ msgid "Can't open trash folder"
+-msgstr "Ke složce nelze připojit: %s"
++msgstr "Složku koš nelze otevřít"
+ 
+ #: mx.c:844
+ #, c-format
+@@ -3742,26 +3734,26 @@ msgstr "rpjofn"
+ msgid "Fetching PGP key..."
+ msgstr "Získávám PGP klíč…"
+ 
+-#: pgpkey.c:492
++#: pgpkey.c:491
+ msgid "All matching keys are expired, revoked, or disabled."
+ msgstr ""
+ "Všem vyhovujícím klíčům vypršela platnost, byly zneplatněny nebo zakázány."
+ 
+-#: pgpkey.c:533
++#: pgpkey.c:532
+ #, c-format
+ msgid "PGP keys matching <%s>."
+ msgstr "klíče PGP vyhovující <%s>."
+ 
+-#: pgpkey.c:535
++#: pgpkey.c:534
+ #, c-format
+ msgid "PGP keys matching \"%s\"."
+ msgstr "klíče PGP vyhovující \"%s\"."
+ 
+-#: pgpkey.c:554 pgpkey.c:747
++#: pgpkey.c:553 pgpkey.c:746
+ msgid "Can't open /dev/null"
+ msgstr "Nelze otevřít /dev/null"
+ 
+-#: pgpkey.c:779
++#: pgpkey.c:778
+ #, c-format
+ msgid "PGP Key %s."
+ msgstr "Klíč PGP %s."
+@@ -3900,11 +3892,11 @@ msgstr "Nekorektní šifrovací hlavička"
+ msgid "Illegal S/MIME header"
+ msgstr "Nekorektní S/MIME hlavička"
+ 
+-#: postpone.c:586
++#: postpone.c:595
+ msgid "Decrypting message..."
+ msgstr "Dešifruji zprávu…"
+ 
+-#: postpone.c:594
++#: postpone.c:603
+ msgid "Decryption failed."
+ msgstr "Dešifrování se nezdařilo."
+ 
+@@ -4055,7 +4047,7 @@ msgstr "Soubor %s nelze vytvořit."
+ msgid "Can't find any tagged messages."
+ msgstr "Žádná zpráva není označena."
+ 
+-#: recvcmd.c:773 send.c:740
++#: recvcmd.c:773 send.c:723
+ msgid "No mailing lists found!"
+ msgstr "Žádné poštovní konference nebyly nalezeny!"
+ 
+@@ -4155,104 +4147,104 @@ msgstr "skóre: příliš mnoho argumentů"
+ msgid "Error: score: invalid number"
+ msgstr "Chyba: skóre: nesprávné číslo"
+ 
+-#: send.c:251
++#: send.c:252
+ msgid "No subject, abort?"
+ msgstr "Věc není specifikována, zrušit?"
+ 
+-#: send.c:253
++#: send.c:254
+ msgid "No subject, aborting."
+ msgstr "Věc není specifikována, zrušeno."
+ 
+ #. L10N:
+ #. Asks whether the user respects the reply-to header.
+ #. If she says no, mutt will reply to the from header's address instead.
+-#: send.c:503
++#: send.c:486
+ #, c-format
+ msgid "Reply to %s%s?"
+ msgstr "Odepsat %s%s?"
+ 
+-#: send.c:537
++#: send.c:520
+ #, c-format
+ msgid "Follow-up to %s%s?"
+ msgstr "Odepsat %s%s?"
+ 
+-#: send.c:715
++#: send.c:698
+ msgid "No tagged messages are visible!"
+ msgstr "Žádná označená zpráva není viditelná!"
+ 
+-#: send.c:766
++#: send.c:749
+ msgid "Include message in reply?"
+ msgstr "Vložit zprávu do odpovědi?"
+ 
+-#: send.c:771
++#: send.c:754
+ msgid "Including quoted message..."
+ msgstr "Vkládám zakomentovanou zprávu…"
+ 
+-#: send.c:781
++#: send.c:764
+ msgid "Could not include all requested messages!"
+ msgstr "Všechny požadované zprávy nelze vložit!"
+ 
+-#: send.c:795
++#: send.c:778
+ msgid "Forward as attachment?"
+ msgstr "Přeposlat jako přílohu?"
+ 
+-#: send.c:799
++#: send.c:782
+ msgid "Preparing forwarded message..."
+ msgstr "Připravuji přeposílanou zprávu…"
+ 
+-#: send.c:1176
++#: send.c:1159
+ msgid "Recall postponed message?"
+ msgstr "Vrátit se k odloženým zprávám?"
+ 
+-#: send.c:1426
++#: send.c:1409
+ msgid "Edit forwarded message?"
+ msgstr "Upravit přeposílanou zprávu?"
+ 
+-#: send.c:1475
++#: send.c:1458
+ msgid "Abort unmodified message?"
+ msgstr "Zahodit nezměněnou zprávu?"
+ 
+-#: send.c:1477
++#: send.c:1460
+ msgid "Aborted unmodified message."
+ msgstr "Nezměněná zpráva byla zahozena."
+ 
+-#: send.c:1658
++#: send.c:1641
+ msgid "Message postponed."
+ msgstr "Zpráva byla odložena."
+ 
+-#: send.c:1669
++#: send.c:1652
+ msgid "No recipients are specified!"
+ msgstr "Nejsou zadáni příjemci!"
+ 
+-#: send.c:1674
++#: send.c:1657
+ msgid "No recipients were specified."
+ msgstr "Nebyli zadání příjemci."
+ 
+-#: send.c:1690
++#: send.c:1673
+ msgid "No subject, abort sending?"
+ msgstr "Žádná věc, zrušit odeslání?"
+ 
+-#: send.c:1694
++#: send.c:1677
+ msgid "No subject specified."
+ msgstr "Věc nebyla zadána."
+ 
+-#: send.c:1756 smtp.c:188
++#: send.c:1739 smtp.c:188
+ msgid "Sending message..."
+ msgstr "Posílám zprávu…"
+ 
+-#: send.c:1789
++#: send.c:1772
+ msgid "Save attachments in Fcc?"
+ msgstr "Uložit do Fcc přílohy?"
+ 
+-#: send.c:1899
++#: send.c:1882
+ msgid "Could not send the message."
+ msgstr "Zprávu nelze odeslat."
+ 
+-#: send.c:1904
++#: send.c:1887
+ msgid "Mail sent."
+ msgstr "Zpráva odeslána."
+ 
+-#: send.c:1904
++#: send.c:1887
+ msgid "Sending in background."
+ msgstr "Zasílám na pozadí."
+ 
+@@ -5138,7 +5130,7 @@ msgstr "vytisknout aktuální položku"
+ 
+ #: ../keymap_alldefs.h:149
+ msgid "really delete the current entry, bypassing the trash folder"
+-msgstr ""
++msgstr "opravdu smazat aktuální položku a vynechat složku koše"
+ 
+ #: ../keymap_alldefs.h:150
+ msgid "query external program for addresses"
+@@ -5290,41 +5282,35 @@ msgstr "zavinout/rozvinout všechna vlákna"
+ 
+ #: ../keymap_alldefs.h:187
+ msgid "move the highlight to next mailbox"
+-msgstr ""
++msgstr "přesunout zvýraznění na další schránku"
+ 
+ #: ../keymap_alldefs.h:188
+-#, fuzzy
+ msgid "move the highlight to next mailbox with new mail"
+-msgstr "otevřít další schránku s novou poštou"
++msgstr "přesunout zvýraznění na další schránku s novou poštou"
+ 
+ #: ../keymap_alldefs.h:189
+-#, fuzzy
+ msgid "open highlighted mailbox"
+-msgstr "Otevírám schránku znovu…"
++msgstr "otevřít zvýrazněnou schránku"
+ 
+ #: ../keymap_alldefs.h:190
+-#, fuzzy
+ msgid "scroll the sidebar down 1 page"
+-msgstr "rolovat dolů o 1/2 stránky"
++msgstr "rolovat postranní panel o 1 stránku dolů"
+ 
+ #: ../keymap_alldefs.h:191
+-#, fuzzy
+ msgid "scroll the sidebar up 1 page"
+-msgstr "rolovat nahoru o 1/2 stránky"
++msgstr "rolovat postranní panel o 1 stránku nahoru"
+ 
+ #: ../keymap_alldefs.h:192
+-#, fuzzy
+ msgid "move the highlight to previous mailbox"
+-msgstr "přeskočit na předchozí stránku"
++msgstr "přesunout zvýraznění na předchozí schránku"
+ 
+ #: ../keymap_alldefs.h:193
+-#, fuzzy
+ msgid "move the highlight to previous mailbox with new mail"
+-msgstr "otevřít další schránku s novou poštou"
++msgstr "přesunout zvýraznění na další schránku s novou poštou"
+ 
+ #: ../keymap_alldefs.h:194
+ msgid "make the sidebar (in)visible"
+-msgstr ""
++msgstr "zobrazit/skrýt postranní panel"
+ 
+ #: ../keymap_alldefs.h:195
+ msgid "attach a PGP public key"
+@@ -5351,34 +5337,28 @@ msgid "check for classic PGP"
+ msgstr "hledat klasické PGP"
+ 
+ #: ../keymap_alldefs.h:201
+-#, fuzzy
+ msgid "accept the chain constructed"
+-msgstr "Akceptovat řetěz."
++msgstr "přijmout sestavený řetěz"
+ 
+ #: ../keymap_alldefs.h:202
+-#, fuzzy
+ msgid "append a remailer to the chain"
+-msgstr "Připojit k řetězu remailer"
++msgstr "připojit remailer k řetězu"
+ 
+ #: ../keymap_alldefs.h:203
+-#, fuzzy
+ msgid "insert a remailer into the chain"
+-msgstr "Vložit do řetězu remailer"
++msgstr "vložit remailer do řetězu"
+ 
+ #: ../keymap_alldefs.h:204
+-#, fuzzy
+ msgid "delete a remailer from the chain"
+-msgstr "Odstranit remailer z řetězu"
++msgstr "odstranit remailer z řetězu"
+ 
+ #: ../keymap_alldefs.h:205
+-#, fuzzy
+ msgid "select the previous element of the chain"
+-msgstr "Vybrat předchozí článek řetězu"
++msgstr "vybrat předchozí článek řetězu"
+ 
+ #: ../keymap_alldefs.h:206
+-#, fuzzy
+ msgid "select the next element of the chain"
+-msgstr "Vybrat další článek řetězu"
++msgstr "vybrat další článek řetězu"
+ 
+ #: ../keymap_alldefs.h:207
+ msgid "send the message through a mixmaster remailer chain"
+diff --git c/po/da.po w/po/da.po
+index faebf2b..086622f 100644
+--- c/po/da.po
++++ w/po/da.po
+@@ -4,7 +4,7 @@
+ # Morten Bo Johansen <mjb@spamcop.net>, 2000-2016.
+ msgid ""
+ msgstr ""
+-"Project-Id-Version: Mutt 1.7.0\n"
++"Project-Id-Version: Mutt 1.7.1\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2016-10-08 12:54-0700\n"
+ "PO-Revision-Date: 2016-08-15 18:36+0200\n"
+diff --git c/po/eo.po w/po/eo.po
+index 9aa4e9b..1c6dfe0 100644
+--- c/po/eo.po
++++ w/po/eo.po
+@@ -5,7 +5,7 @@
+ # Benno Schulenberg <benno@vertaalt.nl>, 2015, 2016.
+ msgid ""
+ msgstr ""
+-"Project-Id-Version: Mutt 1.7.0\n"
++"Project-Id-Version: Mutt 1.7.1\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2016-10-08 12:54-0700\n"
+ "PO-Revision-Date: 2016-08-15 10:11+0200\n"
+diff --git c/po/fr.po w/po/fr.po
+index 84729cd..5eb5ccd 100644
+--- c/po/fr.po
++++ w/po/fr.po
+@@ -19,7 +19,7 @@
+ # , fuzzy
+ msgid ""
+ msgstr ""
+-"Project-Id-Version: Mutt 1.7.0\n"
++"Project-Id-Version: Mutt 1.7.1\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2016-10-08 12:54-0700\n"
+ "PO-Revision-Date: 2016-08-10 02:17+0200\n"
+diff --git c/po/ja.po w/po/ja.po
+index ac77b28..638a20b 100644
+--- c/po/ja.po
++++ w/po/ja.po
+@@ -7,7 +7,7 @@
+ #
+ msgid ""
+ msgstr ""
+-"Project-Id-Version: 1.7.0\n"
++"Project-Id-Version: 1.7.1\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2016-10-08 12:54-0700\n"
+ "PO-Revision-Date: 2016-08-18 09:40+0900\n"
+diff --git c/po/nl.po w/po/nl.po
+index db81c16..66aca99 100644
+--- c/po/nl.po
++++ w/po/nl.po
+@@ -7,7 +7,7 @@
+ # Benno Schulenberg <benno@vertaalt.nl>, 2008, 2014, 2015, 2016.
+ msgid ""
+ msgstr ""
+-"Project-Id-Version: Mutt 1.7.0\n"
++"Project-Id-Version: Mutt 1.7.1\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2016-10-08 12:54-0700\n"
+ "PO-Revision-Date: 2016-08-15 10:27+0200\n"
+diff --git c/po/ru.po w/po/ru.po
+index b19e5f7..586340e 100644
+--- c/po/ru.po
++++ w/po/ru.po
+@@ -10,7 +10,7 @@
+ #
+ msgid ""
+ msgstr ""
+-"Project-Id-Version: mutt-1.7.0\n"
++"Project-Id-Version: mutt-1.7.1\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2016-10-08 12:54-0700\n"
+ "PO-Revision-Date: 2016-08-09 21:06+0300\n"
+diff --git c/po/uk.po w/po/uk.po
+index a9c71ee..01eff9a 100644
+--- c/po/uk.po
++++ w/po/uk.po
+@@ -6,7 +6,7 @@
+ #
+ msgid ""
+ msgstr ""
+-"Project-Id-Version: mutt-1.7.0\n"
++"Project-Id-Version: mutt-1.7.1\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2016-10-08 12:54-0700\n"
+ "PO-Revision-Date: 2016-08-09 21:55+0300\n"
 diff --git c/postpone.c w/postpone.c
 index 525a72f..ba4f6a4 100644
 --- c/postpone.c
@@ -34217,8 +36201,21 @@ index cd19e9f..7f310be 100644
    if (check_all_msg (idx, idxlen, cur, 0) == -1)
    {
      nattach = count_tagged (idx, idxlen);
+diff --git c/rfc822.c w/rfc822.c
+index d347d69..6114a1a 100644
+--- c/rfc822.c
++++ w/rfc822.c
+@@ -30,7 +30,7 @@
+ #define safe_strdup strdup
+ #define safe_malloc malloc
+ #define FREE(x) safe_free(x)
+-#define strfcpy(a,b,c) {if (c) {strncpy(a,b,c);a[c-1]=0;}}
++#define strfcpy(DST,SRC,LEN) do { if ((LEN) > 0) { *(DST+(LEN)-1)=0; strncpy(DST,SRC,(LEN)-1); } } while (0)
+ #define LONG_STRING 1024
+ #include "rfc822.h"
+ #endif
 diff --git c/send.c w/send.c
-index d54d495..e5a7bf3 100644
+index d54d495..7f5d137 100644
 --- c/send.c
 +++ w/send.c
 @@ -34,6 +34,7 @@
@@ -34658,7 +36655,7 @@ index d54d495..e5a7bf3 100644
 +    /* if the abort is automatic, print an error message */
 +    if (quadoption (OPT_ATTACH) == MUTT_YES)
 +    {
-+      mutt_error _("Message contains text matching \"attach_keyword\". Not sending.");
++      mutt_error _("Message contains text matching \"$attach_keyword\". Not sending.");
 +    }
 +    goto main_loop;
 +  }
@@ -35075,7 +37072,7 @@ index 771eae2..cbc546a 100644
    mx_close_mailbox (&f, NULL);
  
 diff --git c/sidebar.c w/sidebar.c
-index 5b7edaf..a0162cd 100644
+index 5b7edaf..5a672e5 100644
 --- c/sidebar.c
 +++ w/sidebar.c
 @@ -27,7 +27,9 @@
@@ -35137,7 +37134,7 @@ index 5b7edaf..a0162cd 100644
   *
   * Take all the relevant mailbox data and the desired screen width and then get
   * mutt_FormatString to do the actual work. mutt_FormatString will callback to
-@@ -263,11 +298,14 @@ static int cb_qsort_sbe (const void *a, const void *b)
+@@ -263,12 +298,20 @@ static int cb_qsort_sbe (const void *a, const void *b)
      case SORT_COUNT_NEW:
        result = (b2->msg_unread - b1->msg_unread);
        break;
@@ -35149,11 +37146,17 @@ index 5b7edaf..a0162cd 100644
        break;
      case SORT_PATH:
 -      result = mutt_strcasecmp (b1->path, b2->path);
-+      result = mutt_strcoll (b1->path, b2->path);
++    {
++      int same_path = mutt_same_path (b1->path, b2->path);
++      result = (same_path && mutt_is_inbox (b1->path)) ? -1 :
++               (same_path && mutt_is_inbox (b2->path)) ?  1 :
++               mutt_strcoll (b1->path, b2->path);           
        break;
++    }
    }
  
-@@ -324,7 +362,7 @@ static void update_entries_visibility (void)
+   if (SidebarSortMethod & SORT_REVERSE)
+@@ -324,7 +367,7 @@ static void update_entries_visibility (void)
   */
  static void unsort_entries (void)
  {
@@ -35162,7 +37165,7 @@ index 5b7edaf..a0162cd 100644
    int i = 0, j;
    SBENTRY *tmp;
  
-@@ -487,10 +525,17 @@ static int draw_divider (int num_rows, int num_cols)
+@@ -487,10 +530,17 @@ static int draw_divider (int num_rows, int num_cols)
  
    SETCOLOR(MT_COLOR_DIVIDER);
  
@@ -35181,7 +37184,7 @@ index 5b7edaf..a0162cd 100644
      addstr (NONULL(SidebarDividerChar));
    }
  
-@@ -501,21 +546,26 @@ static int draw_divider (int num_rows, int num_cols)
+@@ -501,21 +551,26 @@ static int draw_divider (int num_rows, int num_cols)
   * fill_empty_space - Wipe the remaining Sidebar space
   * @first_row:  Window line to start (0-based)
   * @num_rows:   Number of rows to fill
@@ -35212,7 +37215,7 @@ index 5b7edaf..a0162cd 100644
        addch (' ');
    }
  }
-@@ -575,9 +625,19 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
+@@ -575,9 +630,19 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
      else if (b->msg_flagged > 0)
        SETCOLOR(MT_COLOR_FLAGGED);
      else
@@ -35234,7 +37237,32 @@ index 5b7edaf..a0162cd 100644
      if (Context && Context->realpath &&
          !mutt_strcmp (b->realpath, Context->realpath))
      {
-@@ -644,6 +704,12 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
+@@ -587,14 +652,17 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
+     }
+ 
+     /* compute length of Maildir without trailing separator */
+-    size_t maildirlen = strlen (Maildir);
+-    if (SidebarDelimChars && strchr (SidebarDelimChars, Maildir[maildirlen - 1]))
+-      maildirlen--;
+-
+-    /* check whether Maildir is a prefix of the current folder's path */
+     short maildir_is_prefix = 0;
+-    if ((strlen (b->path) > maildirlen) && (strncmp (Maildir, b->path, maildirlen) == 0))
+-      maildir_is_prefix = 1;
++    size_t maildirlen = mutt_strlen (Maildir);
++    if (maildirlen)
++    {
++      if (SidebarDelimChars && strchr (SidebarDelimChars, Maildir[maildirlen - 1]))
++	maildirlen--;
++
++      /* check whether Maildir is a prefix of the current folder's path */
++      if ((strlen (b->path) > maildirlen) && (strncmp (Maildir, b->path, maildirlen) == 0))
++	maildir_is_prefix = 1;
++    }
+ 
+     /* calculate depth of current folder and generate its display name with indented spaces */
+     int sidebar_folder_depth = 0;
+@@ -644,6 +712,12 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
          safe_strcat (sidebar_folder_name, sfn_len, tmp_folder_name);
        }
      }
@@ -35247,7 +37275,7 @@ index 5b7edaf..a0162cd 100644
      char str[STRING];
      make_sidebar_entry (str, sizeof (str), w, sidebar_folder_name, entry);
      printw ("%s", str);
-@@ -652,7 +718,7 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
+@@ -652,7 +726,7 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
      row++;
    }
  
@@ -35256,7 +37284,7 @@ index 5b7edaf..a0162cd 100644
  }
  
  
-@@ -667,6 +733,14 @@ void mutt_sb_draw (void)
+@@ -667,6 +741,14 @@ void mutt_sb_draw (void)
    if (!option (OPTSIDEBAR))
      return;
  
@@ -35271,7 +37299,7 @@ index 5b7edaf..a0162cd 100644
    int num_rows  = MuttSidebarWindow->rows;
    int num_cols  = MuttSidebarWindow->cols;
  
-@@ -674,9 +748,14 @@ void mutt_sb_draw (void)
+@@ -674,9 +756,14 @@ void mutt_sb_draw (void)
    if (div_width < 0)
      return;
  
@@ -35288,7 +37316,7 @@ index 5b7edaf..a0162cd 100644
      return;
    }
  
-@@ -684,6 +763,7 @@ void mutt_sb_draw (void)
+@@ -684,6 +771,7 @@ void mutt_sb_draw (void)
      return;
  
    draw_sidebar (num_rows, num_cols, div_width);
@@ -35296,7 +37324,7 @@ index 5b7edaf..a0162cd 100644
  }
  
  /**
-@@ -918,7 +998,7 @@ void mutt_sb_set_buffystats (const CONTEXT *ctx)
+@@ -918,7 +1006,7 @@ void mutt_sb_set_buffystats (const CONTEXT *ctx)
  {
    /* Even if the sidebar's hidden,
     * we should take note of the new data. */
@@ -35305,7 +37333,7 @@ index 5b7edaf..a0162cd 100644
    if (!ctx || !b)
      return;
  
-@@ -995,6 +1075,9 @@ void mutt_sb_notify_mailbox (BUFFY *b, int created)
+@@ -995,6 +1083,9 @@ void mutt_sb_notify_mailbox (BUFFY *b, int created)
    if (!b)
      return;
  
@@ -35315,7 +37343,7 @@ index 5b7edaf..a0162cd 100644
    /* Any new/deleted mailboxes will cause a refresh.  As long as
     * they're valid, our pointers will be updated in prepare_sidebar() */
  
-@@ -1045,3 +1128,36 @@ void mutt_sb_notify_mailbox (BUFFY *b, int created)
+@@ -1045,3 +1136,36 @@ void mutt_sb_notify_mailbox (BUFFY *b, int created)
  
    SidebarNeedsRedraw = 1;
  }
