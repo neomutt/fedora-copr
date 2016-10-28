@@ -24,7 +24,7 @@
 %endif
 
 %global _origname mutt
-%global _date 20161014
+%global _date 20161028
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -226,6 +226,43 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Fri Oct 28 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161028
+- Features
+  - nntp: use safe_{fopen,fclose}
+  - nntp: fix resource leak
+  - forgotten-attachment: Ignore lines matching quote_regexp.
+  - forgotten-attachment: Fix checking logic.
+  - forgotten-attachment: Update docs regarding $quote_regexp.
+  - notmuch: Add a fake "Folder" header to viewed emails
+  - sidebar: consider description when using whitelist
+  - skip-quoted: skip to body
+- Bug Fixes
+  - sensible-browser/notmuch changing mailbox
+  - "inbox" sorting function
+  - overhaul the index/pager updates
+  - crash in hdrline
+  - remove stray line introduced by pager fix
+  - Possible fix for random pager crashes.
+- Docs
+  - use a more expressive coverity scan badge
+  - light tidying
+- Build
+  - replace the ugly strfcpy() macro with a function
+  - build: Look for tgetent in ncurses, fallback to tinfo only if not found
+  - build: fix a couple of build warnings
+  - travis: install doc dependencies
+  - build: fix install/dist/distcheck targets
+- Upstream
+  - Fix POP3 SASL authentication mechanism DIGEST-MD5. (closes #3862)
+  - Add a few explanatory comments to pop_auth_sasl().  (see #3862)
+  - Fix GPGME signature zero timestamp and locale awareness issues. (closes #3882)
+  - Handle presence of '--' delimiter in $sendmail. (closes #3168)
+  - Allow IPv6 literal addresses in URLs. (closes #3681)
+  - Fix gpgme segfault in create_recipient_set().
+  - Use mutt_strlen and mutt_strncmp in sidebar.c.
+  - Change sidebar to only match $folder prefix on a $sidebar_divider_char. (closes #3887)
+  - Actually fix gpgme segfault in create_recipient_set().
+
 * Fri Oct 14 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161014
 - Features
   - sidebar: Make sure INBOX appears first in the list.
