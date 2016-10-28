@@ -1,9 +1,46 @@
 diff --git c/ChangeLog.neomutt w/ChangeLog.neomutt
 new file mode 100644
-index 0000000..1b833be
+index 0000000..fc88574
 --- /dev/null
 +++ w/ChangeLog.neomutt
-@@ -0,0 +1,334 @@
+@@ -0,0 +1,371 @@
++2016-10-28  Richard Russon  <rich@flatcap.org>
++* Features
++  - nntp: use safe_{fopen,fclose}
++  - nntp: fix resource leak
++  - forgotten-attachment: Ignore lines matching quote_regexp.
++  - forgotten-attachment: Fix checking logic.
++  - forgotten-attachment: Update docs regarding $quote_regexp.
++  - notmuch: Add a fake "Folder" header to viewed emails
++  - sidebar: consider description when using whitelist
++  - skip-quoted: skip to body
++* Bug Fixes
++  - sensible-browser/notmuch changing mailbox
++  - "inbox" sorting function
++  - overhaul the index/pager updates
++  - crash in hdrline
++  - remove stray line introduced by pager fix
++  - Possible fix for random pager crashes.
++* Docs
++  - use a more expressive coverity scan badge
++  - light tidying
++* Build
++  - replace the ugly strfcpy() macro with a function
++  - build: Look for tgetent in ncurses, fallback to tinfo only if not found
++  - build: fix a couple of build warnings
++  - travis: install doc dependencies
++  - build: fix install/dist/distcheck targets
++* Upstream
++  - Fix POP3 SASL authentication mechanism DIGEST-MD5. (closes #3862)
++  - Add a few explanatory comments to pop_auth_sasl().  (see #3862)
++  - Fix GPGME signature zero timestamp and locale awareness issues. (closes #3882)
++  - Handle presence of '--' delimiter in $sendmail. (closes #3168)
++  - Allow IPv6 literal addresses in URLs. (closes #3681)
++  - Fix gpgme segfault in create_recipient_set().
++  - Use mutt_strlen and mutt_strncmp in sidebar.c.
++  - Change sidebar to only match $folder prefix on a $sidebar_divider_char. (closes #3887)
++  - Actually fix gpgme segfault in create_recipient_set().
++
 +2016-10-14  Richard Russon  <rich@flatcap.org>
 +* Features
 +  - sidebar: Make sure INBOX appears first in the list.
@@ -1846,15 +1883,15 @@ index 75cac80..90290e0 100644
 +  Phil Pennock <mutt-dev@spodhuis.org>
 diff --git c/README.neomutt w/README.neomutt
 new file mode 100644
-index 0000000..966b4b6
+index 0000000..438121a
 --- /dev/null
 +++ w/README.neomutt
-@@ -0,0 +1,104 @@
+@@ -0,0 +1,108 @@
 +# This is the NeoMutt Project
 +
 +[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://github.com/neomutt/neomutt/blob/neomutt/COPYRIGHT)
 +[![Travis branch](https://api.travis-ci.org/neomutt/neomutt.svg?branch=neomutt)](https://travis-ci.org/neomutt/neomutt)
-+[![Coverity Scan](https://img.shields.io/coverity/scan/3997.svg?maxAge=2592000)](https://scan.coverity.com/projects/neomutt-neomutt)
++[![Coverity Scan](https://img.shields.io/coverity/scan/8495.svg)](https://scan.coverity.com/projects/neomutt-neomutt)
 +
 +## What is NeoMutt?
 +
@@ -1872,14 +1909,17 @@ index 0000000..966b4b6
 +| Name                 | Description
 +|----------------------|-------------------------------------------------------
 +| Attach Headers Color | Color attachment headers using regexp
++| Compose to Sender    | Send new mail to the sender of the current mail
 +| Compressed Folders   | Read from/write to compressed mailboxes
 +| Conditional Dates    | Conditional Date Formatting
 +| Encrypt-to-Self      | Save an self-encrypted copy of emails
++| Forgotten Attachment | Alert user when (s)he forgets to attach a file to an outgoing email
 +| Fmemopen             | Use fmemopen(3) for speedier temporary files
 +| Ifdef                | Conditional config options
 +| Index Color          | Theming of the Index List
 +| Initials Expando     | Expando for Author's Initials
 +| Keywords             | Labels/Tagging for emails
++| Kyoto Cabinet        | Kyoto Cabinet backend for the header cache
 +| Limit-Current-Thread | Limit Index View to Current Thread
 +| LMDB                 | LMDB backend for the header cache
 +| Multiple fcc         | Save multiple copies of outgoing mail
@@ -1889,6 +1929,7 @@ index 0000000..966b4b6
 +| Notmuch              | Powerful email search engine
 +| Progress Bar         | Colourful Progress Bar
 +| Quasi-Delete         | Hide emails from view, but don't delete them
++| Reply With X-Orig    | Direct reply to email using X-Original-To header
 +| Sensible-Browser     | Make the file browser behave
 +| Sidebar              | Panel containing list of Mailboxes
 +| Skip-Quoted          | Skip Quoted Text
@@ -1899,10 +1940,8 @@ index 0000000..966b4b6
 +
 +## Contributed Scripts and Config
 +
-+- Keybase Integration
-+  Joshua Jordi (JakkinStewart)
-+- vim-keybindings - Mutt config for vim users
-+  Ivan Tham (pickfire)
++- Keybase Integration (Joshua Jordi)
++- vim-keys - Mutt config for vim users (Ivan Tham)
 +
 +## Where is NeoMutt?
 +
@@ -1911,7 +1950,7 @@ index 0000000..966b4b6
 +- Questions/Bugs:  https://github.com/neomutt/neomutt/issues
 +- Website:         http://www.neomutt.org/
 +- IRC:             irc://irc.freenode.net/neomutt
-+- Mailinglists:    [neomutt-users](mailto:neomutt-users-request@neomutt.org?subject=subscribe) 
++- Mailinglists:    [neomutt-users](mailto:neomutt-users-request@neomutt.org?subject=subscribe)
 +and [neomutt-devel](mailto:neomutt-devel-request@neomutt.org?subject=subscribe)
 +- Development:     http://www.neomutt.org/devel/
 +
@@ -1919,13 +1958,15 @@ index 0000000..966b4b6
 +
 +Here's a list of everyone who's helped NeoMutt:
 +
-+Alex Pearce, Ander Punnar, Antonio Radici, Baptiste Daroussin, Chris Salzberg,
-+Christoph Berg, Darshit Shah, David Sterba, Elimar Riesebieter, Evgeni Golov,
-+Fabian Groffen, Fabio Alessandro Locati, Faidon Liambotis, Guillaume Brogi,
++Alex Pearce, Ander Punnar, Antonio Radici, Baptiste Daroussin, Chris Czettel,
++Chris Salzberg, Christoph Berg, Clemens Lang, Darshit Shah, David Sterba,
++Doug Stone-Weaver, Elimar Riesebieter, Evgeni Golov, Fabian Groffen,
++Fabio Alessandro Locati, Faidon Liambotis, Guillaume Brogi, Ismaël Bouya,
 +Ivan Tham, Johannes Frankenau, Johannes Weißl, Joshua Jordi, Karel Zak,
-+Kurt Jaeger, Marco Hinz, Matteo Vescovi, Pierre-Elliott Bécue,
-+Richard Hartmann, Richard Russon, Santiago Torres, Sven Guckes,
-+Thomas Klausner, Udo Schweigert, Vsevolod Volkov, Werner Fink,
++Kevin Velghe, Kurt Jaeger, Marco Hinz, Matteo Vescovi, Olaf Lessenich,
++Pierre-Elliott Bécue, Pietro Cerutti, Richard Hartmann, Richard Russon,
++Santiago Torres, Stephen Gilles, Steven Ragnarök, Sven Guckes, Thomas Klausner,
++Tobias Angele, Udo Schweigert, Vsevolod Volkov, Werner Fink,
 +Yoshiki Vázquez Baeza.
 +
 +## Original Patch Authors
@@ -6093,7 +6134,7 @@ index 0000000..26beae6
 +
 +#endif /* _COMPRESS_H_ */
 diff --git c/configure.ac w/configure.ac
-index aff9479..5f9db6e 100644
+index aff9479..eff3e0e 100644
 --- c/configure.ac
 +++ w/configure.ac
 @@ -3,15 +3,15 @@ dnl Process this file with autoconf to produce a configure script.
@@ -6104,7 +6145,7 @@ index aff9479..5f9db6e 100644
 +CFLAGS=$CFLAGS
 +LDFLAGS=$LDFLAGS
 +
-+AC_INIT([NeoMutt], [20161014], [neomutt-devel@neomutt.org], [mutt], [https://www.neomutt.org])
++AC_INIT([NeoMutt], [20161028], [neomutt-devel@neomutt.org], [mutt], [https://www.neomutt.org])
  AC_CONFIG_SRCDIR(mutt.h)
  AM_INIT_AUTOMAKE
  AC_CONFIG_HEADERS([config.h])
@@ -6254,7 +6295,28 @@ index aff9479..5f9db6e 100644
  AC_ARG_WITH(mixmaster, AS_HELP_STRING([--with-mixmaster@<:@=PATH@:>@],[Include Mixmaster support]),
    [if test "$withval" != no
     then
-@@ -319,10 +347,11 @@ main ()
+@@ -282,15 +310,17 @@ main ()
+                 fi])
+ 
+ 	AC_CHECK_FUNC(initscr,,[
+-	cf_ncurses="ncurses"
+-	for lib in ncurses ncursesw
++	cf_ncurses=""
++	for lib in ncursesw ncurses
+ 	do
+ 		AC_CHECK_LIB($lib, waddnwstr, [cf_ncurses="$lib"; break])
+ 	done
+         AC_CHECK_LIB($cf_ncurses, initscr,
+                 [MUTTLIBS="$MUTTLIBS -l$cf_ncurses"
+ 
+-                AC_CHECK_LIB(tinfo, tgetent, [MUTTLIBS="$MUTTLIBS -ltinfo"])
++                AC_CHECK_LIB($cf_ncurses, tgetent, [], [
++                    AC_CHECK_LIB(tinfo, tgetent, [MUTTLIBS="$MUTTLIBS -ltinfo"])
++                ])
+ 
+                 if test "$cf_ncurses" = ncursesw; then
+ 			AC_CHECK_HEADERS(ncursesw/ncurses.h,[cf_cv_ncurses_header="ncursesw/ncurses.h"])
+@@ -319,10 +349,11 @@ main ()
  AC_HEADER_STDC
  
  AC_CHECK_HEADERS(stdarg.h sys/ioctl.h ioctl.h sysexits.h)
@@ -6267,7 +6329,7 @@ index aff9479..5f9db6e 100644
  
  AC_MSG_CHECKING(for sig_atomic_t in signal.h)
  AC_EGREP_HEADER(sig_atomic_t,signal.h,
-@@ -364,7 +393,7 @@ AC_CHECK_TYPE(ssize_t, int)
+@@ -364,7 +395,7 @@ AC_CHECK_TYPE(ssize_t, int)
  
  AC_CHECK_FUNCS(fgetpos memmove setegid srand48 strerror)
  
@@ -6276,7 +6338,7 @@ index aff9479..5f9db6e 100644
  AC_REPLACE_FUNCS([strcasestr mkdtemp])
  
  AC_CHECK_FUNC(getopt)
-@@ -616,6 +645,15 @@ AC_ARG_ENABLE(imap, AS_HELP_STRING([--enable-imap],[Enable IMAP support]),
+@@ -616,6 +647,15 @@ AC_ARG_ENABLE(imap, AS_HELP_STRING([--enable-imap],[Enable IMAP support]),
  ])
  AM_CONDITIONAL(BUILD_IMAP, test x$need_imap = xyes)
  
@@ -6292,7 +6354,7 @@ index aff9479..5f9db6e 100644
  AC_ARG_ENABLE(smtp, AS_HELP_STRING([--enable-smtp],[include internal SMTP relay support]),
  	[if test $enableval = yes; then
  		AC_DEFINE(USE_SMTP, 1, [Include internal SMTP relay support])
-@@ -623,7 +661,7 @@ AC_ARG_ENABLE(smtp, AS_HELP_STRING([--enable-smtp],[include internal SMTP relay
+@@ -623,7 +663,7 @@ AC_ARG_ENABLE(smtp, AS_HELP_STRING([--enable-smtp],[include internal SMTP relay
  		need_socket="yes"
  	fi])
  
@@ -6301,7 +6363,7 @@ index aff9479..5f9db6e 100644
    MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS bcache.o"
  fi
  
-@@ -689,13 +727,16 @@ AC_ARG_WITH(ssl, AS_HELP_STRING([--with-ssl@<:@=PFX@:>@],[Enable TLS support usi
+@@ -689,13 +729,16 @@ AC_ARG_WITH(ssl, AS_HELP_STRING([--with-ssl@<:@=PFX@:>@],[Enable TLS support usi
  
              crypto_libs=""
              AC_CHECK_LIB(z, deflate, [crypto_libs=-lz])
@@ -6320,7 +6382,7 @@ index aff9479..5f9db6e 100644
  
              AC_DEFINE(USE_SSL,1,[ Define if you want support for SSL. ])
              AC_DEFINE(USE_SSL_OPENSSL,1,[ Define if you want support for SSL via OpenSSL. ])
-@@ -863,11 +904,14 @@ AC_ARG_ENABLE(exact-address, AS_HELP_STRING([--enable-exact-address],[Enable reg
+@@ -863,11 +906,14 @@ AC_ARG_ENABLE(exact-address, AS_HELP_STRING([--enable-exact-address],[Enable reg
  dnl -- start cache --
  db_found=no
  db_requested=auto
@@ -6335,7 +6397,7 @@ index aff9479..5f9db6e 100644
  
  db_found=no
  if test x$enable_hcache = xyes
-@@ -883,7 +927,16 @@ then
+@@ -883,7 +929,16 @@ then
  
      if test -n "$with_tokyocabinet" && test "$with_tokyocabinet" != "no"
      then
@@ -6353,7 +6415,7 @@ index aff9479..5f9db6e 100644
      fi
      if test -n "$with_qdbm" && test "$with_qdbm" != "no"
      then
-@@ -891,7 +944,7 @@ then
+@@ -891,7 +946,7 @@ then
        then
          AC_MSG_ERROR([more than one header cache engine requested.])
        else
@@ -6362,7 +6424,7 @@ index aff9479..5f9db6e 100644
        fi
      fi
      if test -n "$with_gdbm" && test "$with_gdbm" != "no"
-@@ -900,7 +953,7 @@ then
+@@ -900,7 +955,7 @@ then
        then
          AC_MSG_ERROR([more than one header cache engine requested.])
        else
@@ -6371,7 +6433,7 @@ index aff9479..5f9db6e 100644
        fi
      fi
      if test -n "$with_bdb" && test "$with_bdb" != "no"
-@@ -909,13 +962,22 @@ then
+@@ -909,13 +964,22 @@ then
        then
          AC_MSG_ERROR([more than one header cache engine requested.])
        else
@@ -6396,7 +6458,7 @@ index aff9479..5f9db6e 100644
      then
        if test -n "$with_tokyocabinet" && test "$with_tokyocabinet" != "yes"
        then
-@@ -927,7 +989,7 @@ then
+@@ -927,7 +991,7 @@ then
        AC_CHECK_LIB(tokyocabinet, tcbdbopen,
          [MUTTLIBS="$MUTTLIBS -ltokyocabinet"
           AC_DEFINE(HAVE_TC, 1, [Tokyo Cabinet Support])
@@ -6405,7 +6467,7 @@ index aff9479..5f9db6e 100644
          [CPPFLAGS="$OLDCPPFLAGS"
           LDFLAGS="$OLDLDFLAGS"]))
        if test "$db_requested" != auto && test "$db_found" != "$db_requested"
-@@ -936,9 +998,32 @@ then
+@@ -936,9 +1000,32 @@ then
        fi
      fi
  
@@ -6439,7 +6501,7 @@ index aff9479..5f9db6e 100644
      then
        if test -n "$with_qdbm" && test "$with_qdbm" != "yes"
        then
-@@ -959,7 +1044,7 @@ then
+@@ -959,7 +1046,7 @@ then
        AC_CHECK_LIB(qdbm, vlopen,
          [MUTTLIBS="$MUTTLIBS -lqdbm"
           AC_DEFINE(HAVE_QDBM, 1, [QDBM Support])
@@ -6448,7 +6510,7 @@ index aff9479..5f9db6e 100644
          [CPPFLAGS="$OLDCPPFLAGS"
           LDFLAGS="$OLDLDFLAGS"])
        LIBS="$saved_LIBS"
-@@ -971,7 +1056,7 @@ then
+@@ -971,7 +1058,7 @@ then
  
      dnl -- GDBM --
      if test x$with_gdbm != xno && test $db_found = no \
@@ -6457,7 +6519,7 @@ index aff9479..5f9db6e 100644
      then
          if test "$with_gdbm" != "yes"
          then
-@@ -989,7 +1074,7 @@ then
+@@ -989,7 +1076,7 @@ then
          then
            AC_DEFINE(HAVE_GDBM, 1, [GDBM Support])
            MUTTLIBS="$MUTTLIBS -lgdbm"
@@ -6466,7 +6528,7 @@ index aff9479..5f9db6e 100644
          fi
          if test "$db_requested" != auto && test "$db_found" != "$db_requested"
          then
-@@ -999,7 +1084,8 @@ then
+@@ -999,7 +1086,8 @@ then
  
      dnl -- BDB --
      ac_bdb_prefix="$with_bdb"
@@ -6476,7 +6538,7 @@ index aff9479..5f9db6e 100644
      then
          if test x$ac_bdb_prefix = xyes || test x$ac_bdb_prefix = x
          then
-@@ -1049,17 +1135,46 @@ then
+@@ -1049,17 +1137,46 @@ then
              CPPFLAGS="$OLDCPPFLAGS -I$BDB_INCLUDE_DIR"
              LIBS="$OLDLIBS -L$BDB_LIB_DIR -l$BDB_LIB"
              AC_DEFINE(HAVE_DB4, 1, [Berkeley DB4 Support])
@@ -6525,7 +6587,7 @@ index aff9479..5f9db6e 100644
  dnl -- end cache --
  
  AM_CONDITIONAL(BUILD_HCACHE, test x$db_found != xno)
-@@ -1078,6 +1193,7 @@ AC_SUBST(MUTTLIBS)
+@@ -1078,6 +1195,7 @@ AC_SUBST(MUTTLIBS)
  AC_SUBST(MUTT_LIB_OBJECTS)
  AC_SUBST(LIBIMAP)
  AC_SUBST(LIBIMAPDEPS)
@@ -6533,7 +6595,7 @@ index aff9479..5f9db6e 100644
  
  dnl -- iconv/gettext --
  
-@@ -1321,6 +1437,21 @@ if test $mutt_cv_langinfo_yesexpr = yes; then
+@@ -1321,6 +1439,21 @@ if test $mutt_cv_langinfo_yesexpr = yes; then
    AC_DEFINE(HAVE_LANGINFO_YESEXPR,1,[ Define if you have <langinfo.h> and nl_langinfo(YESEXPR). ])
  fi
  
@@ -6555,7 +6617,7 @@ index aff9479..5f9db6e 100644
  dnl Documentation tools
  have_openjade="no"
  AC_PATH_PROG([OSPCAT], [ospcat], [none])
-@@ -1356,5 +1487,24 @@ fi
+@@ -1356,5 +1489,24 @@ fi
  
  AC_CONFIG_FILES(Makefile contrib/Makefile doc/Makefile imap/Makefile
          intl/Makefile m4/Makefile po/Makefile.in
@@ -8761,7 +8823,7 @@ index 0000000..cb64889
 +bind index                      za  collapse-thread
 +bind index                      zA  collapse-all # Missing :folddisable/foldenable
 diff --git c/copy.c w/copy.c
-index 1ef441f..bfcd3a5 100644
+index 1ef441f..63475b1 100644
 --- c/copy.c
 +++ w/copy.c
 @@ -30,6 +30,10 @@
@@ -8808,16 +8870,32 @@ index 1ef441f..bfcd3a5 100644
    if (mutt_copy_hdr (in, out, h->offset, h->content->offset, flags, prefix) == -1)
      return -1;
  
-@@ -414,6 +428,70 @@ mutt_copy_header (FILE *in, HEADER *h, FILE *out, int flags, const char *prefix)
+@@ -414,6 +428,86 @@ mutt_copy_header (FILE *in, HEADER *h, FILE *out, int flags, const char *prefix)
        fprintf (out, "Lines: %d\n", h->lines);
    }
  
 +#ifdef USE_NOTMUCH
-+  if ((flags & CH_VIRTUAL) && nm_header_get_tags(h))
++  if (flags & CH_VIRTUAL)
 +  {
-+    fputs ("Tags: ", out);
-+    fputs (nm_header_get_tags(h), out);
-+    fputc ('\n', out);
++    /* Add some fake headers based on notmuch data */
++    char *folder = nm_header_get_folder(h);
++    if (folder)
++    {
++      char buffer[LONG_STRING];
++      strfcpy (buffer, folder, sizeof (buffer));
++      mutt_pretty_mailbox (buffer, sizeof (buffer));
++
++      fputs ("Folder: ", out);
++      fputs (buffer, out);
++      fputc ('\n', out);
++    }
++    char *tags = nm_header_get_tags(h);
++    if (tags)
++    {
++      fputs ("Tags: ", out);
++      fputs (tags, out);
++      fputc ('\n', out);
++    }
 +  }
 +#endif
 +
@@ -8879,7 +8957,7 @@ index 1ef441f..bfcd3a5 100644
    if ((flags & CH_NONEWLINE) == 0)
    {
      if (flags & CH_PREFIX)
-@@ -494,6 +572,9 @@ _mutt_copy_message (FILE *fpout, FILE *fpin, HEADER *hdr, BODY *body,
+@@ -494,6 +588,9 @@ _mutt_copy_message (FILE *fpout, FILE *fpin, HEADER *hdr, BODY *body,
        _mutt_make_string (prefix, sizeof (prefix), NONULL (Prefix), Context, hdr, 0);
    }
  
@@ -8889,7 +8967,7 @@ index 1ef441f..bfcd3a5 100644
    if ((flags & MUTT_CM_NOHEADER) == 0)
    {
      if (flags & MUTT_CM_PREFIX)
-@@ -683,7 +764,7 @@ mutt_copy_message (FILE *fpout, CONTEXT *src, HEADER *hdr, int flags,
+@@ -683,7 +780,7 @@ mutt_copy_message (FILE *fpout, CONTEXT *src, HEADER *hdr, int flags,
  {
    MESSAGE *msg;
    int r;
@@ -8898,7 +8976,7 @@ index 1ef441f..bfcd3a5 100644
    if ((msg = mx_open_message (src, hdr->msgno)) == NULL)
      return -1;
    if ((r = _mutt_copy_message (fpout, msg->fp, hdr, hdr->content, flags, chflags)) == 0 
-@@ -718,7 +799,7 @@ _mutt_append_message (CONTEXT *dest, FILE *fpin, CONTEXT *src, HEADER *hdr,
+@@ -718,7 +815,7 @@ _mutt_append_message (CONTEXT *dest, FILE *fpin, CONTEXT *src, HEADER *hdr,
    fseeko (fpin, hdr->offset, 0);
    if (fgets (buf, sizeof (buf), fpin) == NULL)
      return -1;
@@ -8907,7 +8985,7 @@ index 1ef441f..bfcd3a5 100644
    if ((msg = mx_open_new_message (dest, hdr, is_from (buf, NULL, 0, NULL) ? 0 : MUTT_ADD_FROM)) == NULL)
      return -1;
    if (dest->magic == MUTT_MBOX || dest->magic == MUTT_MMDF)
-@@ -728,6 +809,11 @@ _mutt_append_message (CONTEXT *dest, FILE *fpin, CONTEXT *src, HEADER *hdr,
+@@ -728,6 +825,11 @@ _mutt_append_message (CONTEXT *dest, FILE *fpin, CONTEXT *src, HEADER *hdr,
    if (mx_commit_message (msg, dest) != 0)
      r = -1;
  
@@ -8933,10 +9011,32 @@ index 4d6fc54..b47c7fb 100644
  
  int mutt_copy_hdr (FILE *, FILE *, LOFF_T, LOFF_T, int, const char *);
 diff --git c/crypt-gpgme.c w/crypt-gpgme.c
-index 6d8f333..d5c6f33 100644
+index 6d8f333..51d5569 100644
 --- c/crypt-gpgme.c
 +++ w/crypt-gpgme.c
-@@ -869,14 +869,12 @@ static void print_time(time_t t, STATE *s)
+@@ -673,17 +673,15 @@ static gpgme_key_t *create_recipient_set (const char *keylist,
+ 	    else
+ 	      err = gpgme_get_key (context, buf, &key, 0);
+ 
++            safe_realloc (&rset, sizeof (*rset) * (rset_n + 1));
+ 	    if (! err)
+-	      {
+-		safe_realloc (&rset, sizeof (*rset) * (rset_n + 1));
+-		rset[rset_n++] = key;
+-	      }
++              rset[rset_n++] = key;
+ 	    else
+ 	      {
+ 		mutt_error (_("error adding recipient `%s': %s\n"),
+ 			    buf, gpgme_strerror (err));
+-		rset[rset_n] = NULL;
+-		free_recipient_set (&rset);
++                rset[rset_n] = NULL;
++                free_recipient_set (&rset);
+ 		gpgme_release (context);
+ 		return NULL;
+ 	      }
+@@ -869,14 +867,12 @@ static void print_time(time_t t, STATE *s)
  {
    char p[STRING];
  
@@ -8952,7 +9052,7 @@ index 6d8f333..d5c6f33 100644
  }
  
  /* 
-@@ -1141,7 +1139,7 @@ static int show_sig_summary (unsigned long sum,
+@@ -1141,7 +1137,7 @@ static int show_sig_summary (unsigned long sum,
  
    if ((sum & GPGME_SIGSUM_KEY_REVOKED))
      {
@@ -8961,7 +9061,7 @@ index 6d8f333..d5c6f33 100644
        severe = 1;
      }
  
-@@ -1150,13 +1148,13 @@ static int show_sig_summary (unsigned long sum,
+@@ -1150,13 +1146,13 @@ static int show_sig_summary (unsigned long sum,
        time_t at = key->subkeys->expires ? key->subkeys->expires : 0;
        if (at)
          {
@@ -8978,7 +9078,7 @@ index 6d8f333..d5c6f33 100644
                               "has expired\n"), s);
      }
  
-@@ -1172,29 +1170,29 @@ static int show_sig_summary (unsigned long sum,
+@@ -1172,29 +1168,29 @@ static int show_sig_summary (unsigned long sum,
             sig = sig->next, i++)
          ;
        
@@ -9014,7 +9114,7 @@ index 6d8f333..d5c6f33 100644
  
    if ((sum & GPGME_SIGSUM_SYS_ERROR))
      {
-@@ -1203,7 +1201,7 @@ static int show_sig_summary (unsigned long sum,
+@@ -1203,7 +1199,7 @@ static int show_sig_summary (unsigned long sum,
        gpgme_signature_t sig;
        unsigned int i;
  
@@ -9023,7 +9123,7 @@ index 6d8f333..d5c6f33 100644
  
        /* Try to figure out some more detailed system error information. */
        result = gpgme_op_verify_result (ctx);
-@@ -1218,17 +1216,17 @@ static int show_sig_summary (unsigned long sum,
+@@ -1218,17 +1214,17 @@ static int show_sig_summary (unsigned long sum,
  
        if (t0 || t1)
          {
@@ -9046,7 +9146,7 @@ index 6d8f333..d5c6f33 100644
      }
  
  #ifdef HAVE_GPGME_PKA_TRUST
-@@ -1237,16 +1235,16 @@ static int show_sig_summary (unsigned long sum,
+@@ -1237,16 +1233,16 @@ static int show_sig_summary (unsigned long sum,
      {
        if (sig->pka_trust == 1 && sig->pka_address)
  	{
@@ -9069,7 +9169,7 @@ index 6d8f333..d5c6f33 100644
  	}
      }
  
-@@ -1303,7 +1301,7 @@ static void show_fingerprint (gpgme_key_t key, STATE *state)
+@@ -1303,7 +1299,7 @@ static void show_fingerprint (gpgme_key_t key, STATE *state)
      *p++ = *s;
    *p++ = '\n';
    *p = 0;
@@ -9078,7 +9178,7 @@ index 6d8f333..d5c6f33 100644
    FREE (&buf);
  }
  
-@@ -1341,7 +1339,7 @@ static void show_one_sig_validity (gpgme_ctx_t ctx, int idx, STATE *s)
+@@ -1341,18 +1337,18 @@ static void show_one_sig_validity (gpgme_ctx_t ctx, int idx, STATE *s)
  	break;
        }
    if (txt)
@@ -9087,7 +9187,10 @@ index 6d8f333..d5c6f33 100644
  }
  
  static void print_smime_keyinfo (const char* msg, gpgme_signature_t sig,
-@@ -1351,8 +1349,8 @@ static void print_smime_keyinfo (const char* msg, gpgme_signature_t sig,
+                                  gpgme_key_t key, STATE *s)
+ {
+-  size_t msglen;
++  int msgwid;
    gpgme_user_id_t uids = NULL;
    int i, aka = 0;
  
@@ -9098,12 +9201,20 @@ index 6d8f333..d5c6f33 100644
    /* key is NULL when not present in the user's keyring */
    if (key)
    {
-@@ -1366,30 +1364,30 @@ static void print_smime_keyinfo (const char* msg, gpgme_signature_t sig,
-          * and "aka" translation length */
- 	msglen = mutt_strlen (msg) - 4;
- 	for (i = 0; i < msglen; i++)
+@@ -1362,34 +1358,39 @@ static void print_smime_keyinfo (const char* msg, gpgme_signature_t sig,
+ 	continue;
+       if (aka)
+       {
+-        /* TODO: need to account for msg wide characters
+-         * and "aka" translation length */
+-	msglen = mutt_strlen (msg) - 4;
+-	for (i = 0; i < msglen; i++)
 -	  state_attach_puts(" ", s);
 -	state_attach_puts(_("aka: "), s);
++	msgwid = mutt_strwidth (msg) - mutt_strwidth (_("aka: ")) + 1;
++	if (msgwid < 0)
++	  msgwid = 0;
++	for (i = 0; i < msgwid; i++)
 +	  state_puts(" ", s);
 +	state_puts(_("aka: "), s);
        }
@@ -9125,21 +9236,31 @@ index 6d8f333..d5c6f33 100644
 +    state_puts ("\n", s);
    }
  
-   msglen = mutt_strlen (msg) - 8;
-   /* TODO: need to account for msg wide characters
-    * and "created" translation length */
-   for (i = 0; i < msglen; i++)
+-  msglen = mutt_strlen (msg) - 8;
+-  /* TODO: need to account for msg wide characters
+-   * and "created" translation length */
+-  for (i = 0; i < msglen; i++)
 -    state_attach_puts(" ", s);
 -  state_attach_puts (_("created: "), s);
-+    state_puts(" ", s);
-+  state_puts (_("created: "), s);
-   print_time (sig->timestamp, s);
+-  print_time (sig->timestamp, s);
 -  state_attach_puts ("\n", s);  
-+  state_puts ("\n", s);
++  /* timestamp is 0 when verification failed.
++     "Jan 1 1970" is not the created date. */
++  if (sig->timestamp)
++  {
++    msgwid = mutt_strwidth (msg) - mutt_strwidth (_("created: ")) + 1;
++    if (msgwid < 0)
++      msgwid = 0;
++    for (i = 0; i < msgwid; i++)
++      state_puts(" ", s);
++    state_puts (_("created: "), s);
++    print_time (sig->timestamp, s);
++    state_puts ("\n", s);
++  }
  }
  
  /* Show information about one signature.  This function is called with
-@@ -1461,7 +1459,7 @@ static int show_one_sig_status (gpgme_ctx_t ctx, int idx, STATE *s)
+@@ -1461,7 +1462,7 @@ static int show_one_sig_status (gpgme_ctx_t ctx, int idx, STATE *s)
            snprintf (buf, sizeof (buf),
                _("Error getting key information for KeyID %s: %s\n"),
                fpr, gpgme_strerror (err));
@@ -9148,7 +9269,7 @@ index 6d8f333..d5c6f33 100644
            anybad = 1;
  	}
        else if ((sum & GPGME_SIGSUM_GREEN))
-@@ -1496,9 +1494,9 @@ static int show_one_sig_status (gpgme_ctx_t ctx, int idx, STATE *s)
+@@ -1496,9 +1497,9 @@ static int show_one_sig_status (gpgme_ctx_t ctx, int idx, STATE *s)
            /* L10N:
               This is trying to match the width of the
               "Problem signature from:" translation just above. */
@@ -9160,7 +9281,7 @@ index 6d8f333..d5c6f33 100644
  	}
  	show_sig_summary (sum, ctx, key, idx, s, sig);
          anywarn = 1;
-@@ -1557,12 +1555,13 @@ static int verify_one (BODY *sigbdy, STATE *s,
+@@ -1557,12 +1558,13 @@ static int verify_one (BODY *sigbdy, STATE *s,
        snprintf (buf, sizeof(buf)-1, 
                  _("Error: verification failed: %s\n"),
                  gpgme_strerror (err));
@@ -9175,7 +9296,7 @@ index 6d8f333..d5c6f33 100644
  
        if (signature_key)
  	{
-@@ -1570,15 +1569,19 @@ static int verify_one (BODY *sigbdy, STATE *s,
+@@ -1570,15 +1572,19 @@ static int verify_one (BODY *sigbdy, STATE *s,
  	  signature_key = NULL;
  	}
  
@@ -9198,7 +9319,7 @@ index 6d8f333..d5c6f33 100644
      }
  
    if (!badsig)
-@@ -1606,7 +1609,7 @@ static int verify_one (BODY *sigbdy, STATE *s,
+@@ -1606,7 +1612,7 @@ static int verify_one (BODY *sigbdy, STATE *s,
  	    snprintf (buf, sizeof (buf),
  		      _("*** Begin Notation (signature by: %s) ***\n"),
  		      signature->fpr);
@@ -9207,7 +9328,7 @@ index 6d8f333..d5c6f33 100644
  	    for (notation = signature->notations; notation;
                   notation = notation->next)
  	    {
-@@ -1615,18 +1618,18 @@ static int verify_one (BODY *sigbdy, STATE *s,
+@@ -1615,18 +1621,18 @@ static int verify_one (BODY *sigbdy, STATE *s,
  
  	      if (notation->name)
  	      {
@@ -9231,7 +9352,7 @@ index 6d8f333..d5c6f33 100644
  	  }
  	}
        }
-@@ -2440,7 +2443,7 @@ int pgp_gpgme_application_handler (BODY *m, STATE *s)
+@@ -2440,7 +2446,7 @@ int pgp_gpgme_application_handler (BODY *m, STATE *s)
                    snprintf (errbuf, sizeof(errbuf)-1, 
                              _("Error: decryption/verification failed: %s\n"),
                              gpgme_strerror (err));
@@ -9240,7 +9361,7 @@ index 6d8f333..d5c6f33 100644
                  }
                else
                  { /* Decryption/Verification succeeded */
-@@ -2483,7 +2486,7 @@ int pgp_gpgme_application_handler (BODY *m, STATE *s)
+@@ -2483,7 +2489,7 @@ int pgp_gpgme_application_handler (BODY *m, STATE *s)
                    if (!tmpfname)
                      {
                        pgpout = NULL;
@@ -9249,7 +9370,7 @@ index 6d8f333..d5c6f33 100644
                      }
                    else
                      {
-@@ -2815,9 +2818,6 @@ static const char *crypt_entry_fmt (char *dest,
+@@ -2815,9 +2821,6 @@ static const char *crypt_entry_fmt (char *dest,
  	}
  	*p = 0;
  
@@ -9259,7 +9380,7 @@ index 6d8f333..d5c6f33 100644
          {
  	  time_t tt = 0;
  
-@@ -2826,11 +2826,13 @@ static const char *crypt_entry_fmt (char *dest,
+@@ -2826,11 +2829,13 @@ static const char *crypt_entry_fmt (char *dest,
  
            tm = localtime (&tt);
          }
@@ -9277,7 +9398,7 @@ index 6d8f333..d5c6f33 100644
  	snprintf (fmt, sizeof (fmt), "%%%ss", prefix);
  	snprintf (dest, destlen, fmt, buf2);
  	if (len > 0)
-@@ -3371,9 +3373,6 @@ static void print_key_info (gpgme_key_t key, FILE *fp)
+@@ -3371,9 +3376,6 @@ static void print_key_info (gpgme_key_t key, FILE *fp)
    int i;
    gpgme_user_id_t uid = NULL;
  
@@ -9287,7 +9408,7 @@ index 6d8f333..d5c6f33 100644
    is_pgp = key->protocol == GPGME_PROTOCOL_OpenPGP;
  
    for (idx = 0, uid = key->uids; uid; idx++, uid = uid->next)
-@@ -3613,9 +3612,6 @@ static void print_key_info (gpgme_key_t key, FILE *fp)
+@@ -3613,9 +3615,6 @@ static void print_key_info (gpgme_key_t key, FILE *fp)
            putc ('\n', fp);
          }
      }
@@ -9361,21 +9482,24 @@ index 7659fdc..ba2290a 100644
  	if (flags != msg->security)
  	{
 diff --git c/curs_lib.c w/curs_lib.c
-index 8b21c43..e829959 100644
+index 8b21c43..c5d2793 100644
 --- c/curs_lib.c
 +++ w/curs_lib.c
-@@ -44,6 +44,10 @@
+@@ -43,6 +43,13 @@
+ #ifdef HAVE_LANGINFO_YESEXPR
  #include <langinfo.h>
  #endif
- 
++#ifdef HAVE_ISWBLANK
++#include <wctype.h>
++#endif
++
 +#ifdef USE_NOTMUCH
 +#include "mutt_notmuch.h"
 +#endif
-+
+ 
  /* not possible to unget more than one char under some curses libs, and it
   * is impossible to unget function keys in SLang, so roll our own input
-  * buffering routines.
-@@ -125,9 +129,10 @@ event_t mutt_getch (void)
+@@ -125,9 +132,10 @@ event_t mutt_getch (void)
      return err;
    }
  
@@ -9388,7 +9512,7 @@ index 8b21c43..e829959 100644
      if (!isatty (0))
      {
        endwin ();
-@@ -419,6 +424,67 @@ void mutt_progress_init (progress_t* progress, const char *msg,
+@@ -419,6 +427,67 @@ void mutt_progress_init (progress_t* progress, const char *msg,
    mutt_progress_update (progress, 0, 0);
  }
  
@@ -9456,7 +9580,7 @@ index 8b21c43..e829959 100644
  void mutt_progress_update (progress_t* progress, long pos, int percent)
  {
    char posstr[SHORT_STRING];
-@@ -469,16 +535,16 @@ void mutt_progress_update (progress_t* progress, long pos, int percent)
+@@ -469,16 +538,16 @@ void mutt_progress_update (progress_t* progress, long pos, int percent)
  
      if (progress->size > 0)
      {
@@ -9478,7 +9602,7 @@ index 8b21c43..e829959 100644
      }
    }
  
-@@ -541,9 +607,13 @@ void mutt_reflow_windows (void)
+@@ -541,9 +610,13 @@ void mutt_reflow_windows (void)
    {
      memcpy (MuttSidebarWindow, MuttIndexWindow, sizeof (mutt_window_t));
      MuttSidebarWindow->cols = SidebarWidth;
@@ -9494,7 +9618,7 @@ index 8b21c43..e829959 100644
    }
  #endif
  }
-@@ -731,7 +801,9 @@ int mutt_do_pager (const char *banner,
+@@ -731,7 +804,9 @@ int mutt_do_pager (const char *banner,
    return rc;
  }
  
@@ -9505,7 +9629,7 @@ index 8b21c43..e829959 100644
  {
    event_t ch;
  
-@@ -754,8 +826,10 @@ int _mutt_enter_fname (const char *prompt, char *buf, size_t blen, int *redraw,
+@@ -754,8 +829,10 @@ int _mutt_enter_fname (const char *prompt, char *buf, size_t blen, int *redraw,
    {
      mutt_refresh ();
      buf[0] = 0;
@@ -9518,7 +9642,7 @@ index 8b21c43..e829959 100644
      *redraw = REDRAW_FULL;
    }
    else
-@@ -769,6 +843,10 @@ int _mutt_enter_fname (const char *prompt, char *buf, size_t blen, int *redraw,
+@@ -769,6 +846,10 @@ int _mutt_enter_fname (const char *prompt, char *buf, size_t blen, int *redraw,
        buf[0] = 0;
      MAYBE_REDRAW (*redraw);
      FREE (&pc);
@@ -9529,7 +9653,7 @@ index 8b21c43..e829959 100644
    }
  
    return 0;
-@@ -933,6 +1011,7 @@ void mutt_format_string (char *dest, size_t destlen,
+@@ -933,6 +1014,7 @@ void mutt_format_string (char *dest, size_t destlen,
    size_t k, k2;
    char scratch[MB_LEN_MAX];
    mbstate_t mbstate1, mbstate2;
@@ -9537,7 +9661,7 @@ index 8b21c43..e829959 100644
  
    memset(&mbstate1, 0, sizeof (mbstate1));
    memset(&mbstate2, 0, sizeof (mbstate2));
-@@ -948,8 +1027,15 @@ void mutt_format_string (char *dest, size_t destlen,
+@@ -948,8 +1030,15 @@ void mutt_format_string (char *dest, size_t destlen,
        k = (k == (size_t)(-1)) ? 1 : n;
        wc = replacement_char ();
      }
@@ -9554,7 +9678,7 @@ index 8b21c43..e829959 100644
      else
      {
  #ifdef HAVE_ISWBLANK
-@@ -1128,7 +1214,12 @@ size_t mutt_wstr_trunc (const char *src, size_t maxlen, size_t maxwid, size_t *w
+@@ -1128,7 +1217,12 @@ size_t mutt_wstr_trunc (const char *src, size_t maxlen, size_t maxwid, size_t *w
      cw = wcwidth (wc);
      /* hack because MUTT_TREE symbols aren't turned into characters
       * until rendered by print_enriched_string (#3364) */
@@ -9568,7 +9692,7 @@ index 8b21c43..e829959 100644
        cw = 1;
      else if (cw < 0)
        cw = 0;			/* unprintable wchar */
-@@ -1186,6 +1277,12 @@ int mutt_strwidth (const char *s)
+@@ -1186,6 +1280,12 @@ int mutt_strwidth (const char *s)
    memset (&mbstate, 0, sizeof (mbstate));
    for (w=0; n && (k = mbrtowc (&wc, s, n, &mbstate)); s += k, n -= k)
    {
@@ -9582,7 +9706,7 @@ index 8b21c43..e829959 100644
      {
        if (k == (size_t)(-1))
 diff --git c/curs_main.c w/curs_main.c
-index 8e0f52a..897c3d4 100644
+index 8e0f52a..d12f707 100644
 --- c/curs_main.c
 +++ w/curs_main.c
 @@ -22,6 +22,7 @@
@@ -9934,20 +10058,51 @@ index 8e0f52a..897c3d4 100644
  
    if (!attach_msg)
      mutt_buffy_check(1); /* force the buffy check after we enter the folder */
-@@ -577,6 +836,12 @@ int mutt_index_menu (void)
- 	  mutt_message _("New mail in this mailbox.");
- 	  if (option (OPTBEEPNEW))
- 	    beep ();
-+	  if (NewMailCmd)
+@@ -567,22 +826,38 @@ int mutt_index_menu (void)
+       }
+       else if (check == MUTT_NEW_MAIL || check == MUTT_REOPENED || check == MUTT_FLAGS)
+       {
+-	update_index (menu, Context, check, oldcount, index_hint);
+-
+ 	/* notify the user of new mail */
+ 	if (check == MUTT_REOPENED)
+ 	  mutt_error _("Mailbox was externally modified.  Flags may be wrong.");
+ 	else if (check == MUTT_NEW_MAIL)
+ 	{
+-	  mutt_message _("New mail in this mailbox.");
+-	  if (option (OPTBEEPNEW))
+-	    beep ();
++	  for (i = oldcount; i < Context->msgcount; i++)
 +	  {
-+	    char cmd[LONG_STRING];
-+	    menu_status_line(cmd, sizeof(cmd), menu, NONULL(NewMailCmd));
-+	    mutt_system(cmd);
++	    if (Context->hdrs[i]->read == 0)
++	    {
++	      mutt_message _("New mail in this mailbox.");
++	      if (option (OPTBEEPNEW))
++		beep ();
++	      if (NewMailCmd)
++	      {
++		char cmd[LONG_STRING];
++		menu_status_line(cmd, sizeof(cmd), menu, NONULL(NewMailCmd));
++		mutt_system(cmd);
++	      }
++	      break;
++	    }
 +	  }
  	} else if (check == MUTT_FLAGS)
  	  mutt_message _("Mailbox was externally modified.");
  
-@@ -603,6 +868,12 @@ int mutt_index_menu (void)
+ 	/* avoid the message being overwritten by buffy */
+ 	do_buffy_notify = 0;
+ 
++	int q = Context->quiet;
++	Context->quiet = 1;
++	update_index (menu, Context, check, oldcount, index_hint);
++	Context->quiet = q;
++
+ 	menu->redraw = REDRAW_FULL;
+ 	menu->max = Context->vcount;
+ 
+@@ -603,6 +878,12 @@ int mutt_index_menu (void)
           menu->redraw |= REDRAW_STATUS;
           if (option (OPTBEEPNEW))
             beep();
@@ -9960,7 +10115,7 @@ index 8e0f52a..897c3d4 100644
         }
       }
       else
-@@ -647,7 +918,7 @@ int mutt_index_menu (void)
+@@ -647,7 +928,7 @@ int mutt_index_menu (void)
  	menu_status_line (buf, sizeof (buf), menu, NONULL (Status));
          mutt_window_move (MuttStatusWindow, 0, 0);
  	SETCOLOR (MT_COLOR_STATUS);
@@ -9969,7 +10124,7 @@ index 8e0f52a..897c3d4 100644
  	NORMAL_COLOR;
  	menu->redraw &= ~REDRAW_STATUS;
  	if (option(OPTTSENABLED) && TSSupported)
-@@ -696,8 +967,10 @@ int mutt_index_menu (void)
+@@ -696,8 +977,10 @@ int mutt_index_menu (void)
  
        dprint(4, (debugfile, "mutt_index_menu[%d]: Got op %d\n", __LINE__, op));
  
@@ -9981,7 +10136,7 @@ index 8e0f52a..897c3d4 100644
  
        mutt_curs_set (1);
  
-@@ -773,6 +1046,15 @@ int mutt_index_menu (void)
+@@ -773,6 +1056,15 @@ int mutt_index_menu (void)
        mutt_curs_set (1);	/* fallback from the pager */
      }
  
@@ -9997,7 +10152,7 @@ index 8e0f52a..897c3d4 100644
      switch (op)
      {
  
-@@ -823,6 +1105,161 @@ int mutt_index_menu (void)
+@@ -823,6 +1115,161 @@ int mutt_index_menu (void)
  	menu_current_bottom (menu);
  	break;
  
@@ -10159,7 +10314,7 @@ index 8e0f52a..897c3d4 100644
        case OP_JUMP:
  
  	CHECK_MSGCOUNT;
-@@ -919,12 +1356,35 @@ int mutt_index_menu (void)
+@@ -919,12 +1366,35 @@ int mutt_index_menu (void)
  	}
          break;
  
@@ -10196,7 +10351,7 @@ index 8e0f52a..897c3d4 100644
  	{
  	  if (menu->oldcurrent >= 0)
  	  {
-@@ -1072,6 +1532,12 @@ int mutt_index_menu (void)
+@@ -1072,6 +1542,12 @@ int mutt_index_menu (void)
  	  menu->redraw = REDRAW_INDEX | REDRAW_STATUS;
  	break;
  
@@ -10209,7 +10364,7 @@ index 8e0f52a..897c3d4 100644
  	/* --------------------------------------------------------------------
  	 * The following operations can be performed inside of the pager.
  	 */
-@@ -1165,22 +1631,175 @@ int mutt_index_menu (void)
+@@ -1165,22 +1641,175 @@ int mutt_index_menu (void)
  	  menu->redraw = REDRAW_FULL;
  	break;
  
@@ -10393,7 +10548,7 @@ index 8e0f52a..897c3d4 100644
            cp = _("Open mailbox");
  
  	buf[0] = '\0';
-@@ -1202,10 +1821,45 @@ int mutt_index_menu (void)
+@@ -1202,10 +1831,45 @@ int mutt_index_menu (void)
            if (!path || !*path)
              break;
            strncpy (buf, path, sizeof (buf));
@@ -10439,7 +10594,7 @@ index 8e0f52a..897c3d4 100644
  	  mutt_buffy (buf, sizeof (buf));
  
            if (mutt_enter_fname (cp, buf, sizeof (buf), &menu->redraw, 1) == -1)
-@@ -1218,6 +1872,10 @@ int mutt_index_menu (void)
+@@ -1218,6 +1882,10 @@ int mutt_index_menu (void)
              else
                break;
            }
@@ -10450,7 +10605,7 @@ index 8e0f52a..897c3d4 100644
  	  if (!buf[0])
  	  {
              mutt_window_clearline (MuttMessageWindow, 0);
-@@ -1225,65 +1883,16 @@ int mutt_index_menu (void)
+@@ -1225,65 +1893,16 @@ int mutt_index_menu (void)
  	  }
  	}
  
@@ -10523,7 +10678,24 @@ index 8e0f52a..897c3d4 100644
  	break;
  
        case OP_DISPLAY_MESSAGE:
-@@ -1331,7 +1940,7 @@ int mutt_index_menu (void)
+@@ -1310,6 +1929,7 @@ int mutt_index_menu (void)
+ 
+ 	if (option (OPTPGPAUTODEC) && (tag || !(CURHDR->security & PGP_TRADITIONAL_CHECKED)))
+ 	  mutt_check_traditional_pgp (tag ? NULL : CURHDR, &menu->redraw);
++	int index_hint = Context->hdrs[Context->v2r[menu->current]]->index;
+ 	if ((op = mutt_display_message (CURHDR)) == -1)
+ 	{
+ 	  unset_option (OPTNEEDRESORT);
+@@ -1318,6 +1938,8 @@ int mutt_index_menu (void)
+ 
+ 	menu->menu = MENU_PAGER;
+  	menu->oldcurrent = menu->current;
++	update_index (menu, Context, MUTT_NEW_MAIL, Context->msgcount, index_hint);
++
+ 	continue;
+ 
+       case OP_EXIT:
+@@ -1331,7 +1953,7 @@ int mutt_index_menu (void)
  
  	if ((menu->menu == MENU_MAIN)
  	    && (query_quadoption (OPT_QUIT,
@@ -10532,7 +10704,7 @@ index 8e0f52a..897c3d4 100644
  	{
  	  if (Context)
  	  {
-@@ -1347,6 +1956,7 @@ int mutt_index_menu (void)
+@@ -1347,6 +1969,7 @@ int mutt_index_menu (void)
  	CHECK_MSGCOUNT;
          CHECK_VISIBLE;
  	CHECK_READONLY;
@@ -10540,7 +10712,7 @@ index 8e0f52a..897c3d4 100644
  
          if ((Sort & SORT_MASK) != SORT_THREADS)
  	  mutt_error _("Threading is not enabled.");
-@@ -1382,7 +1992,7 @@ int mutt_index_menu (void)
+@@ -1382,7 +2005,7 @@ int mutt_index_menu (void)
          CHECK_VISIBLE;
  	CHECK_READONLY;
          /* L10N: CHECK_ACL */
@@ -10549,7 +10721,7 @@ index 8e0f52a..897c3d4 100644
  
          if ((Sort & SORT_MASK) != SORT_THREADS)
  	  mutt_error _("Threading is not enabled.");
-@@ -1996,21 +2606,28 @@ int mutt_index_menu (void)
+@@ -1996,21 +2619,28 @@ int mutt_index_menu (void)
  
        case OP_DELETE_THREAD:
        case OP_DELETE_SUBTHREAD:
@@ -10586,7 +10758,7 @@ index 8e0f52a..897c3d4 100644
  	  if (option (OPTRESOLVE))
  	    if ((menu->current = ci_next_undeleted (menu->current)) == -1)
  	      menu->current = menu->oldcurrent;
-@@ -2018,6 +2635,20 @@ int mutt_index_menu (void)
+@@ -2018,6 +2648,20 @@ int mutt_index_menu (void)
  	}
  	break;
  
@@ -10607,7 +10779,7 @@ index 8e0f52a..897c3d4 100644
        case OP_DISPLAY_ADDRESS:
  
  	CHECK_MSGCOUNT;
-@@ -2079,6 +2710,22 @@ int mutt_index_menu (void)
+@@ -2079,6 +2723,22 @@ int mutt_index_menu (void)
  	menu->redraw = REDRAW_FULL;
  	break;
  
@@ -10630,7 +10802,7 @@ index 8e0f52a..897c3d4 100644
        case OP_LIST_REPLY:
  
  	CHECK_ATTACH;
-@@ -2224,6 +2871,39 @@ int mutt_index_menu (void)
+@@ -2224,6 +2884,39 @@ int mutt_index_menu (void)
          menu->redraw = REDRAW_FULL;
          break;
  
@@ -10670,7 +10842,7 @@ index 8e0f52a..897c3d4 100644
        case OP_REPLY:
  
  	CHECK_ATTACH;
-@@ -2363,12 +3043,21 @@ int mutt_index_menu (void)
+@@ -2363,12 +3056,21 @@ int mutt_index_menu (void)
          mutt_reflow_windows();
  	menu->redraw = REDRAW_FULL;
  	break;
@@ -10693,7 +10865,7 @@ index 8e0f52a..897c3d4 100644
      {
        mutt_clear_pager_position ();
 diff --git c/doc/Makefile.am w/doc/Makefile.am
-index bc8f856..2a42b83 100644
+index bc8f856..4f20c33 100644
 --- c/doc/Makefile.am
 +++ w/doc/Makefile.am
 @@ -14,7 +14,6 @@ noinst_PROGRAMS = makedoc
@@ -10753,21 +10925,26 @@ index bc8f856..2a42b83 100644
  	test x$(DOTLOCK_TARGET) = x || ./instdoc $(srcdir)/dotlock.man \
  		$(DESTDIR)$(mandir)/man1/mutt_dotlock.1
  	./instdoc muttrc.man $(DESTDIR)$(mandir)/man5/muttrc.5
-@@ -79,6 +91,9 @@ install-data-local: makedoc-all instdoc
- 	-for f in $(HTML_DOCFILES) ; do \
- 		$(INSTALL) -m 644 $$f $(DESTDIR)$(docdir) ; \
+@@ -75,9 +87,12 @@ install-data-local: makedoc-all instdoc
+ 	for f in $(srcdir_DOCFILES) ; do \
+ 		$(INSTALL) -m 644 $(srcdir)/$$f $(DESTDIR)$(docdir) ; \
  	done
-+	-for f in $(SAMPLE_MUTTRC) ; do \
-+		$(INSTALL) -m 644 $$f $(DESTDIR)$(docdir) ; \
+-	-$(INSTALL) -m 644 manual.txt $(DESTDIR)$(docdir)
++	-$(INSTALL) -m 644 $(srcdir)/manual.txt $(DESTDIR)$(docdir)
+ 	-for f in $(HTML_DOCFILES) ; do \
+-		$(INSTALL) -m 644 $$f $(DESTDIR)$(docdir) ; \
++		$(INSTALL) -m 644 $(srcdir)/$$f $(DESTDIR)$(docdir) ; \
 +	done
++	-for f in $(SAMPLE_MUTTRC) ; do \
++		$(INSTALL) -m 644 $(srcdir)/$$f $(DESTDIR)$(docdir) ; \
+ 	done
  	$(INSTALL) -m 644 Muttrc $(DESTDIR)$(sysconfdir)/Muttrc.dist
  	-if [ -f $(DESTDIR)$(pkgdatadir)/Muttrc ] ; then \
- 		mv $(DESTDIR)$(pkgdatadir)/Muttrc* $(DESTDIR)$(sysconfdir) ; \
 @@ -87,15 +102,16 @@ install-data-local: makedoc-all instdoc
  	elif [ ! -f $(DESTDIR)$(sysconfdir)/Muttrc ] ; then \
  		$(INSTALL) -m 644 Muttrc $(DESTDIR)$(sysconfdir) ; \
  	fi
-+	-$(INSTALL) -m 644 neomutt-syntax.vim $(DESTDIR)$(docdir)
++	-$(INSTALL) -m 644 $(srcdir)/neomutt-syntax.vim $(DESTDIR)$(docdir)
  
  uninstall-local:
 -	for f in mutt.1 mutt_dotlock.1 flea.1 muttbug.1 smime_keys.1 pgpewrap.1 pgpring.1; do \
@@ -10849,7 +11026,7 @@ index e2fadac..416ae9e 100644
      die "unknown key $binding" if $binding =~ /\\[^\\]|<|>/;
      die "unknown OP $op" unless $OPS{$op};
 diff --git c/doc/manual.xml.head w/doc/manual.xml.head
-index 46c152b..892aa70 100644
+index 46c152b..2164a81 100644
 --- c/doc/manual.xml.head
 +++ w/doc/manual.xml.head
 @@ -412,6 +412,594 @@ <sect2 id="intro-sidebar">
@@ -11934,7 +12111,7 @@ index 46c152b..892aa70 100644
  </para>
  
  <para>
-@@ -8129,288 +8946,4882 @@ <sect1 id="sending-mixmaster">
+@@ -8129,286 +8946,5037 @@ <sect1 id="sending-mixmaster">
  
  </sect1>
  
@@ -11942,7 +12119,7 @@ index 46c152b..892aa70 100644
 -  <title>Sidebar</title>
 -  <subtitle>Overview of mailboxes</subtitle>
 +<sect1 id="attach-headers-color">
-+  <title>attach-headers-color Feature</title>
++  <title>Attach Headers Color Feature</title>
 +  <subtitle>Color attachment headers using regexp, just like mail bodies</subtitle>
  
 -  <sect2 id="sidebar-intro">
@@ -12036,7 +12213,7 @@ index 46c152b..892aa70 100644
 -	</tbody>
 -      </tgroup>
 -    </table>
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
    </sect2>
  
 -  <sect2 id="sidebar-functions">
@@ -12172,7 +12349,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="color">Color command</link></para></listitem>
 +      <listitem><para><link linkend="regexp">Regular Expressions</link></para></listitem>
 +    </itemizedlist>
@@ -12192,7 +12369,7 @@ index 46c152b..892aa70 100644
 +</sect1>
 +
 +<sect1 id="compose-to-sender">
-+  <title>compose-to-sender Feature</title>
++  <title>Compose to Sender Feature</title>
 +  <subtitle>Send new mail to the sender of the current mail</subtitle>
 +
 +  <sect2 id="compose-to-sender-support">
@@ -12209,7 +12386,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="compose-to-sender-intro">
@@ -12304,7 +12481,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="compress-intro">
@@ -12619,7 +12796,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="compile-time-features">Compile-Time Features</link></para></listitem>
 +      <listitem><para><link linkend="regexp">Regular Expressions</link></para></listitem>
 +      <listitem><para><link linkend="tmpdir">$tmpdir</link></para></listitem>
@@ -12669,7 +12846,7 @@ index 46c152b..892aa70 100644
 +    </itemizedlist>
 +
 +    <para>
-+      This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.
++      This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.
 +    </para>
 +  </sect2>
 +
@@ -13004,7 +13181,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="index-format">$index_format</link></para></listitem>
 +      <listitem><para><link linkend="nested-if">nested-if patch</link></para></listitem>
 +      <listitem><para><literal>strftime(3)</literal></para></listitem>
@@ -13052,7 +13229,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="encrypt-to-self-intro">
@@ -13142,7 +13319,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +    </itemizedlist>
 +  </sect2>
 +
@@ -13185,7 +13362,7 @@ index 46c152b..892aa70 100644
 +      the option <literal>--disable-fmemopen</literal>
 +    </para>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="fmemopen-intro">
@@ -13217,7 +13394,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="compile-time-features">Compile-Time Features</link></para></listitem>
 +      <listitem><para><literal>fmemopen(3)</literal></para></listitem>
 +    </itemizedlist>
@@ -13238,7 +13415,7 @@ index 46c152b..892aa70 100644
 +</sect1>
 +
 +<sect1 id="forgotten-attachment">
-+  <title>forgotten-attachment Feature</title>
++  <title>Forgotten Attachment Feature</title>
 +  <subtitle>Alert user when (s)he forgets to attach a file to an outgoing email.</subtitle>
 +
 +  <sect2 id="forgotten-attachment-support">
@@ -13255,7 +13432,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="forgotten-attachment-intro">
@@ -13265,7 +13442,8 @@ index 46c152b..892aa70 100644
 +      The 'forgotten-attachment' patch provides a new setting for Mutt that
 +      alerts the user if the message body contains a certain keyword but there are
 +      no attachments added. This is meant to ensure that the user does not forget
-+      to attach a file after promising to do so in the mail.
++      to attach a file after promising to do so in the mail. The attachment keyword
++      will not be scanned in text matched by <link linkend="quote-regexp">$quote_regexp</link>.
 +    </para>
 +  </sect2>
 +
@@ -13338,7 +13516,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="attach-menu">The Attachment Menu</link></para></listitem>
 +      <listitem><para><link linkend="attachment-map">The Attachment Menu key mappings</link></para></listitem>
 +    </itemizedlist>
@@ -13355,6 +13533,7 @@ index 46c152b..892aa70 100644
 +    <listitem><para>Darshit Shah <email>darnir@gmail.com</email></para></listitem>
 +    <listitem><para>Richard Russon <email>rich@flatcap.org</email></para></listitem>
 +    <listitem><para>Johannes Wei&szlig;l <email>jargon@molb.org</email></para></listitem>
++    <listitem><para>Steven! Ragnar&ouml;k <email>steven@nuclearsandwich.com</email></para></listitem>
 +    </itemizedlist>
 +  </sect2>
 +</sect1>
@@ -13377,7 +13556,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="ifdef-intro">
@@ -13477,7 +13656,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +    </itemizedlist>
 +  </sect2>
 +
@@ -13515,7 +13694,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para><link linkend="status-color">status-color patch</link></para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="index-color-intro">
@@ -13670,7 +13849,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="regexp">Regular Expressions</link></para></listitem>
 +      <listitem><para><link linkend="patterns">Patterns</link></para></listitem>
 +      <listitem><para><link linkend="index-format">$index_format</link></para></listitem>
@@ -13716,7 +13895,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="initials-intro">
@@ -13781,7 +13960,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="index-format">$index_format</link></para></listitem>
 +      <listitem><para><link linkend="index-color">index-color patch</link></para></listitem>
 +      <listitem><para><link linkend="folder-hook">folder-hook</link></para></listitem>
@@ -13820,7 +13999,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="keywords-intro">
@@ -14005,7 +14184,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="index-format">$index_format</link></para></listitem>
 +      <listitem><para><link linkend="index-color">index-color patch</link></para></listitem>
 +      <listitem><para><link linkend="folder-hook">folder-hook</link></para></listitem>
@@ -14051,7 +14230,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para><ulink url="http://fallabs.com/kyotocabinet/">Kyoto Cabinet libraries</ulink></para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="kyoto-cabinet-intro">
@@ -14069,7 +14248,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="caching">Local Caching</link></para></listitem>
 +      <listitem><para><ulink url="http://fallabs.com/kyotocabinet/">Kyoto Cabinet</ulink></para></listitem>
 +    </itemizedlist>
@@ -14089,7 +14268,7 @@ index 46c152b..892aa70 100644
 +</sect1>
 +
 +<sect1 id="limit-current-thread">
-+  <title>Limit-Current-Thread Feature</title>
++  <title>Limit Current Thread Feature</title>
 +  <subtitle>Focus on one Email Thread</subtitle>
 +
 +  <sect2 id="limit-current-thread-support">
@@ -14106,7 +14285,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="limit-current-thread-intro">
@@ -14170,7 +14349,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +    </itemizedlist>
 +  </sect2>
 +
@@ -14206,7 +14385,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="lmdb-intro">
@@ -14229,7 +14408,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="caching">Local Caching</link></para></listitem>
 +    </itemizedlist>
 +  </sect2>
@@ -14250,7 +14429,7 @@ index 46c152b..892aa70 100644
 +</sect1>
 +
 +<sect1 id="multiple-fcc">
-+  <title>multiple-fcc Feature</title>
++  <title>Multiple FCC Feature</title>
 +  <subtitle>Save multiple copies of outgoing mail</subtitle>
 +
 +  <sect2 id="multiple-fcc-support">
@@ -14267,7 +14446,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="multiple-fcc-intro">
@@ -14295,7 +14474,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="record">$record</link></para></listitem>
 +      <listitem><para><link linkend="fcc-hook">fcc-hook</link></para></listitem>
 +    </itemizedlist>
@@ -14333,7 +14512,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="nested-if-intro">
@@ -14490,7 +14669,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="cond-date">cond-date patch</link></para></listitem>
 +      <listitem><para><link linkend="index-format">$index_format</link></para></listitem>
 +      <listitem><para><link linkend="status-format">$status_format</link></para></listitem>
@@ -14514,7 +14693,7 @@ index 46c152b..892aa70 100644
 +</sect1>
 +
 +<sect1 id="new-mail-hook">
-+  <title>new-mail Feature</title>
++  <title>New Mail Feature</title>
 +  <subtitle>Execute a command upon the receipt of new mail.</subtitle>
 +
 +  <sect2 id="new-mail-support">
@@ -14531,7 +14710,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="new-mail-intro">
@@ -14621,7 +14800,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="folder-hook">folder-hook</link></para></listitem>
 +    </itemizedlist>
 +  </sect2>
@@ -14667,7 +14846,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="nntp-intro">
@@ -15048,7 +15227,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="compile-time-features">Compile-Time Features</link></para></listitem>
 +    </itemizedlist>
 +  </sect2>
@@ -15091,7 +15270,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>Notmuch libraries</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="notmuch-intro">
@@ -15602,7 +15781,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="compile-time-features">Compile-Time Features</link></para></listitem>
 +    </itemizedlist>
 +  </sect2>
@@ -15661,7 +15840,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="progress-intro">
@@ -15716,7 +15895,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="color">Color command</link></para></listitem>
 +    </itemizedlist>
 +  </sect2>
@@ -15756,7 +15935,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="quasi-delete-intro">
@@ -15815,7 +15994,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="notmuch">notmuch patch</link></para></listitem>
 +    </itemizedlist>
 +  </sect2>
@@ -15836,8 +16015,7 @@ index 46c152b..892aa70 100644
 +
 +<sect1 id="reply-with-xorig-patch">
 +  <title>Reply With X-Original-To Feature</title>
-+  <subtitle>Adds a configuration variable to allow direct reply to a mail using X-Original-To header
-+      as a From: in the answer.
++  <subtitle>Direct reply to email using X-Original-To header
 +  </subtitle>
 +
 +  <sect2 id="reply-with-xorig-support">
@@ -15854,7 +16032,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="reply-with-xorig-intro">
@@ -15917,7 +16095,7 @@ index 46c152b..892aa70 100644
 +</sect1>
 +
 +<sect1 id="sensible-browser">
-+  <title>Sensible-Browser Feature</title>
++  <title>Sensible Browser Feature</title>
 +  <subtitle>Make the file browser behave</subtitle>
 +
 +  <sect2 id="sensible-browser-support">
@@ -15934,7 +16112,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="sensible-browser-intro">
@@ -16018,7 +16196,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="folder-format">$folder_format</link></para></listitem>
 +    </itemizedlist>
 +  </sect2>
@@ -16056,7 +16234,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="sidebar-intro">
@@ -16508,10 +16686,8 @@ index 46c152b..892aa70 100644
 +    <para>
 +      None
 +    </para>
-   </sect2>
- 
--  <sect2 id="sidebar-colors">
--    <title>Colors</title>
++  </sect2>
++
 +  <sect2 id="sidebar-credits">
 +    <title>Credits</title>
 +    <itemizedlist>
@@ -16529,11 +16705,9 @@ index 46c152b..892aa70 100644
 +    </itemizedlist>
 +  </sect2>
 +</sect1>
- 
--    <table id="table-sidebar-colors">
--      <title>Sidebar Colors</title>
++
 +<sect1 id="skip-quoted-patch">
-+  <title>Skip-Quoted Feature</title>
++  <title>Skip Quoted Feature</title>
 +  <subtitle>Leave some context visible</subtitle>
 +
 +  <sect2 id="skip-quoted-support">
@@ -16550,7 +16724,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="skip-quoted-intro">
@@ -16559,7 +16733,7 @@ index 46c152b..892aa70 100644
 +    <para>
 +      When viewing an email, the
 +      <literal>&lt;skip-to-quoted&gt;</literal> function (by default the
-+      <literal>S</literal> key) will scroll past any quoted text.
++      <literal>S</literal> key) will scroll past any email headers or quoted text.
 +      Sometimes, a little context is useful.
 +    </para>
 +
@@ -16573,46 +16747,7 @@ index 46c152b..892aa70 100644
 +    <title>Variables</title>
 +    <table id="table-skip-quoted-variables">
 +      <title>Skip-Quoted Variables</title>
-       <tgroup cols="3">
--	<thead>
--	  <row>
--	    <entry>Name</entry>
--	    <entry>Default Color</entry>
--	    <entry>Description</entry>
--	  </row>
--	</thead>
--	<tbody>
--	  <row>
--	    <entry><literal>sidebar_divider</literal></entry>
--	    <entry>default</entry>
--	    <entry>The dividing line between the Sidebar and the Index/Pager panels</entry>
--	  </row>
--	  <row>
--	    <entry><literal>sidebar_flagged</literal></entry>
--	    <entry>default</entry>
--	    <entry>Mailboxes containing flagged mail</entry>
--	  </row>
--	  <row>
--	    <entry><literal>sidebar_highlight</literal></entry>
--	    <entry>underline</entry>
--	    <entry>Cursor to select a mailbox</entry>
--	  </row>
--	  <row>
--	    <entry><literal>sidebar_indicator</literal></entry>
--	    <entry>mutt <literal>indicator</literal></entry>
--	    <entry>The mailbox open in the Index panel</entry>
--	  </row>
--	  <row>
--	    <entry><literal>sidebar_new</literal></entry>
--	    <entry>default</entry>
--	    <entry>Mailboxes containing new mail</entry>
--	  </row>
--	  <row>
--	    <entry><literal>sidebar_spoolfile</literal></entry>
--	    <entry>default</entry>
--	    <entry>Mailbox that receives incoming mail</entry>
--	  </row>
--	</tbody>
++      <tgroup cols="3">
 +        <thead>
 +          <row>
 +            <entry>Name</entry>
@@ -16627,8 +16762,8 @@ index 46c152b..892aa70 100644
 +            <entry>0</entry>
 +          </row>
 +        </tbody>
-       </tgroup>
-     </table>
++      </tgroup>
++    </table>
 +  </sect2>
 +
 +  <sect2 id="skip-quoted-muttrc">
@@ -16652,7 +16787,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +    </itemizedlist>
 +  </sect2>
 +
@@ -16676,67 +16811,24 @@ index 46c152b..892aa70 100644
 +
 +  <sect2 id="status-color-support">
 +    <title>Support</title>
- 
-     <para>
--    If the <literal>sidebar_indicator</literal> color isn't set, then the default Mutt
--    indicator color will be used (the color used in the index panel).
++
++    <para>
 +      To check if NeoMutt supports <quote>Status Color</quote>, look for
 +      <quote>patch-status-color</quote> in the version info.
 +      See: <xref linkend="mutt-patches"/>.
-     </para>
++    </para>
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
-   </sect2>
- 
--  <sect2 id="sidebar-sort">
--    <title>Sort</title>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++  </sect2>
++
 +  <sect2 id="status-color-intro">
 +    <title>Introduction</title>
- 
--    <table id="table-sidebar-sort">
--      <title>Sidebar Sort</title>
--      <tgroup cols="2">
--	<thead>
--	  <row>
--	    <entry>Sort</entry>
--	    <entry>Description</entry>
--	  </row>
--	</thead>
--	<tbody>
--	  <row>
--	    <entry><literal>alpha</literal></entry>
--	    <entry>Alphabetically by path</entry>
--	  </row>
--	  <row>
--	    <entry><literal>count</literal></entry>
--	    <entry>Total number of messages</entry>
--	  </row>
--	  <row>
--	    <entry><literal>flagged</literal></entry>
--	    <entry>Number of flagged messages</entry>
--	  </row>
--	  <row>
--	    <entry><literal>name</literal></entry>
--	    <entry>Alphabetically by path</entry>
--	  </row>
--	  <row>
--	    <entry><literal>new</literal></entry>
--	    <entry>Number of new messages</entry>
--	  </row>
--	  <row>
--	    <entry><literal>path</literal></entry>
--	    <entry>Alphabetically by path</entry>
--	  </row>
--	  <row>
--	    <entry><literal>unsorted</literal></entry>
--	    <entry>Do not resort the paths</entry>
--	  </row>
--	</tbody>
++
 +        <para>
 +    The <quote>status-color</quote> patch allows you to theme different
 +    parts of the status bar (also when it's used by the index).
@@ -16787,14 +16879,56 @@ index 46c152b..892aa70 100644
 +      With two parameters, Mutt will only color the num'th sub-match of
 +      the regex.
 +    </para>
-+  </sect2>
-+
+   </sect2>
+ 
+-  <sect2 id="sidebar-colors">
 +  <sect2 id="status-color-colors">
-+    <title>Colors</title>
-+
+     <title>Colors</title>
+ 
+-    <table id="table-sidebar-colors">
+-      <title>Sidebar Colors</title>
 +    <table id="table-status-color-colors">
 +      <title>Status Colors</title>
-+      <tgroup cols="3">
+       <tgroup cols="3">
+-	<thead>
+-	  <row>
+-	    <entry>Name</entry>
+-	    <entry>Default Color</entry>
+-	    <entry>Description</entry>
+-	  </row>
+-	</thead>
+-	<tbody>
+-	  <row>
+-	    <entry><literal>sidebar_divider</literal></entry>
+-	    <entry>default</entry>
+-	    <entry>The dividing line between the Sidebar and the Index/Pager panels</entry>
+-	  </row>
+-	  <row>
+-	    <entry><literal>sidebar_flagged</literal></entry>
+-	    <entry>default</entry>
+-	    <entry>Mailboxes containing flagged mail</entry>
+-	  </row>
+-	  <row>
+-	    <entry><literal>sidebar_highlight</literal></entry>
+-	    <entry>underline</entry>
+-	    <entry>Cursor to select a mailbox</entry>
+-	  </row>
+-	  <row>
+-	    <entry><literal>sidebar_indicator</literal></entry>
+-	    <entry>mutt <literal>indicator</literal></entry>
+-	    <entry>The mailbox open in the Index panel</entry>
+-	  </row>
+-	  <row>
+-	    <entry><literal>sidebar_new</literal></entry>
+-	    <entry>default</entry>
+-	    <entry>Mailboxes containing new mail</entry>
+-	  </row>
+-	  <row>
+-	    <entry><literal>sidebar_spoolfile</literal></entry>
+-	    <entry>default</entry>
+-	    <entry>Mailbox that receives incoming mail</entry>
+-	  </row>
+-	</tbody>
 +        <thead>
 +          <row>
 +            <entry>Name</entry>
@@ -16811,8 +16945,8 @@ index 46c152b..892aa70 100644
 +        </tbody>
        </tgroup>
      </table>
-   </sect2>
- 
++  </sect2>
++
 +  <sect2 id="status-color-muttrc">
 +    <title>Muttrc</title>
 +<screen>
@@ -16820,8 +16954,7 @@ index 46c152b..892aa70 100644
 +
 +# The 'status-color' feature allows you to theme different parts of
 +# the status bar (also when it's used by the index).
- 
--  <sect2 id="sidebar-see-also">
++
 +# For the examples below, set some defaults</emphasis>
 +set status_format='-%r-Mutt: %f [Msgs:%?M?%M/?%m%?n? New:%n?%?o? Old:%o?%?d? Del:%d?%?F? Flag:%F?%?t? Tag:%t?%?p? Post:%p?%?b? Inc:%b?%?l? %l?]---(%s/%S)-%&gt;-(%P)---'
 +set index_format='%4C %Z %{%b %d} %-15.15L (%?l?%4l&amp;%4c?) %s'
@@ -16870,17 +17003,17 @@ index 46c152b..892aa70 100644
 +  </sect2>
 +
 +  <sect2 id="status-color-see-also">
-     <title>See Also</title>
- 
-     <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++    <title>See Also</title>
++
++    <itemizedlist>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="compile-time-features">Compile-Time Features</link></para></listitem>
-       <listitem><para><link linkend="regexp">Regular Expressions</link></para></listitem>
-       <listitem><para><link linkend="patterns">Patterns</link></para></listitem>
++      <listitem><para><link linkend="regexp">Regular Expressions</link></para></listitem>
++      <listitem><para><link linkend="patterns">Patterns</link></para></listitem>
 +      <listitem><para><link linkend="index-color">index-color patch</link></para></listitem>
-       <listitem><para><link linkend="color">Color command</link></para></listitem>
-     </itemizedlist>
-   </sect2>
++      <listitem><para><link linkend="color">Color command</link></para></listitem>
++    </itemizedlist>
++  </sect2>
 +
 +  <sect2 id="status-color-known-bugs">
 +    <title>Known Bugs</title>
@@ -16904,24 +17037,67 @@ index 46c152b..892aa70 100644
 +
 +  <sect2 id="timeout-support">
 +    <title>Support</title>
-+
-+    <para>
+ 
+     <para>
+-    If the <literal>sidebar_indicator</literal> color isn't set, then the default Mutt
+-    indicator color will be used (the color used in the index panel).
 +      To check if NeoMutt supports <quote>timeout</quote>, look for
 +      <quote>patch-timeout</quote> in the version info.
 +      See: <xref linkend="mutt-patches"/>.
-+    </para>
+     </para>
 +
 +    <itemizedlist>
 +      <title>Dependencies:</title>
 +      <listitem><para>mutt-1.7.1</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
-+  </sect2>
-+
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
+   </sect2>
+ 
+-  <sect2 id="sidebar-sort">
+-    <title>Sort</title>
 +  <sect2 id="timeout-intro">
 +    <title>Introduction</title>
-+
+ 
+-    <table id="table-sidebar-sort">
+-      <title>Sidebar Sort</title>
+-      <tgroup cols="2">
+-	<thead>
+-	  <row>
+-	    <entry>Sort</entry>
+-	    <entry>Description</entry>
+-	  </row>
+-	</thead>
+-	<tbody>
+-	  <row>
+-	    <entry><literal>alpha</literal></entry>
+-	    <entry>Alphabetically by path</entry>
+-	  </row>
+-	  <row>
+-	    <entry><literal>count</literal></entry>
+-	    <entry>Total number of messages</entry>
+-	  </row>
+-	  <row>
+-	    <entry><literal>flagged</literal></entry>
+-	    <entry>Number of flagged messages</entry>
+-	  </row>
+-	  <row>
+-	    <entry><literal>name</literal></entry>
+-	    <entry>Alphabetically by path</entry>
+-	  </row>
+-	  <row>
+-	    <entry><literal>new</literal></entry>
+-	    <entry>Number of new messages</entry>
+-	  </row>
+-	  <row>
+-	    <entry><literal>path</literal></entry>
+-	    <entry>Alphabetically by path</entry>
+-	  </row>
+-	  <row>
+-	    <entry><literal>unsorted</literal></entry>
+-	    <entry>Do not resort the paths</entry>
+-	  </row>
+-	</tbody>
 +    <para>
 +      This feature implements a new hook that is called periodically when Mutt
 +      checks for new mail. This hook is called every <literal>$timeout</literal> seconds.
@@ -16961,7 +17137,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +      <listitem><para><link linkend="timeout">$timeout</link></para></listitem>
 +    </itemizedlist>
 +  </sect2>
@@ -16999,7 +17175,7 @@ index 46c152b..892aa70 100644
 +      <listitem><para>OpenSSL</para></listitem>
 +    </itemizedlist>
 +
-+    <para>This feature is part of the <ulink url="http://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
 +  </sect2>
 +
 +  <sect2 id="tls-sni-intro">
@@ -17036,7 +17212,7 @@ index 46c152b..892aa70 100644
 +    <title>See Also</title>
 +
 +    <itemizedlist>
-+      <listitem><para><ulink url="http://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
 +    </itemizedlist>
 +  </sect2>
 +
@@ -17053,10 +17229,168 @@ index 46c152b..892aa70 100644
 +    <listitem><para>Richard Russon <email>rich@flatcap.org</email></para></listitem>
 +    </itemizedlist>
 +  </sect2>
- </sect1>
++</sect1>
++
++<sect1 id="trash-folder">
++  <title>Trash Folder Feature</title>
++  <subtitle>Automatically move deleted emails to a trash bin</subtitle>
++
++  <sect2 id="trash-folder-support">
++    <title>Support</title>
++
++    <para>
++      To check if Mutt supports <quote>Trash Folder</quote>, look for
++      <quote>patch-trash</quote> in the version info.
++      See: <xref linkend="mutt-patches"/>.
++    </para>
++
++    <para>
++      If IMAP is enabled, this patch will use it
++    </para>
++
++    <itemizedlist>
++      <title>Dependencies:</title>
++      <listitem><para>mutt-1.7.1</para></listitem>
++      <listitem><para>IMAP support</para></listitem>
++    </itemizedlist>
++
++    <para>This feature is part of the <ulink url="https://www.neomutt.org/">NeoMutt Project</ulink>.</para>
++  </sect2>
++
++  <sect2 id="trash-folder-intro">
++    <title>Introduction</title>
++
++    <para>
++    In Mutt, when you <quote>delete</quote> an email it is first marked
++    deleted.  The email isn't really gone until
++    <link linkend="index-map">&lt;sync-mailbox&gt;</link> is called.
++    This happens when the user leaves the folder, or the function is called
++    manually.
++    </para>
++
++    <para>
++    After <literal>&lt;sync-mailbox&gt;</literal> has been called the email is gone forever.
++    </para>
++
++    <para>
++    The <link linkend="trash">$trash</link> variable defines a folder in
++    which to keep old emails.  As before, first you mark emails for
++    deletion.  When &lt;sync-mailbox&gt; is called the emails are moved to
++    the trash folder.
++    </para>
++
++    <para>
++    The <literal>$trash</literal> path can be either a full directory,
++    or be relative to the <link linkend="folder">$folder</link>
++    variable, like the <literal>mailboxes</literal> command.
++    </para>
++
++    <note>
++      <para>
++        Emails deleted from the trash folder are gone forever.
++      </para>
++    </note>
++  </sect2>
++
++  <sect2 id="trash-folder-variables">
++    <title>Variables</title>
++    <table id="table-trash-variables">
++      <title>Trash Variables</title>
++      <tgroup cols="3">
++        <thead>
++          <row>
++            <entry>Name</entry>
++            <entry>Type</entry>
++            <entry>Default</entry>
++          </row>
++        </thead>
++        <tbody>
++          <row>
++            <entry>trash</entry>
++            <entry>string</entry>
++            <entry>(none)</entry>
++          </row>
++        </tbody>
+       </tgroup>
+     </table>
+   </sect2>
  
- </chapter>
-@@ -8955,6 +14366,18 @@ <sect1 id="commands">
++  <sect2 id="trash-folder-functions">
++    <title>Functions</title>
++    <table id="table-trash-functions">
++      <title>Trash Functions</title>
++      <tgroup cols="4">
++        <thead>
++          <row>
++            <entry>Menus</entry>
++            <entry>Default Key</entry>
++            <entry>Function</entry>
++            <entry>Description</entry>
++          </row>
++        </thead>
++        <tbody>
++          <row>
++            <entry>index,pager</entry>
++            <entry>(none)</entry>
++            <entry><literal>&lt;purge-message&gt;</literal></entry>
++            <entry>really delete the current entry, bypassing the trash folder</entry>
++          </row>
++        </tbody>
++      </tgroup>
++    </table>
++  </sect2>
+ 
+-  <sect2 id="sidebar-see-also">
++  <sect2 id="trash-folder-muttrc">
++    <title>Muttrc</title>
++<screen>
++<emphasis role="comment"># Example Mutt config file for the 'trash' feature.
++ 
++# This feature defines a new 'trash' folder.
++# When mail is deleted it will be moved to this folder.
++ 
++# Folder in which to put deleted emails</emphasis>
++set trash='+Trash'
++set trash='/home/flatcap/Mail/Trash'
++ 
++<emphasis role="comment"># The default delete key 'd' will move an email to the 'trash' folder
++# Bind 'D' to REALLY delete an email</emphasis>
++bind index D purge-message
++ 
++<emphasis role="comment"># Note: Deleting emails from the 'trash' folder will REALLY delete them.
++ 
++# vim: syntax=muttrc</emphasis>
++</screen>
++  </sect2>
++
++  <sect2 id="trash-folder-see-also">
+     <title>See Also</title>
+ 
+     <itemizedlist>
+-      <listitem><para><link linkend="regexp">Regular Expressions</link></para></listitem>
+-      <listitem><para><link linkend="patterns">Patterns</link></para></listitem>
+-      <listitem><para><link linkend="color">Color command</link></para></listitem>
++      <listitem><para><ulink url="https://www.neomutt.org/">NeoMutt Project</ulink></para></listitem>
++      <listitem><para><link linkend="folder-hook">folder-hook</link></para></listitem>
++    </itemizedlist>
++  </sect2>
++
++  <sect2 id="trash-folder-known-bugs">
++    <title>Known Bugs</title>
++    <para>None</para>
++  </sect2>
++
++  <sect2 id="trash-folder-credits">
++    <title>Credits</title>
++    <itemizedlist>
++    <listitem><para>Cedric Duval <email>cedricduval@free.fr</email></para></listitem>
++    <listitem><para>Benjamin Kuperman <email>kuperman@acm.org</email></para></listitem>
++    <listitem><para>Paul Miller <email>paul@voltar.org</email></para></listitem>
++    <listitem><para>Richard Russon <email>rich@flatcap.org</email></para></listitem>
+     </itemizedlist>
+   </sect2>
+ </sect1>
+@@ -8955,6 +14523,18 @@ <sect1 id="commands">
  
  <listitem>
  <cmdsynopsis>
@@ -17075,7 +17409,7 @@ index 46c152b..892aa70 100644
  <command><link linkend="auto-view">auto_view</link></command>
  <arg choice="plain">
  <replaceable>mimetype</replaceable>
-@@ -9016,6 +14439,18 @@ <sect1 id="commands">
+@@ -9016,6 +14596,18 @@ <sect1 id="commands">
  
  <listitem>
  <cmdsynopsis>
@@ -17094,7 +17428,7 @@ index 46c152b..892aa70 100644
  <command><link linkend="color">color</link></command>
  <arg choice="plain">
  <replaceable class="parameter">object</replaceable>
-@@ -9085,6 +14520,18 @@ <sect1 id="commands">
+@@ -9085,6 +14677,18 @@ <sect1 id="commands">
  
  <listitem>
  <cmdsynopsis>
@@ -17113,7 +17447,7 @@ index 46c152b..892aa70 100644
  <command><link linkend="crypt-hook">crypt-hook</link></command>
  <arg choice="plain">
  <replaceable class="parameter">regexp</replaceable>
-@@ -9206,6 +14653,18 @@ <sect1 id="commands">
+@@ -9206,6 +14810,18 @@ <sect1 id="commands">
  
  <listitem>
  <cmdsynopsis>
@@ -17132,7 +17466,7 @@ index 46c152b..892aa70 100644
  <command><link linkend="ignore">ignore</link></command>
  <arg choice="plain">
  <replaceable class="parameter">pattern</replaceable>
-@@ -9571,13 +15030,24 @@ <sect1 id="commands">
+@@ -9571,13 +15187,24 @@ <sect1 id="commands">
  <cmdsynopsis>
  <command><link linkend="sidebar-whitelist">sidebar_whitelist</link></command>
  <arg choice="plain">
@@ -20944,7 +21278,7 @@ index fb6a561..870e054 100644
 +}
  #endif
 diff --git c/hdrline.c w/hdrline.c
-index eef19e6..5a7695f 100644
+index eef19e6..cedaa92 100644
 --- c/hdrline.c
 +++ w/hdrline.c
 @@ -36,6 +36,10 @@
@@ -20997,7 +21331,17 @@ index eef19e6..5a7695f 100644
  static void make_from (ENVELOPE *hdr, char *buf, size_t len, int do_lists)
  {
    int me;
-@@ -211,7 +247,10 @@ int mutt_user_is_recipient (HEADER *h)
+@@ -171,6 +207,9 @@ static int user_in_addr (ADDRESS *a)
+  */
+ int mutt_user_is_recipient (HEADER *h)
+ {
++  if (!h || !h->env)
++    return 0;
++
+   ENVELOPE *env = h->env;
+ 
+   if(!h->recip_valid)
+@@ -211,7 +250,10 @@ int mutt_user_is_recipient (HEADER *h)
   * %E = number of messages in current thread
   * %f = entire from line
   * %F = like %n, unless from self
@@ -21008,7 +21352,7 @@ index eef19e6..5a7695f 100644
   * %l = number of lines in the message
   * %L = like %F, except `lists' are displayed first
   * %m = number of messages in the mailbox
-@@ -227,6 +266,8 @@ int mutt_user_is_recipient (HEADER *h)
+@@ -227,6 +269,8 @@ int mutt_user_is_recipient (HEADER *h)
   * %T = $to_chars
   * %u = user (login) name of author
   * %v = first name of author, unless from self
@@ -21017,7 +21361,7 @@ index eef19e6..5a7695f 100644
   * %X = number of MIME attachments
   * %y = `x-label:' field (if present)
   * %Y = `x-label:' field (if present, tree unfolded, and != parent's x-label)
-@@ -256,6 +297,7 @@ hdr_format_str (char *dest,
+@@ -256,6 +300,7 @@ hdr_format_str (char *dest,
  #define THREAD_NEW (threads && hdr->collapsed && hdr->num_hidden > 1 && mutt_thread_contains_unread (ctx, hdr) == 1)
  #define THREAD_OLD (threads && hdr->collapsed && hdr->num_hidden > 1 && mutt_thread_contains_unread (ctx, hdr) == 2)
    size_t len;
@@ -21025,7 +21369,7 @@ index eef19e6..5a7695f 100644
  
    hdr = hfi->hdr;
    ctx = hfi->ctx;
-@@ -266,18 +308,20 @@ hdr_format_str (char *dest,
+@@ -266,18 +311,20 @@ hdr_format_str (char *dest,
      case 'A':
        if(hdr->env->reply_to && hdr->env->reply_to->mailbox)
        {
@@ -21051,7 +21395,7 @@ index eef19e6..5a7695f 100644
        break;
  
      case 'B':
-@@ -307,12 +351,16 @@ hdr_format_str (char *dest,
+@@ -307,12 +354,16 @@ hdr_format_str (char *dest,
        break;
      
      case 'c':
@@ -21070,7 +21414,7 @@ index eef19e6..5a7695f 100644
        snprintf (dest, destlen, fmt, hdr->msgno + 1);
        break;
  
-@@ -328,6 +376,98 @@ hdr_format_str (char *dest,
+@@ -328,6 +379,98 @@ hdr_format_str (char *dest,
  	const char *cp;
  	struct tm *tm; 
  	time_t T;
@@ -21169,7 +21513,7 @@ index eef19e6..5a7695f 100644
  
  	p = dest;
  
-@@ -383,9 +523,6 @@ hdr_format_str (char *dest,
+@@ -383,9 +526,6 @@ hdr_format_str (char *dest,
  	}
  	*p = 0;
  
@@ -21179,7 +21523,7 @@ index eef19e6..5a7695f 100644
  	if (op == '[' || op == 'D')
  	  tm = localtime (&hdr->date_sent);
  	else if (op == '(')
-@@ -406,12 +543,16 @@ hdr_format_str (char *dest,
+@@ -406,12 +546,16 @@ hdr_format_str (char *dest,
  	  tm = gmtime (&T);
  	}
  
@@ -21200,7 +21544,7 @@ index eef19e6..5a7695f 100644
  	if (len > 0 && op != 'd' && op != 'D') /* Skip ending op */
  	  src = cp + 1;
        }
-@@ -441,13 +582,28 @@ hdr_format_str (char *dest,
+@@ -441,13 +585,28 @@ hdr_format_str (char *dest,
      case 'F':
        if (!optional)
        {
@@ -21230,7 +21574,7 @@ index eef19e6..5a7695f 100644
      case 'H':
        /* (Hormel) spam score */
        if (optional)
-@@ -460,15 +616,45 @@ hdr_format_str (char *dest,
+@@ -460,15 +619,45 @@ hdr_format_str (char *dest,
  
        break;
  
@@ -21277,7 +21621,7 @@ index eef19e6..5a7695f 100644
        }
        else if (hdr->lines <= 0)
          optional = 0;
-@@ -477,8 +663,10 @@ hdr_format_str (char *dest,
+@@ -477,8 +666,10 @@ hdr_format_str (char *dest,
      case 'L':
        if (!optional)
        {
@@ -21289,7 +21633,7 @@ index eef19e6..5a7695f 100644
        }
        else if (!check_for_mailing_list (hdr->env->to, NULL, NULL, 0) &&
  	       !check_for_mailing_list (hdr->env->cc, NULL, NULL, 0))
-@@ -498,7 +686,9 @@ hdr_format_str (char *dest,
+@@ -498,7 +689,9 @@ hdr_format_str (char *dest,
        break;
  
      case 'n':
@@ -21300,7 +21644,7 @@ index eef19e6..5a7695f 100644
        break;
  
      case 'N':
-@@ -533,10 +723,18 @@ hdr_format_str (char *dest,
+@@ -533,10 +726,18 @@ hdr_format_str (char *dest,
        snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
        if (!optional)
        {
@@ -21321,7 +21665,7 @@ index eef19e6..5a7695f 100644
  	else
  	  *dest = '\0';
        }
-@@ -573,7 +771,9 @@ hdr_format_str (char *dest,
+@@ -573,7 +774,9 @@ hdr_format_str (char *dest,
        {
  	if (flags & MUTT_FORMAT_FORCESUBJ)
  	{
@@ -21332,7 +21676,7 @@ index eef19e6..5a7695f 100644
  	  snprintf (buf2, sizeof (buf2), "%s%s", hdr->tree, dest);
  	  mutt_format_s_tree (dest, destlen, prefix, buf2);
  	}
-@@ -581,7 +781,11 @@ hdr_format_str (char *dest,
+@@ -581,7 +784,11 @@ hdr_format_str (char *dest,
  	  mutt_format_s_tree (dest, destlen, prefix, hdr->tree);
        }
        else
@@ -21345,7 +21689,7 @@ index eef19e6..5a7695f 100644
        break;
  
      case 'S':
-@@ -604,8 +808,11 @@ hdr_format_str (char *dest,
+@@ -604,8 +811,11 @@ hdr_format_str (char *dest,
  
        /* FOO - this is probably unsafe, but we are not likely to have such
  	 a short string passed into this routine */
@@ -21359,7 +21703,7 @@ index eef19e6..5a7695f 100644
        break;
  
      case 't':
-@@ -656,6 +863,22 @@ hdr_format_str (char *dest,
+@@ -656,6 +866,22 @@ hdr_format_str (char *dest,
        mutt_format_s (dest, destlen, prefix, buf2);
        break;
  
@@ -21382,7 +21726,7 @@ index eef19e6..5a7695f 100644
      case 'Z':
      
        ch = ' ';
-@@ -677,7 +900,9 @@ hdr_format_str (char *dest,
+@@ -677,7 +903,9 @@ hdr_format_str (char *dest,
  		hdr->tagged ? '*' :
  		(hdr->flagged ? '!' :
  		 (Tochars && ((i = mutt_user_is_recipient (hdr)) < mutt_strlen (Tochars)) ? Tochars[i] : ' ')));
@@ -21393,7 +21737,7 @@ index eef19e6..5a7695f 100644
        break;
  
      case 'X':
-@@ -695,40 +920,101 @@ hdr_format_str (char *dest,
+@@ -695,40 +923,101 @@ hdr_format_str (char *dest,
  
       case 'y':
         if (optional)
@@ -21469,16 +21813,16 @@ index eef19e6..5a7695f 100644
 -      if (optional)
 -	optional = i;
 +      break;
- 
--      if (i)
--        mutt_format_s (dest, destlen, prefix, NONULL (hdr->env->x_label));
++
 +#ifdef USE_NOTMUCH
 +    case 'G':
 +    {
 +      char *tag_transformed;
 +      char format[3];
 +      char *tag;
-+
+ 
+-      if (i)
+-        mutt_format_s (dest, destlen, prefix, NONULL (hdr->env->x_label));
 +      if (!optional)
 +      {
 +        format[0] = op;
@@ -22934,7 +23278,7 @@ index 0586638..b26fea1 100644
 +}
 +
 diff --git c/init.h w/init.h
-index 3c4256c..461bc6c 100644
+index 3c4256c..d6c8be6 100644
 --- c/init.h
 +++ w/init.h
 @@ -86,6 +86,15 @@ struct option_t
@@ -23435,7 +23779,19 @@ index 3c4256c..461bc6c 100644
    { "resolve",		DT_BOOL, R_NONE, OPTRESOLVE, 1 },
    /*
    ** .pp
-@@ -2692,6 +3012,28 @@ struct option_t MuttVars[] = {
+@@ -2667,7 +2987,10 @@ struct option_t MuttVars[] = {
+   ** .pp
+   ** Specifies the program and arguments used to deliver mail sent by Mutt.
+   ** Mutt expects that the specified program interprets additional
+-  ** arguments as recipient addresses.
++  ** arguments as recipient addresses.  Mutt appends all recipients after
++  ** adding a \fC--\fP delimiter (if not already present).  Additional
++  ** flags, such as for $$use_8bitmime, $$use_envelope_from,
++  ** $$dsn_notify, or $$dsn_return will be added before the delimiter.
+   */
+   { "sendmail_wait",	DT_NUM,  R_NONE, UL &SendmailWait, 0 },
+   /*
+@@ -2692,6 +3015,28 @@ struct option_t MuttVars[] = {
    ** Command to use when spawning a subshell.  By default, the user's login
    ** shell from \fC/etc/passwd\fP is used.
    */
@@ -23464,7 +23820,7 @@ index 3c4256c..461bc6c 100644
  #ifdef USE_SIDEBAR
    { "sidebar_delim_chars", DT_STR, R_SIDEBAR, UL &SidebarDelimChars, UL "/." },
    /*
-@@ -2780,6 +3122,11 @@ struct option_t MuttVars[] = {
+@@ -2780,6 +3125,11 @@ struct option_t MuttVars[] = {
    ** \fC<sidebar-prev-new>\fP command is similarly affected, wrapping around to
    ** the end of the list.
    */
@@ -23476,7 +23832,7 @@ index 3c4256c..461bc6c 100644
    { "sidebar_short_path", DT_BOOL, R_SIDEBAR, OPTSIDEBARSHORTPATH, 0 },
    /*
    ** .pp
-@@ -2866,6 +3213,12 @@ struct option_t MuttVars[] = {
+@@ -2866,6 +3216,12 @@ struct option_t MuttVars[] = {
    ** replacing ``%s'' with the supplied string.
    ** For the default value, ``joe'' would be expanded to: ``~f joe | ~s joe''.
    */
@@ -23489,7 +23845,7 @@ index 3c4256c..461bc6c 100644
    { "sleep_time",	DT_NUM, R_NONE, UL &SleepTime, 1 },
    /*
    ** .pp
-@@ -2971,6 +3324,12 @@ struct option_t MuttVars[] = {
+@@ -2971,6 +3327,12 @@ struct option_t MuttVars[] = {
    ** possible \fCprintf(3)\fP-like sequences.
    ** (S/MIME only)
    */
@@ -23502,7 +23858,7 @@ index 3c4256c..461bc6c 100644
    { "smime_encrypt_with",	DT_STR,	 R_NONE, UL &SmimeCryptAlg, UL "aes256" },
    /*
    ** .pp
-@@ -3209,7 +3568,10 @@ struct option_t MuttVars[] = {
+@@ -3209,7 +3571,10 @@ struct option_t MuttVars[] = {
    ** entries are sorted alphabetically.  Valid values:
    ** .il
    ** .dd alpha (alphabetically)
@@ -23513,7 +23869,7 @@ index 3c4256c..461bc6c 100644
    ** .dd size
    ** .dd unsorted
    ** .ie
-@@ -3220,14 +3582,15 @@ struct option_t MuttVars[] = {
+@@ -3220,14 +3585,15 @@ struct option_t MuttVars[] = {
    { "sort_re",		DT_BOOL, R_INDEX|R_RESORT|R_RESORT_INIT, OPTSORTRE, 1 },
    /*
    ** .pp
@@ -23537,7 +23893,7 @@ index 3c4256c..461bc6c 100644
    */
    { "spam_separator",   DT_STR, R_NONE, UL &SpamSep, UL "," },
    /*
-@@ -3377,7 +3740,7 @@ struct option_t MuttVars[] = {
+@@ -3377,7 +3743,7 @@ struct option_t MuttVars[] = {
    ** message mode (Certain operations like composing a new mail, replying,
    ** forwarding, etc. are not permitted in this mode).
    */
@@ -23546,7 +23902,7 @@ index 3c4256c..461bc6c 100644
    /*
    ** .pp
    ** Controls the format of the status line displayed in the ``index''
-@@ -3585,7 +3948,7 @@ struct option_t MuttVars[] = {
+@@ -3585,7 +3951,7 @@ struct option_t MuttVars[] = {
    ** Controls whether mutt tries to set the terminal status line and icon name.
    ** Most terminal emulators emulate the status line in the window title.
    */
@@ -23555,7 +23911,7 @@ index 3c4256c..461bc6c 100644
    /*
    ** .pp
    ** Controls the format of the terminal status line (or window title),
-@@ -3680,6 +4043,21 @@ struct option_t MuttVars[] = {
+@@ -3680,6 +4046,21 @@ struct option_t MuttVars[] = {
    ** Specifies the visual editor to invoke when the ``\fC~v\fP'' command is
    ** given in the built-in editor.
    */
@@ -23577,7 +23933,7 @@ index 3c4256c..461bc6c 100644
    { "wait_key",		DT_BOOL, R_NONE, OPTWAITKEY, 1 },
    /*
    ** .pp
-@@ -3763,6 +4141,28 @@ struct option_t MuttVars[] = {
+@@ -3763,6 +4144,28 @@ struct option_t MuttVars[] = {
    {"xterm_set_titles",	DT_SYN,  R_NONE, UL "ts_enabled", 0 },
    /*
    */
@@ -23606,7 +23962,7 @@ index 3c4256c..461bc6c 100644
    /*--*/
    { NULL, 0, 0, 0, 0 }
  };
-@@ -3779,6 +4179,7 @@ const struct mapping_t SortMethods[] = {
+@@ -3779,6 +4182,7 @@ const struct mapping_t SortMethods[] = {
    { "to",		SORT_TO },
    { "score",		SORT_SCORE },
    { "spam",		SORT_SPAM },
@@ -23614,7 +23970,7 @@ index 3c4256c..461bc6c 100644
    { NULL,               0 }
  };
  
-@@ -3798,13 +4199,17 @@ const struct mapping_t SortAuxMethods[] = {
+@@ -3798,13 +4202,17 @@ const struct mapping_t SortAuxMethods[] = {
    { "to",		SORT_TO },
    { "score",		SORT_SCORE },
    { "spam",		SORT_SPAM },
@@ -23632,7 +23988,7 @@ index 3c4256c..461bc6c 100644
    { "size",	SORT_SIZE },
    { "unsorted",	SORT_ORDER },
    { NULL,       0 }
-@@ -3828,6 +4233,7 @@ const struct mapping_t SortKeyMethods[] = {
+@@ -3828,6 +4236,7 @@ const struct mapping_t SortKeyMethods[] = {
  const struct mapping_t SortSidebarMethods[] = {
    { "alpha",		SORT_PATH },
    { "count",		SORT_COUNT },
@@ -23640,7 +23996,7 @@ index 3c4256c..461bc6c 100644
    { "flagged",		SORT_FLAGGED },
    { "mailbox-order",	SORT_ORDER },
    { "name",		SORT_PATH },
-@@ -3850,6 +4256,8 @@ static int parse_lists (BUFFER *, BUFFER *, unsigned long, BUFFER *);
+@@ -3850,6 +4259,8 @@ static int parse_lists (BUFFER *, BUFFER *, unsigned long, BUFFER *);
  static int parse_unlists (BUFFER *, BUFFER *, unsigned long, BUFFER *);
  static int parse_alias (BUFFER *, BUFFER *, unsigned long, BUFFER *);
  static int parse_unalias (BUFFER *, BUFFER *, unsigned long, BUFFER *);
@@ -23649,7 +24005,7 @@ index 3c4256c..461bc6c 100644
  static int parse_ignore (BUFFER *, BUFFER *, unsigned long, BUFFER *);
  static int parse_unignore (BUFFER *, BUFFER *, unsigned long, BUFFER *);
  static int parse_source (BUFFER *, BUFFER *, unsigned long, BUFFER *);
-@@ -3861,13 +4269,16 @@ static int parse_unsubscribe (BUFFER *, BUFFER *, unsigned long, BUFFER *);
+@@ -3861,13 +4272,16 @@ static int parse_unsubscribe (BUFFER *, BUFFER *, unsigned long, BUFFER *);
  static int parse_attachments (BUFFER *, BUFFER *, unsigned long, BUFFER *);
  static int parse_unattachments (BUFFER *, BUFFER *, unsigned long, BUFFER *);
  
@@ -23667,7 +24023,7 @@ index 3c4256c..461bc6c 100644
  
  struct command_t
  {
-@@ -3897,9 +4308,17 @@ const struct command_t Commands[] = {
+@@ -3897,9 +4311,17 @@ const struct command_t Commands[] = {
    { "fcc-hook",		mutt_parse_hook,	MUTT_FCCHOOK },
    { "fcc-save-hook",	mutt_parse_hook,	MUTT_FCCHOOK | MUTT_SAVEHOOK },
    { "folder-hook",	mutt_parse_hook,	MUTT_FOLDERHOOK },
@@ -23685,7 +24041,7 @@ index 3c4256c..461bc6c 100644
  #ifdef HAVE_ICONV
    { "iconv-hook",	mutt_parse_hook,	MUTT_ICONVHOOK },
  #endif
-@@ -3908,6 +4327,11 @@ const struct command_t Commands[] = {
+@@ -3908,6 +4330,11 @@ const struct command_t Commands[] = {
    { "macro",		mutt_parse_macro,	0 },
    { "mailboxes",	mutt_parse_mailboxes,	MUTT_MAILBOXES },
    { "unmailboxes",	mutt_parse_mailboxes,	MUTT_UNMAILBOXES },
@@ -23697,7 +24053,7 @@ index 3c4256c..461bc6c 100644
    { "mailto_allow",	parse_list,		UL &MailtoAllow },
    { "unmailto_allow",	parse_unlist,		UL &MailtoAllow },
    { "message-hook",	mutt_parse_hook,	MUTT_MESSAGEHOOK },
-@@ -3928,11 +4352,13 @@ const struct command_t Commands[] = {
+@@ -3928,11 +4355,13 @@ const struct command_t Commands[] = {
    { "set",		parse_set,		0 },
  #ifdef USE_SIDEBAR
    { "sidebar_whitelist",parse_list,		UL &SidebarWhitelist },
@@ -23780,7 +24136,7 @@ index 8b8b972..cd8c9a0 100644
  
    /* edit-to (default "t") hides generic tag-entry in Compose menu
 diff --git c/lib.c w/lib.c
-index 224232b..28c2937 100644
+index 224232b..6a93d43 100644
 --- c/lib.c
 +++ w/lib.c
 @@ -219,8 +219,10 @@ int safe_fsync_close (FILE **f)
@@ -23810,7 +24166,7 @@ index 224232b..28c2937 100644
    return 0;
  }
  
-@@ -1083,3 +1087,28 @@ int mutt_atol (const char *str, long *dst)
+@@ -1083,3 +1087,38 @@ int mutt_atol (const char *str, long *dst)
      return -1;
    return 0;
  }
@@ -23818,7 +24174,7 @@ index 224232b..28c2937 100644
 +int mutt_is_inbox (const char *path)
 +{
 +  size_t plen = mutt_strlen (path);
-+  return ((plen >= 5) && (mutt_strcasecmp (path + plen - 5, "inbox") == 0));
++  return ((plen >= 6) && (mutt_strcasecmp (path + plen - 6, "/inbox") == 0));
 +}
 +
 +int mutt_same_path (const char *a, const char *b)
@@ -23839,19 +24195,36 @@ index 224232b..28c2937 100644
 +  return ((a_len == (b_end - b)) && (mutt_strncasecmp (a, b, a_len) == 0));
 +}
 +
++char * strfcpy (char *dest, const char *src, size_t dlen)
++{
++  char *dest0 = dest;
++  while ((--dlen > 0) && (*src != '\0'))
++    *dest++ = *src++;
++
++  *dest = '\0';
++  return dest0;
++}
++
 diff --git c/lib.h w/lib.h
-index 84d33b5..120a0f0 100644
+index 84d33b5..2bae30e 100644
 --- c/lib.h
 +++ w/lib.h
-@@ -77,7 +77,7 @@
+@@ -77,7 +77,6 @@
  # define FREE(x) safe_free(x)
  # define NONULL(x) x?x:""
  # define ISSPACE(c) isspace((unsigned char)c)
 -# define strfcpy(A,B,C) strncpy(A,B,C), *(A+(C)-1)=0
-+# define strfcpy(DST,SRC,LEN) do { if ((LEN) > 0) { *(DST+(LEN)-1)=0; strncpy(DST,SRC,(LEN)-1); } } while (0)
  
  # undef MAX
  # undef MIN
+@@ -177,6 +176,7 @@ char *mutt_substrdup (const char *, const char *);
+ char *safe_strcat (char *, size_t, const char *);
+ char *safe_strncat (char *, size_t, const char *, size_t);
+ char *safe_strdup (const char *);
++char *strfcpy (char *dest, const char *src, size_t dlen);
+ 
+ /* strtol() wrappers with range checking; they return
+  * 	 0 success
 @@ -221,6 +221,8 @@ void mutt_str_adjust (char **p);
  void mutt_unlink (const char *);
  void safe_free (void *);
@@ -28232,7 +28605,7 @@ index b429fae..0000000
 -done
 -
 diff --git c/muttlib.c w/muttlib.c
-index 7439f44..560c0ab 100644
+index 7439f44..84cf0c2 100644
 --- c/muttlib.c
 +++ w/muttlib.c
 @@ -32,11 +32,18 @@
@@ -28582,7 +28955,7 @@ index 7439f44..560c0ab 100644
    return vstring;
  }
  
-@@ -1982,3 +2163,56 @@ void mutt_encode_path (char *dest, size_t dlen, const char *src)
+@@ -1982,3 +2163,61 @@ void mutt_encode_path (char *dest, size_t dlen, const char *src)
    strfcpy (dest, (rc == 0) ? NONULL(p) : NONULL(src), dlen);
    FREE (&p);
  }
@@ -28620,6 +28993,11 @@ index 7439f44..560c0ab 100644
 +#ifdef USE_IMAP
 +  if (mx_is_imap (path))
 +    imap_get_parent_path (output, path, olen);
++  else
++#endif
++#ifdef USE_NOTMUCH
++  if (mx_is_notmuch (path))
++    strfcpy (output, NONULL (Maildir), olen);
 +  else
 +#endif
 +  {
@@ -28961,10 +29339,10 @@ index ba9a78f..2f62abf 100644
  extern struct mx_ops mx_mh_ops;
 diff --git c/newsrc.c w/newsrc.c
 new file mode 100644
-index 0000000..6f7eff0
+index 0000000..ad8255f
 --- /dev/null
 +++ w/newsrc.c
-@@ -0,0 +1,1263 @@
+@@ -0,0 +1,1271 @@
 +/*
 + * Copyright (C) 1998 Brandon Long <blong@fiction.net>
 + * Copyright (C) 1999 Andrej Gritsenko <andrej@lucky.net>
@@ -29095,9 +29473,17 @@ index 0000000..6f7eff0
 +  char *line;
 +  struct stat sb;
 +
-+  /* if file doesn't exist, create it */
-+  nserv->newsrc_fp = safe_fopen (nserv->newsrc_file, "a");
-+  safe_fclose (&nserv->newsrc_fp);
++  if (nserv->newsrc_fp)
++  {
++    /* if we already have a handle, close it and reopen */
++    safe_fclose (&nserv->newsrc_fp);
++  }
++  else
++  {
++    /* if file doesn't exist, create it */
++    nserv->newsrc_fp = safe_fopen (nserv->newsrc_file, "a");
++    safe_fclose (&nserv->newsrc_fp);
++  }
 +
 +  /* open .newsrc */
 +  nserv->newsrc_fp = safe_fopen (nserv->newsrc_file, "r");
@@ -29318,7 +29704,7 @@ index 0000000..6f7eff0
 +      mutt_perror (tmpfile);
 +      break;
 +    }
-+    if (fclose (fp) == EOF)
++    if (safe_fclose (&fp) == EOF)
 +    {
 +      mutt_perror (tmpfile);
 +      fp = NULL;
@@ -29335,7 +29721,7 @@ index 0000000..6f7eff0
 +    break;
 +  }
 +  if (fp)
-+    fclose (fp);
++    safe_fclose (&fp);
 +  if (*tmpfile)
 +    unlink (tmpfile);
 +  if (rc)
@@ -29508,7 +29894,7 @@ index 0000000..6f7eff0
 +  if (fgets (buf, sizeof (buf), fp) == NULL ||
 +      sscanf (buf, "%ld%s", &t, file) != 1 || t == 0)
 +  {
-+    fclose (fp);
++    safe_fclose (&fp);
 +    return -1;
 +  }
 +  nserv->newgroups_time = t;
@@ -29517,7 +29903,7 @@ index 0000000..6f7eff0
 +  while (fgets (buf, sizeof (buf), fp))
 +    nntp_add_group (buf, nserv);
 +  nntp_add_group (NULL, NULL);
-+  fclose (fp);
++  safe_fclose (&fp);
 +  mutt_clear_error ();
 +  return 0;
 +}
@@ -30230,7 +30616,7 @@ index 0000000..6f7eff0
 +}
 diff --git c/nntp.c w/nntp.c
 new file mode 100644
-index 0000000..182d068
+index 0000000..b928aaa
 --- /dev/null
 +++ w/nntp.c
 @@ -0,0 +1,2455 @@
@@ -31314,7 +31700,7 @@ index 0000000..182d068
 +    {
 +      if (strstr (header, ":full") == NULL && fputs (header, fp) == EOF)
 +      {
-+	fclose (fp);
++	safe_fclose (&fp);
 +	unlink (tempfile);
 +	return -1;
 +      }
@@ -31326,7 +31712,7 @@ index 0000000..182d068
 +      *field++ = '\0';
 +    if (fputs (b, fp) == EOF || fputc ('\n', fp) == EOF)
 +    {
-+      fclose (fp);
++      safe_fclose (&fp);
 +      unlink (tempfile);
 +      return -1;
 +    }
@@ -31342,7 +31728,7 @@ index 0000000..182d068
 +  hdr->env = mutt_read_rfc822_header (fp, hdr, 0, 0);
 +  hdr->env->newsgroups = safe_strdup (nntp_data->group);
 +  hdr->received = hdr->date_sent;
-+  fclose (fp);
++  safe_fclose (&fp);
 +  unlink (tempfile);
 +
 +#ifdef USE_HCACHE
@@ -31580,7 +31966,7 @@ index 0000000..182d068
 +			     fetch_tempfile, fp);
 +      if (rc)
 +      {
-+	fclose (fp);
++	safe_fclose (&fp);
 +	unlink (tempfile);
 +	if (rc < 0)
 +	  break;
@@ -31609,7 +31995,7 @@ index 0000000..182d068
 +      hdr = ctx->hdrs[ctx->msgcount] = mutt_new_header ();
 +      hdr->env = mutt_read_rfc822_header (fp, hdr, 0, 0);
 +      hdr->received = hdr->date_sent;
-+      fclose (fp);
++      safe_fclose (&fp);
 +      unlink (tempfile);
 +    }
 +
@@ -31816,7 +32202,7 @@ index 0000000..182d068
 +  {
 +    if (acache->index == hdr->index)
 +    {
-+      msg->fp = fopen (acache->path, "r");
++      msg->fp = safe_fopen (acache->path, "r");
 +      if (msg->fp)
 +	return 0;
 +    }
@@ -31980,7 +32366,7 @@ index 0000000..182d068
 +	buf[1] == '.' ? buf : buf + 1, -1, MUTT_SOCK_LOG_HDR) < 0)
 +      return nntp_connect_error (nntp_data->nserv);
 +  }
-+  fclose (fp);
++  safe_fclose (&fp);
 +
 +  if ((buf[strlen (buf) - 1] != '\n' &&
 +      mutt_socket_write_d (nntp_data->nserv->conn, "\r\n", -1, MUTT_SOCK_LOG_HDR) < 0) ||
@@ -32548,7 +32934,7 @@ index 0000000..182d068
 +			 fetch_tempfile, fp);
 +  if (rc)
 +  {
-+    fclose (fp);
++    safe_fclose (&fp);
 +    unlink (tempfile);
 +    if (rc < 0)
 +      return -1;
@@ -32564,7 +32950,7 @@ index 0000000..182d068
 +  hdr = ctx->hdrs[ctx->msgcount] = mutt_new_header ();
 +  hdr->data = safe_calloc (1, sizeof (NNTP_HEADER_DATA));
 +  hdr->env = mutt_read_rfc822_header (fp, hdr, 0, 0);
-+  fclose (fp);
++  safe_fclose (&fp);
 +  unlink (tempfile);
 +
 +  /* get article number */
@@ -32866,7 +33252,7 @@ index 0000000..9db9ef5
 +
 +#endif /* _NNTP_H_ */
 diff --git c/pager.c w/pager.c
-index d7674eb..7bc1fa6 100644
+index d7674eb..7a02f94 100644
 --- c/pager.c
 +++ w/pager.c
 @@ -29,6 +29,7 @@
@@ -33105,12 +33491,15 @@ index d7674eb..7bc1fa6 100644
        NORMAL_COLOR;
      }
  
-@@ -1922,6 +2014,46 @@ mutt_pager (const char *banner, const char *fname, int flags, pager_t *extra)
+@@ -1922,6 +2014,83 @@ mutt_pager (const char *banner, const char *fname, int flags, pager_t *extra)
        mutt_clear_error ();
      mutt_curs_set (1);
  
++    int do_new_mail = 0;
++
 +    if (Context && !option (OPTATTACHMSG))
 +    {
++      oldcount = Context ? Context->msgcount : 0;
 +      /* check for new mail */
 +      check = mx_check_mailbox (Context, &index_hint);
 +      if (check < 0)
@@ -33125,26 +33514,60 @@ index d7674eb..7bc1fa6 100644
 +      }
 +      else if ((check == MUTT_NEW_MAIL) || (check == MUTT_REOPENED) || (check == MUTT_FLAGS))
 +      {
-+        oldcount = Context ? Context->msgcount : 0;
-+	index->max = Context ? Context->vcount : 0;
-+	index_hint = (Context->vcount && (index->current >= 0) && (index->current < Context->vcount)) ? Context->hdrs[Context->v2r[index->current]]->index : 0;
-+        update_index (index, Context, check, oldcount, index_hint);
-+
 +	/* notify user of newly arrived mail */
 +	if (check == MUTT_NEW_MAIL)
 +	{
-+	  mutt_message _("New mail in this mailbox.");
-+	  redraw = REDRAW_FULL;
-+	  if (option (OPTBEEPNEW))
-+	    beep();
-+	  if (NewMailCmd)
++	  for (i = oldcount; i < Context->msgcount; i++)
 +	  {
-+	    char cmd[LONG_STRING];
-+	    menu_status_line (cmd, sizeof (cmd), index, NONULL (NewMailCmd));
-+	    mutt_system (cmd);
++	    HEADER *h = Context->hdrs[i];
++
++	    if (h && (h->read == 0))
++	    {
++	      mutt_message _("New mail in this mailbox.");
++	      do_new_mail = 1;
++	      break;
++	    }
 +	  }
 +
++	  if (index && Context)
++	  {
++	    oldcount = Context->msgcount;
++	    index->max = Context->vcount;
++
++	    /* After the mailbox has been updated,
++	     * index->current might be invalid */
++	    index->current = MIN(index->current, (Context->msgcount - 1));
++	    index_hint = Context->hdrs[Context->v2r[index->current]]->index;
++
++	    int q = Context->quiet;
++	    Context->quiet = 1;
++	    update_index (index, Context, check, oldcount, index_hint);
++	    Context->quiet = q;
++
++	    /* If these header pointers don't match, then our email may have
++	     * been deleted.  Make the pointer safe, then leave the pager */
++	    if (extra->hdr != Context->hdrs[Context->v2r[index->current]])
++	    {
++	      extra->hdr = Context->hdrs[Context->v2r[index->current]];
++	      ch = -1;
++	      break;
++	    }
++	  }
++
++	  redraw = REDRAW_FULL;
 +	  set_option (OPTSEARCHINVALID);
++	}
++      }
++
++      if (mutt_buffy_notify() || do_new_mail)
++      {
++	if (option (OPTBEEPNEW))
++	  beep();
++	if (NewMailCmd)
++	{
++	  char cmd[LONG_STRING];
++	  menu_status_line (cmd, sizeof (cmd), index, NONULL (NewMailCmd));
++	  mutt_system (cmd);
 +	}
 +      }
 +    }
@@ -33152,11 +33575,26 @@ index d7674eb..7bc1fa6 100644
      if (SigInt)
      {
        mutt_query_exit ();
-@@ -2307,11 +2439,11 @@ search_next:
+@@ -2307,11 +2476,26 @@ search_next:
  	  int dretval = 0;
  	  int new_topline = topline;
  
 -	  while ((new_topline < lastLine ||
++	  /* Skip all the email headers */
++	  if (ISHEADER(lineInfo[new_topline].type))
++	  {
++	    while ((new_topline < lastLine ||
++		    (0 == (dretval = display_line (fp, &last_pos, &lineInfo,
++			   new_topline, &lastLine, &maxLine, MUTT_TYPES | (flags & MUTT_PAGER_NOWRAP),
++			   &QuoteList, &q_level, &force_redraw, &SearchRE, pager_window))))
++		   && ISHEADER(lineInfo[new_topline].type))
++	    {
++	      new_topline++;
++	    }
++	    topline = new_topline;
++	    break;
++	  }
++
 +	  while (((new_topline + SkipQuotedOffset) < lastLine ||
  		  (0 == (dretval = display_line (fp, &last_pos, &lineInfo,
  			 new_topline, &lastLine, &maxLine, MUTT_TYPES | (flags & MUTT_PAGER_NOWRAP),
@@ -33166,7 +33604,7 @@ index d7674eb..7bc1fa6 100644
  	    new_topline++;
  
  	  if (dretval < 0)
-@@ -2320,11 +2452,11 @@ search_next:
+@@ -2320,11 +2504,11 @@ search_next:
  	    break;
  	  }
  
@@ -33180,7 +33618,7 @@ index d7674eb..7bc1fa6 100644
  	    new_topline++;
  
  	  if (dretval < 0)
-@@ -2389,6 +2521,11 @@ search_next:
+@@ -2389,6 +2573,11 @@ search_next:
          redraw = REDRAW_FULL;
          break;
  
@@ -33192,7 +33630,7 @@ index d7674eb..7bc1fa6 100644
        case OP_CHECK_TRADITIONAL:
          CHECK_MODE (IsHeader (extra));
          if (!(WithCrypto & APPLICATION_PGP))
-@@ -2444,19 +2581,26 @@ search_next:
+@@ -2444,19 +2633,26 @@ search_next:
  
        case OP_DELETE_THREAD:
        case OP_DELETE_SUBTHREAD:
@@ -33225,7 +33663,7 @@ index d7674eb..7bc1fa6 100644
  	  if (option (OPTRESOLVE))
  	  {
  	    rc = OP_MAIN_NEXT_UNDELETED;
-@@ -2603,6 +2747,60 @@ search_next:
+@@ -2603,6 +2799,60 @@ search_next:
  	redraw = REDRAW_FULL;
  	break;
  
@@ -33286,7 +33724,7 @@ index d7674eb..7bc1fa6 100644
        case OP_REPLY:
  	CHECK_MODE(IsHeader (extra) || IsMsgAttach (extra));
          CHECK_ATTACH;      
-@@ -2649,7 +2847,7 @@ search_next:
+@@ -2649,7 +2899,7 @@ search_next:
          CHECK_ATTACH;
          if (IsMsgAttach (extra))
  	  mutt_attach_forward (extra->fp, extra->hdr, extra->idx,
@@ -33295,7 +33733,7 @@ index d7674eb..7bc1fa6 100644
          else
  	  ci_send_message (SENDFORWARD, NULL, NULL, extra->ctx, extra->hdr);
  	redraw = REDRAW_FULL;
-@@ -2707,11 +2905,14 @@ search_next:
+@@ -2707,11 +2957,14 @@ search_next:
  
        case OP_TAG:
  	CHECK_MODE(IsHeader (extra));
@@ -33314,7 +33752,7 @@ index d7674eb..7bc1fa6 100644
  
  	redraw = REDRAW_STATUS | REDRAW_INDEX;
  	if (option (OPTRESOLVE))
-@@ -2802,11 +3003,24 @@ search_next:
+@@ -2802,11 +3055,24 @@ search_next:
  	}
  	CHECK_MODE(IsHeader (extra));
  	mutt_view_attachments (extra->hdr);
@@ -33340,7 +33778,7 @@ index d7674eb..7bc1fa6 100644
  
        case OP_MAIL_KEY:
          if (!(WithCrypto & APPLICATION_PGP))
-@@ -2866,13 +3080,18 @@ search_next:
+@@ -2866,13 +3132,18 @@ search_next:
    safe_fclose (&fp);
    if (IsHeader (extra))
    {
@@ -35797,6 +36235,45 @@ index a9c71ee..01eff9a 100644
  "Report-Msgid-Bugs-To: \n"
  "POT-Creation-Date: 2016-10-08 12:54-0700\n"
  "PO-Revision-Date: 2016-08-09 21:55+0300\n"
+diff --git c/pop_auth.c w/pop_auth.c
+index 8d8650e..f079410 100644
+--- c/pop_auth.c
++++ w/pop_auth.c
+@@ -74,6 +74,10 @@ static pop_auth_res_t pop_auth_sasl (POP_DATA *pop_data, const char *method)
+     return POP_A_UNAVAIL;
+   }
+ 
++  /* About client_start:  If sasl_client_start() returns data via pc/olen,
++   * the client is expected to send this first (after the AUTH string is sent).
++   * sasl_client_start() may in fact return SASL_OK in this case.
++   */
+   client_start = olen;
+ 
+   mutt_message _("Authenticating (SASL)...");
+@@ -97,6 +101,11 @@ static pop_auth_res_t pop_auth_sasl (POP_DATA *pop_data, const char *method)
+       return POP_A_SOCKET;
+     }
+ 
++    /* Note we don't exit if rc==SASL_OK when client_start is true.
++     * This is because the first loop has only sent the AUTH string, we
++     * need to loop at least once more to send the pc/olen returned
++     * by sasl_client_start().
++     */
+     if (!client_start && rc != SASL_CONTINUE)
+       break;
+ 
+@@ -121,7 +130,10 @@ static pop_auth_res_t pop_auth_sasl (POP_DATA *pop_data, const char *method)
+       client_start = 0;
+     }
+ 
+-    if (rc != SASL_CONTINUE && (olen == 0 || rc != SASL_OK))
++    /* Even if sasl_client_step() returns SASL_OK, we should send at
++     * least one more line to the server.  See #3862.
++     */
++    if (rc != SASL_CONTINUE && rc != SASL_OK)
+       break;
+ 
+     /* send out response, or line break if none needed */
 diff --git c/postpone.c w/postpone.c
 index 525a72f..ba4f6a4 100644
 --- c/postpone.c
@@ -36201,6 +36678,26 @@ index cd19e9f..7f310be 100644
    if (check_all_msg (idx, idxlen, cur, 0) == -1)
    {
      nattach = count_tagged (idx, idxlen);
+diff --git c/regex.c w/regex.c
+index 40979af..00f65b8 100644
+--- c/regex.c
++++ w/regex.c
+@@ -4821,6 +4821,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
+                actual values.  Otherwise, we will restore only one
+                register from the stack, since lowest will == highest in
+                `pop_failure_point'.  */
++#ifdef DEBUG
+             active_reg_t dummy_low_reg, dummy_high_reg;
+             unsigned char *pdummy;
+             const char *sdummy;
+@@ -4829,6 +4830,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
+             POP_FAILURE_POINT (sdummy, pdummy,
+                                dummy_low_reg, dummy_high_reg,
+                                reg_dummy, reg_dummy, reg_info_dummy);
++#endif
+           }
+ 	  /* Note fall through.  */
+ 
 diff --git c/rfc822.c w/rfc822.c
 index d347d69..6114a1a 100644
 --- c/rfc822.c
@@ -36215,7 +36712,7 @@ index d347d69..6114a1a 100644
  #include "rfc822.h"
  #endif
 diff --git c/send.c w/send.c
-index d54d495..7f5d137 100644
+index d54d495..d2a2491 100644
 --- c/send.c
 +++ w/send.c
 @@ -34,6 +34,7 @@
@@ -36474,7 +36971,7 @@ index d54d495..7f5d137 100644
  int mutt_resend_message (FILE *fp, CONTEXT *ctx, HEADER *cur)
  {
    HEADER *msg = mutt_new_header ();
-@@ -1136,6 +1236,33 @@ static int has_recips (ADDRESS *a)
+@@ -1136,6 +1236,34 @@ static int has_recips (ADDRESS *a)
    return c;
  }
  
@@ -36494,7 +36991,8 @@ index d54d495..7f5d137 100644
 +  while (!feof (attf))
 +  {
 +    fgets (inputline, LONG_STRING, attf);
-+    if (regexec (AttachKeyword.rx, inputline, 0, NULL, 0) == 0)
++    if (regexec (QuoteRegexp.rx, inputline, 0, NULL, 0) != 0 &&
++        regexec (AttachKeyword.rx, inputline, 0, NULL, 0) == 0)
 +    {
 +      found = 1;
 +      break;
@@ -36508,7 +37006,7 @@ index d54d495..7f5d137 100644
  /*
   * Returns 0 if the message was successfully sent
   *        -1 if the message was aborted or an error occurred
-@@ -1164,9 +1291,17 @@ ci_send_message (int flags,		/* send mode */
+@@ -1164,9 +1292,17 @@ ci_send_message (int flags,		/* send mode */
    char *smime_default_key = NULL;
    char *tag = NULL, *err = NULL;
    char *ctype;
@@ -36526,7 +37024,7 @@ index d54d495..7f5d137 100644
    if (!flags && !msg && quadoption (OPT_RECALL) != MUTT_NO &&
        mutt_num_postponed (1))
    {
-@@ -1202,6 +1337,22 @@ ci_send_message (int flags,		/* send mode */
+@@ -1202,6 +1338,22 @@ ci_send_message (int flags,		/* send mode */
      {
        if ((flags = mutt_get_postponed (ctx, msg, &cur, fcc, sizeof (fcc))) < 0)
  	goto cleanup;
@@ -36549,7 +37047,7 @@ index d54d495..7f5d137 100644
      }
  
      if (flags & (SENDPOSTPONED|SENDRESEND))
-@@ -1284,8 +1435,29 @@ ci_send_message (int flags,		/* send mode */
+@@ -1284,8 +1436,29 @@ ci_send_message (int flags,		/* send mode */
       * have their aliases expanded.
       */
  
@@ -36579,7 +37077,7 @@ index d54d495..7f5d137 100644
  
    if (! (flags & (SENDPOSTPONED|SENDRESEND)) &&
        ! ((flags & SENDDRAFTFILE) && option (OPTRESUMEDRAFTFILES)))
-@@ -1303,11 +1475,16 @@ ci_send_message (int flags,		/* send mode */
+@@ -1303,11 +1476,16 @@ ci_send_message (int flags,		/* send mode */
      if (flags & SENDREPLY)
        mutt_fix_reply_recipients (msg->env);
  
@@ -36597,7 +37095,7 @@ index d54d495..7f5d137 100644
  	goto cleanup;
      }
  
-@@ -1606,6 +1783,11 @@ main_loop:
+@@ -1606,6 +1784,11 @@ main_loop:
      if (i == -1)
      {
        /* abort */
@@ -36609,7 +37107,7 @@ index d54d495..7f5d137 100644
        mutt_message _("Mail not sent.");
        goto cleanup;
      }
-@@ -1647,7 +1829,9 @@ main_loop:
+@@ -1647,7 +1830,9 @@ main_loop:
        mutt_prepare_envelope (msg->env, 0);
        mutt_env_to_intl (msg->env, NULL, NULL);	/* Handle bad IDNAs the next time. */
  
@@ -36620,7 +37118,7 @@ index d54d495..7f5d137 100644
        {
  	msg->content = mutt_remove_multipart (msg->content);
  	decode_descriptions (msg->content);
-@@ -1661,6 +1845,9 @@ main_loop:
+@@ -1661,6 +1846,9 @@ main_loop:
      }
    }
  
@@ -36630,7 +37128,7 @@ index d54d495..7f5d137 100644
    if (!has_recips (msg->env->to) && !has_recips (msg->env->cc) &&
        !has_recips (msg->env->bcc))
    {
-@@ -1694,6 +1881,32 @@ main_loop:
+@@ -1694,6 +1882,33 @@ main_loop:
        mutt_error _("No subject specified.");
      goto main_loop;
    }
@@ -36648,8 +37146,9 @@ index d54d495..7f5d137 100644
 +  }
 +#endif
 +
-+  if (mutt_search_attach_keyword (msg->content->filename) &&
++  if (quadoption(OPT_ATTACH) != MUTT_NO &&
 +         !msg->content->next &&
++         mutt_search_attach_keyword (msg->content->filename) &&
 +         query_quadoption (OPT_ATTACH, _("No attachments, cancel sending?")) != MUTT_NO)
 +  {
 +    /* if the abort is automatic, print an error message */
@@ -36663,7 +37162,7 @@ index d54d495..7f5d137 100644
  
    if (msg->content->next)
      msg->content = mutt_make_multipart (msg->content);
-@@ -1831,7 +2044,7 @@ full_fcc:
+@@ -1831,7 +2046,7 @@ full_fcc:
         * message was first postponed.
         */
        msg->received = time (NULL);
@@ -36672,7 +37171,7 @@ index d54d495..7f5d137 100644
        {
  	/*
  	 * Error writing FCC, we should abort sending.
-@@ -1892,6 +2105,7 @@ full_fcc:
+@@ -1892,6 +2107,7 @@ full_fcc:
        msg->content = mutt_remove_multipart (msg->content);
        decode_descriptions (msg->content);
        mutt_unprepare_envelope (msg->env);
@@ -36680,7 +37179,7 @@ index d54d495..7f5d137 100644
        goto main_loop;
      }
      else
-@@ -1900,8 +2114,18 @@ full_fcc:
+@@ -1900,8 +2116,18 @@ full_fcc:
        goto cleanup;
      }
    }
@@ -36701,7 +37200,7 @@ index d54d495..7f5d137 100644
  
    if (WithCrypto && (msg->security & ENCRYPT))
      FREE (&pgpkeylist);
-@@ -1946,7 +2170,8 @@ cleanup:
+@@ -1946,7 +2172,8 @@ cleanup:
    safe_fclose (&tempfp);
    if (! (flags & SENDNOFREEHEADER))
      mutt_free_header (&msg);
@@ -36712,7 +37211,7 @@ index d54d495..7f5d137 100644
  }
  
 diff --git c/sendlib.c w/sendlib.c
-index 771eae2..cbc546a 100644
+index 771eae2..5441fa5 100644
 --- c/sendlib.c
 +++ w/sendlib.c
 @@ -46,6 +46,10 @@
@@ -36924,8 +37423,12 @@ index 771eae2..cbc546a 100644
    return (safe_strdup (buf));
  }
  
-@@ -2354,6 +2406,23 @@ mutt_invoke_sendmail (ADDRESS *from,	/* the sender */
+@@ -2352,8 +2404,27 @@ mutt_invoke_sendmail (ADDRESS *from,	/* the sender */
+   char *ps = NULL, *path = NULL, *s = safe_strdup (Sendmail), *childout = NULL;
+   char **args = NULL;
    size_t argslen = 0, argsmax = 0;
++  char **extra_args = NULL;
++  size_t extra_argslen = 0, extra_argsmax = 0;
    int i;
  
 +#ifdef USE_NNTP
@@ -36948,7 +37451,19 @@ index 771eae2..cbc546a 100644
    /* ensure that $sendmail is set to avoid a crash. http://dev.mutt.org/trac/ticket/3548 */
    if (!s)
    {
-@@ -2384,6 +2453,10 @@ mutt_invoke_sendmail (ADDRESS *from,	/* the sender */
+@@ -2369,7 +2440,11 @@ mutt_invoke_sendmail (ADDRESS *from,	/* the sender */
+       safe_realloc (&args, sizeof (char *) * (argsmax += 5));
+ 
+     if (i)
++    {
++      if (!mutt_strcmp (ps, "--"))
++        break;
+       args[argslen++] = ps;
++    }
+     else
+     {
+       path = safe_strdup (ps);
+@@ -2384,6 +2459,25 @@ mutt_invoke_sendmail (ADDRESS *from,	/* the sender */
      i++;
    }
  
@@ -36956,10 +37471,30 @@ index 771eae2..cbc546a 100644
 +  if (!option (OPTNEWSSEND))
 +  {
 +#endif
++  /* If Sendmail contained a "--", we save the recipients to append to
++   * args after other possible options added below. */
++  if (ps)
++  {
++    ps = NULL;
++    while ((ps = strtok (ps, " ")))
++    {
++      if (extra_argslen == extra_argsmax)
++        safe_realloc (&extra_args, sizeof (char *) * (extra_argsmax += 5));
++
++      extra_args[extra_argslen++] = ps;
++      ps = NULL;
++    }
++  }
++
    if (eightbit && option (OPTUSE8BITMIME))
      args = add_option (args, &argslen, &argsmax, "-B8BITMIME");
  
-@@ -2415,6 +2488,9 @@ mutt_invoke_sendmail (ADDRESS *from,	/* the sender */
+@@ -2412,9 +2506,14 @@ mutt_invoke_sendmail (ADDRESS *from,	/* the sender */
+     args = add_option (args, &argslen, &argsmax, DsnReturn);
+   }
+   args = add_option (args, &argslen, &argsmax, "--");
++  for (i = 0; i < extra_argslen; i++)
++    args = add_option (args, &argslen, &argsmax, extra_args[i]);
    args = add_args (args, &argslen, &argsmax, to);
    args = add_args (args, &argslen, &argsmax, cc);
    args = add_args (args, &argslen, &argsmax, bcc);
@@ -36969,7 +37504,24 @@ index 771eae2..cbc546a 100644
  
    if (argslen == argsmax)
      safe_realloc (&args, sizeof (char *) * (++argsmax));
-@@ -2492,9 +2568,11 @@ void mutt_prepare_envelope (ENVELOPE *env, int final)
+@@ -2425,7 +2524,7 @@ mutt_invoke_sendmail (ADDRESS *from,	/* the sender */
+   {
+     if (i != S_BKG)
+     {
+-      const char *e = mutt_strsysexit (i);
++      const char *e;
+ 
+       e = mutt_strsysexit (i);
+       mutt_error (_("Error sending message, child exited %d (%s)."), i, NONULL (e));
+@@ -2445,6 +2544,7 @@ mutt_invoke_sendmail (ADDRESS *from,	/* the sender */
+   FREE (&path);
+   FREE (&s);
+   FREE (&args);
++  FREE (&extra_args);
+ 
+   if (i == (EX_OK & 0xff))
+     i = 0;
+@@ -2492,9 +2592,11 @@ void mutt_prepare_envelope (ENVELOPE *env, int final)
    rfc2047_encode_adrlist (env->from, "From");
    rfc2047_encode_adrlist (env->mail_followup_to, "Mail-Followup-To");
    rfc2047_encode_adrlist (env->reply_to, "Reply-To");
@@ -36982,7 +37534,7 @@ index 771eae2..cbc546a 100644
    {
      rfc2047_encode_string (&env->subject);
    }
-@@ -2517,7 +2595,6 @@ void mutt_unprepare_envelope (ENVELOPE *env)
+@@ -2517,7 +2619,6 @@ void mutt_unprepare_envelope (ENVELOPE *env)
    rfc2047_decode_adrlist (env->from);
    rfc2047_decode_adrlist (env->reply_to);
    rfc2047_decode (&env->subject);
@@ -36990,7 +37542,7 @@ index 771eae2..cbc546a 100644
  }
  
  static int _mutt_bounce_message (FILE *fp, HEADER *h, ADDRESS *to, const char *resent_from,
-@@ -2562,9 +2639,12 @@ static int _mutt_bounce_message (FILE *fp, HEADER *h, ADDRESS *to, const char *r
+@@ -2562,9 +2663,12 @@ static int _mutt_bounce_message (FILE *fp, HEADER *h, ADDRESS *to, const char *r
      mutt_copy_header (fp, h, f, ch_flags, NULL);
      fputc ('\n', f);
      mutt_copy_bytes (fp, f, h->content->length);
@@ -37005,7 +37557,7 @@ index 771eae2..cbc546a 100644
  #if USE_SMTP
      if (SmtpUrl)
        ret = mutt_smtp_send (env_from, to, NULL, NULL, tempfile,
-@@ -2615,6 +2695,10 @@ int mutt_bounce_message (FILE *fp, HEADER *h, ADDRESS *to)
+@@ -2615,6 +2719,10 @@ int mutt_bounce_message (FILE *fp, HEADER *h, ADDRESS *to)
    }
    rfc822_write_address (resent_from, sizeof (resent_from), from, 0);
  
@@ -37016,7 +37568,7 @@ index 771eae2..cbc546a 100644
    /*
     * prepare recipient list. idna conversion appears to happen before this
     * function is called, since the user receives confirmation of the address
-@@ -2690,7 +2774,44 @@ static void set_noconv_flags (BODY *b, short flag)
+@@ -2690,7 +2798,44 @@ static void set_noconv_flags (BODY *b, short flag)
    }
  }
  
@@ -37062,7 +37614,7 @@ index 771eae2..cbc546a 100644
  {
    CONTEXT f;
    MESSAGE *msg;
-@@ -2879,6 +3000,8 @@ int mutt_write_fcc (const char *path, HEADER *hdr, const char *msgid, int post,
+@@ -2879,6 +3024,8 @@ int mutt_write_fcc (const char *path, HEADER *hdr, const char *msgid, int post,
  
    if (mx_commit_message (msg, &f) != 0)
      r = -1;
@@ -37072,7 +37624,7 @@ index 771eae2..cbc546a 100644
    mx_close_mailbox (&f, NULL);
  
 diff --git c/sidebar.c w/sidebar.c
-index 5b7edaf..5a672e5 100644
+index 5b7edaf..3596fec 100644
 --- c/sidebar.c
 +++ w/sidebar.c
 @@ -27,7 +27,9 @@
@@ -37134,6 +37686,15 @@ index 5b7edaf..5a672e5 100644
   *
   * Take all the relevant mailbox data and the desired screen width and then get
   * mutt_FormatString to do the actual work. mutt_FormatString will callback to
+@@ -220,7 +255,7 @@ static void make_sidebar_entry (char *buf, unsigned int buflen, int width, char
+ 
+   /* Force string to be exactly the right width */
+   int w = mutt_strwidth (buf);
+-  int s = strlen (buf);
++  int s = mutt_strlen (buf);
+   width = MIN(buflen, width);
+   if (w < width)
+   {
 @@ -263,12 +298,20 @@ static int cb_qsort_sbe (const void *a, const void *b)
      case SORT_COUNT_NEW:
        result = (b2->msg_unread - b1->msg_unread);
@@ -37156,7 +37717,17 @@ index 5b7edaf..5a672e5 100644
    }
  
    if (SidebarSortMethod & SORT_REVERSE)
-@@ -324,7 +367,7 @@ static void update_entries_visibility (void)
+@@ -311,7 +354,8 @@ static void update_entries_visibility (void)
+       /* Spool directory */
+       continue;
+ 
+-    if (mutt_find_list (SidebarWhitelist, sbe->buffy->path))
++    if (mutt_find_list (SidebarWhitelist, sbe->buffy->path) ||
++        mutt_find_list (SidebarWhitelist, sbe->buffy->desc))
+       /* Explicitly asked to be visible */
+       continue;
+ 
+@@ -324,7 +368,7 @@ static void update_entries_visibility (void)
   */
  static void unsort_entries (void)
  {
@@ -37165,7 +37736,7 @@ index 5b7edaf..5a672e5 100644
    int i = 0, j;
    SBENTRY *tmp;
  
-@@ -487,10 +530,17 @@ static int draw_divider (int num_rows, int num_cols)
+@@ -487,10 +531,17 @@ static int draw_divider (int num_rows, int num_cols)
  
    SETCOLOR(MT_COLOR_DIVIDER);
  
@@ -37184,7 +37755,7 @@ index 5b7edaf..5a672e5 100644
      addstr (NONULL(SidebarDividerChar));
    }
  
-@@ -501,21 +551,26 @@ static int draw_divider (int num_rows, int num_cols)
+@@ -501,21 +552,26 @@ static int draw_divider (int num_rows, int num_cols)
   * fill_empty_space - Wipe the remaining Sidebar space
   * @first_row:  Window line to start (0-based)
   * @num_rows:   Number of rows to fill
@@ -37215,7 +37786,7 @@ index 5b7edaf..5a672e5 100644
        addch (' ');
    }
  }
-@@ -575,9 +630,19 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
+@@ -575,9 +631,19 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
      else if (b->msg_flagged > 0)
        SETCOLOR(MT_COLOR_FLAGGED);
      else
@@ -37237,32 +37808,58 @@ index 5b7edaf..5a672e5 100644
      if (Context && Context->realpath &&
          !mutt_strcmp (b->realpath, Context->realpath))
      {
-@@ -587,14 +652,17 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
+@@ -587,13 +653,18 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
      }
  
      /* compute length of Maildir without trailing separator */
 -    size_t maildirlen = strlen (Maildir);
 -    if (SidebarDelimChars && strchr (SidebarDelimChars, Maildir[maildirlen - 1]))
--      maildirlen--;
--
--    /* check whether Maildir is a prefix of the current folder's path */
++    size_t maildirlen = mutt_strlen (Maildir);
++    if (maildirlen &&
++        SidebarDelimChars &&
++        strchr (SidebarDelimChars, Maildir[maildirlen - 1]))
+       maildirlen--;
+ 
+     /* check whether Maildir is a prefix of the current folder's path */
      short maildir_is_prefix = 0;
 -    if ((strlen (b->path) > maildirlen) && (strncmp (Maildir, b->path, maildirlen) == 0))
--      maildir_is_prefix = 1;
-+    size_t maildirlen = mutt_strlen (Maildir);
-+    if (maildirlen)
-+    {
-+      if (SidebarDelimChars && strchr (SidebarDelimChars, Maildir[maildirlen - 1]))
-+	maildirlen--;
-+
-+      /* check whether Maildir is a prefix of the current folder's path */
-+      if ((strlen (b->path) > maildirlen) && (strncmp (Maildir, b->path, maildirlen) == 0))
-+	maildir_is_prefix = 1;
-+    }
++    if ((mutt_strlen (b->path) > maildirlen) &&
++        (mutt_strncmp (Maildir, b->path, maildirlen) == 0) &&
++        SidebarDelimChars &&
++        strchr (SidebarDelimChars, b->path[maildirlen]))
+       maildir_is_prefix = 1;
  
      /* calculate depth of current folder and generate its display name with indented spaces */
-     int sidebar_folder_depth = 0;
-@@ -644,6 +712,12 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
+@@ -604,7 +675,7 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
+     {
+       /* disregard a trailing separator, so strlen() - 2 */
+       sidebar_folder_name = b->path;
+-      for (i = strlen (sidebar_folder_name) - 2; i >= 0; i--)
++      for (i = mutt_strlen (sidebar_folder_name) - 2; i >= 0; i--)
+       {
+         if (SidebarDelimChars &&
+             strchr (SidebarDelimChars, sidebar_folder_name[i]))
+@@ -622,7 +693,7 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
+       const char *tmp_folder_name;
+       int lastsep = 0;
+       tmp_folder_name = b->path + maildirlen + 1;
+-      int tmplen = (int) strlen (tmp_folder_name) - 1;
++      int tmplen = (int) mutt_strlen (tmp_folder_name) - 1;
+       for (i = 0; i < tmplen; i++)
+       {
+         if (SidebarDelimChars && strchr (SidebarDelimChars, tmp_folder_name[i]))
+@@ -635,8 +706,8 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
+       {
+         if (option (OPTSIDEBARSHORTPATH))
+           tmp_folder_name += lastsep;  /* basename */
+-        int sfn_len = strlen (tmp_folder_name) +
+-                      sidebar_folder_depth*strlen (NONULL(SidebarIndentString)) + 1;
++        int sfn_len = mutt_strlen (tmp_folder_name) +
++                      sidebar_folder_depth*mutt_strlen (SidebarIndentString) + 1;
+         sidebar_folder_name = safe_malloc (sfn_len);
+         sidebar_folder_name[0]=0;
+         for (i=0; i < sidebar_folder_depth; i++)
+@@ -644,6 +715,12 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
          safe_strcat (sidebar_folder_name, sfn_len, tmp_folder_name);
        }
      }
@@ -37275,7 +37872,7 @@ index 5b7edaf..5a672e5 100644
      char str[STRING];
      make_sidebar_entry (str, sizeof (str), w, sidebar_folder_name, entry);
      printw ("%s", str);
-@@ -652,7 +726,7 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
+@@ -652,7 +729,7 @@ static void draw_sidebar (int num_rows, int num_cols, int div_width)
      row++;
    }
  
@@ -37284,7 +37881,7 @@ index 5b7edaf..5a672e5 100644
  }
  
  
-@@ -667,6 +741,14 @@ void mutt_sb_draw (void)
+@@ -667,6 +744,14 @@ void mutt_sb_draw (void)
    if (!option (OPTSIDEBAR))
      return;
  
@@ -37299,7 +37896,7 @@ index 5b7edaf..5a672e5 100644
    int num_rows  = MuttSidebarWindow->rows;
    int num_cols  = MuttSidebarWindow->cols;
  
-@@ -674,9 +756,14 @@ void mutt_sb_draw (void)
+@@ -674,9 +759,14 @@ void mutt_sb_draw (void)
    if (div_width < 0)
      return;
  
@@ -37316,7 +37913,7 @@ index 5b7edaf..5a672e5 100644
      return;
    }
  
-@@ -684,6 +771,7 @@ void mutt_sb_draw (void)
+@@ -684,6 +774,7 @@ void mutt_sb_draw (void)
      return;
  
    draw_sidebar (num_rows, num_cols, div_width);
@@ -37324,7 +37921,7 @@ index 5b7edaf..5a672e5 100644
  }
  
  /**
-@@ -918,7 +1006,7 @@ void mutt_sb_set_buffystats (const CONTEXT *ctx)
+@@ -918,7 +1009,7 @@ void mutt_sb_set_buffystats (const CONTEXT *ctx)
  {
    /* Even if the sidebar's hidden,
     * we should take note of the new data. */
@@ -37333,7 +37930,7 @@ index 5b7edaf..5a672e5 100644
    if (!ctx || !b)
      return;
  
-@@ -995,6 +1083,9 @@ void mutt_sb_notify_mailbox (BUFFY *b, int created)
+@@ -995,6 +1086,9 @@ void mutt_sb_notify_mailbox (BUFFY *b, int created)
    if (!b)
      return;
  
@@ -37343,7 +37940,7 @@ index 5b7edaf..5a672e5 100644
    /* Any new/deleted mailboxes will cause a refresh.  As long as
     * they're valid, our pointers will be updated in prepare_sidebar() */
  
-@@ -1045,3 +1136,36 @@ void mutt_sb_notify_mailbox (BUFFY *b, int created)
+@@ -1045,3 +1139,36 @@ void mutt_sb_notify_mailbox (BUFFY *b, int created)
  
    SidebarNeedsRedraw = 1;
  }
@@ -37638,7 +38235,7 @@ index cf77bdb..6d97be0 100644
    
    /* set Sort to the secondary method to support the set sort_aux=reverse-*
 diff --git c/url.c w/url.c
-index 42a6e09..2abad4b 100644
+index 42a6e09..d0ab57e 100644
 --- c/url.c
 +++ w/url.c
 @@ -29,6 +29,7 @@
@@ -37669,7 +38266,34 @@ index 42a6e09..2abad4b 100644
  {
    char *d;
  
-@@ -214,7 +220,7 @@ int url_ciss_tostring (ciss_url_t* ciss, char* dest, size_t len, int flags)
+@@ -142,7 +148,16 @@ static int ciss_parse_userhost (ciss_url_t *ciss, char *src)
+     ciss->user = src;
+     if (url_pct_decode (ciss->user) < 0)
+       return -1;
+-    t++;
++    src = t + 1;
++  }
++
++  /* IPv6 literal address.  It may contain colons, so set t to start
++   * the port scan after it.
++   */
++  if ((*src == '[') && (t = strchr (src, ']')))
++  {
++    src++;
++    *t++ = '\0';
+   }
+   else
+     t = src;
+@@ -158,7 +173,7 @@ static int ciss_parse_userhost (ciss_url_t *ciss, char *src)
+   else
+     ciss->port = 0;
+ 
+-  ciss->host = t;
++  ciss->host = src;
+   return url_pct_decode (ciss->host) >= 0 &&
+     (!ciss->path || url_pct_decode (ciss->path) >= 0) ? 0 : -1;
+ }
+@@ -214,7 +229,7 @@ int url_ciss_tostring (ciss_url_t* ciss, char* dest, size_t len, int flags)
        safe_strcat (dest, len, "//");
      len -= (l = strlen (dest)); dest += l;
  
@@ -37678,7 +38302,27 @@ index 42a6e09..2abad4b 100644
      {
        char u[STRING];
        url_pct_encode (u, sizeof (u), ciss->user);
-@@ -309,12 +315,24 @@ int url_parse_mailto (ENVELOPE *e, char **body, const char *src)
+@@ -231,10 +246,17 @@ int url_ciss_tostring (ciss_url_t* ciss, char* dest, size_t len, int flags)
+       len -= (l = strlen (dest)); dest += l;
+     }
+ 
++    if (strchr (ciss->host, ':'))
++      snprintf (dest, len, "[%s]", ciss->host);
++    else
++      snprintf (dest, len, "%s", ciss->host);
++
++    len -= (l = strlen (dest)); dest += l;
++
+     if (ciss->port)
+-      snprintf (dest, len, "%s:%hu/", ciss->host, ciss->port);
++      snprintf (dest, len, ":%hu/", ciss->port);
+     else
+-      snprintf (dest, len, "%s/", ciss->host);
++      snprintf (dest, len, "/");
+   }
+ 
+   if (ciss->path)
+@@ -309,12 +331,24 @@ int url_parse_mailto (ENVELOPE *e, char **body, const char *src)
  	safe_asprintf (&scratch, "%s: %s", tag, value);
  	scratch[taglen] = 0; /* overwrite the colon as mutt_parse_rfc822_line expects */
  	value = skip_email_wsp(&scratch[taglen + 1]);
