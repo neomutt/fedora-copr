@@ -24,7 +24,7 @@
 %endif
 
 %global _origname mutt
-%global _date 20161028
+%global _date 20161104
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -226,6 +226,21 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Fri Nov 04 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161104
+- Bug Fixes
+  - don't crash when the imap connection dies
+- Upstream
+  - Add root-message function to jump to root message in thread.
+  - Updated French translation.
+  - Prevent an integer overflow in mutt_mktime() (closes #3880)
+  - Fix pager segfault when lineInfo.chunks overflows. (closes #3888)
+  - Perform charset conversion on text attachments when piping. (closes #3773) (see #3886)
+  - Add a --disable-doc configuration option.
+  - Make ncurses and ncursesw header checking the same.
+  - Attempt to silence a clang range warning. (closes #3891)
+  - Fixed issue from changeset 4da647a80c55. (closes #3892)
+  - Define PATH_MAX, it's missing on the GNU Hurd. (closes #3815)
+
 * Fri Oct 28 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161028
 - Features
   - nntp: use safe_{fopen,fclose}
