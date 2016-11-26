@@ -8,6 +8,8 @@
 %bcond_without idn
 %bcond_without hcache
 %bcond_without tokyocabinet
+%bcond_without lmdb
+%bcond_with kyotocabinet
 %bcond_with bdb
 %bcond_with qdbm
 %bcond_with gdbm
@@ -24,7 +26,7 @@
 %endif
 
 %global _origname mutt
-%global _date 20161104
+%global _date 20161126
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -59,6 +61,8 @@ BuildRequires: w3m
 
 %if %{with hcache}
 %{?with_tokyocabinet:BuildRequires: tokyocabinet-devel}
+%{?with_kyotocabinet:BuildRequires: kyotocabinet-devel}
+%{?with_lmdb:BuildRequires: lmdb-devel}
 %{?with_bdb:BuildRequires: db4-devel}
 %{?with_qdbm:BuildRequires: qdbm-devel}
 %{?with_gdbm:BuildRequires: gdbm-devel}
@@ -134,9 +138,11 @@ autoreconf --install
 \
     %if %{with hcache}
     --enable-hcache \
-    %{!?with_tokyocabinet:	--without-tokyocabinet} \
-    %{!?with_gdbm:	--without-gdbm} \
-    %{!?with_qdbm:	--without-qdbm} \
+    %{!?with_tokyocabinet:	--with-tokyocabinet} \
+    %{!?with_kyotocabinet:	--with-kyotocabinet} \
+    %{!?with_lmdb:	--with-lmdb} \
+    %{!?with_gdbm:	--with-gdbm} \
+    %{!?with_qdbm:	--with-qdbm} \
     %endif
 \
     %if %{with imap} || %{with pop} || %{with smtp}
@@ -214,7 +220,7 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %doc doc/manual.txt doc/smime-notes.txt
 %doc doc/*.html
 %doc contrib/keybase
-%doc contrib/vim-keybindings
+%doc contrib/vim-keys
 %{_bindir}/mutt
 %{_bindir}/pgpring
 %{_bindir}/pgpewrap
@@ -226,6 +232,60 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Sat Nov 26 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161126
+- Features
+  - Upstream adoption of compress
+  - Multiple hcache backends and run-time selection
+  - $forward_references includes References: header on forwards
+  - Hooks: define hooks for startup and shutdown
+  - Add $collapse_all to close threads automatically
+- Bug Fixes
+  - Index in pager crash
+  - Tag with multiple labels
+  - Make sure gdbm's symbols are not resolved in QDBM's compatibility layer
+  - Fix crash when doing collapse_all on an empty folder
+  - Fix: crash when browsing empty dir
+  - Initialize imap_authenticate's return value to something meaningful
+- Translations
+  - Update German translation
+  - Update Slovak translation
+  - Update French translation
+  - Add English (British) translation
+  - Convert files to utf-8
+  - Mass tidy up of the translation messages
+- Docs
+  - new-mail bug is fixed
+  - add since date for features
+  - expand example command options for compress
+  - fix entries for beep and new-mail-command
+  - add a version number to the generated vimrc
+  - fix links in README
+  - don't use smart quotes in manual examples
+  - <escape> and \e means refers to both alt and escape key
+- Build
+  - Travis: test messages
+  - Add option to disable translation messages
+  - Split hcache code into per-backend files
+  - Doc/Makefile clean neomutt-syntax.vim
+  - Improve discovery for the Berkeley Database
+  - Fix nntp/notmuch conditionals
+  - Implement mutt_strchrnul()
+  - Rename vim-keybindings to vim-keys
+- Upstream
+  - attach_format: add new %F placeholder
+  - Compose: add operation to rename an attachment
+  - Chain %d->%F->%f in the attachment menu
+  - Move mbox close-append logic inside mbox_close_mailbox()
+  - When $flag_safe is set, flagged messages cannot be deleted
+  - Adds the '@' pattern modifier to limit matches to known aliases
+  - Adds <mark-message> binding to create "hotkeys" for messages
+  - Updated requirement on the C compiler
+  - Fix mark-message translation and keybind menu
+  - More openssl1.1 fixes: remove uses of X509->name in debugging. (closes #3870)
+  - Don't close stderr when opening a tunnel. (closes #3726)
+  - Minor resource and error logic cleanup in tunnel_socket_open()
+  - Make sure that the output of X509_NAME_oneline is null-terminated
+
 * Fri Nov 04 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161104
 - Bug Fixes
   - don't crash when the imap connection dies

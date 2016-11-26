@@ -1,14 +1,14 @@
-From a146b4d462dbcbf1c61429b122f7d304fe680fd4 Mon Sep 17 00:00:00 2001
+From 4d14ca674d494acd66367d1bed69068c3bc078b0 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:37:32 +0100
-Subject: [PATCH 2/6] mutt-1.5.18-muttrc
+Subject: [PATCH 1/5] mutt-1.5.18-muttrc
 
 ---
  doc/Muttrc.head | 4 ++++
  1 file changed, 4 insertions(+)
 
 diff --git a/doc/Muttrc.head b/doc/Muttrc.head
-index 69e27ca..df18dea 100644
+index dd5b3c5..28e7b6b 100644
 --- a/doc/Muttrc.head
 +++ b/doc/Muttrc.head
 @@ -24,6 +24,8 @@ macro index,pager,attach,compose \cb "\
@@ -21,8 +21,8 @@ index 69e27ca..df18dea 100644
  # show the incoming mailboxes list (just like "mutt -y") and back when pressing "y"
  macro index,pager y "<change-folder>?<toggle-mailboxes>" "show incoming mailboxes list"
 @@ -34,6 +36,8 @@ bind browser y exit
- # close-hook \\.gz$ "gzip -c %t > %f"
- # append-hook \\.gz$ "gzip -c %t >> %f"
+ # close-hook  '\.gz$' "gzip --stdout              '%t' >  '%f'"
+ # append-hook '\.gz$' "gzip --stdout              '%t' >> '%f'"
  
 +bind editor <delete> delete-char
 +
