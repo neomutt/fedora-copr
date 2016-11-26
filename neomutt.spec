@@ -63,7 +63,7 @@ BuildRequires: w3m
 %{?with_tokyocabinet:BuildRequires: tokyocabinet-devel}
 %{?with_kyotocabinet:BuildRequires: kyotocabinet-devel}
 %{?with_lmdb:BuildRequires: lmdb-devel}
-%{?with_bdb:BuildRequires: db4-devel}
+%{?with_bdb:BuildRequires: db-devel}
 %{?with_qdbm:BuildRequires: qdbm-devel}
 %{?with_gdbm:BuildRequires: gdbm-devel}
 %endif
