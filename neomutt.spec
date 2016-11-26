@@ -9,10 +9,10 @@
 %bcond_without hcache
 %bcond_without tokyocabinet
 %bcond_without lmdb
-%bcond_with kyotocabinet
-%bcond_with bdb
-%bcond_with qdbm
-%bcond_with gdbm
+%bcond_without kyotocabinet
+%bcond_without bdb
+%bcond_without qdbm
+%bcond_without gdbm
 %bcond_without gpgme
 %bcond_without sidebar
 %bcond_without nntp
@@ -63,7 +63,7 @@ BuildRequires: w3m
 %{?with_tokyocabinet:BuildRequires: tokyocabinet-devel}
 %{?with_kyotocabinet:BuildRequires: kyotocabinet-devel}
 %{?with_lmdb:BuildRequires: lmdb-devel}
-%{?with_bdb:BuildRequires: db4-devel}
+%{?with_bdb:BuildRequires: libdb-devel}
 %{?with_qdbm:BuildRequires: qdbm-devel}
 %{?with_gdbm:BuildRequires: gdbm-devel}
 %endif
@@ -138,11 +138,12 @@ autoreconf --install
 \
     %if %{with hcache}
     --enable-hcache \
-    %{!?with_tokyocabinet:	--with-tokyocabinet} \
-    %{!?with_kyotocabinet:	--with-kyotocabinet} \
-    %{!?with_lmdb:	--with-lmdb} \
-    %{!?with_gdbm:	--with-gdbm} \
-    %{!?with_qdbm:	--with-qdbm} \
+    %{?with_tokyocabinet:	--with-tokyocabinet} \
+    %{?with_kyotocabinet:	--with-kyotocabinet} \
+    %{?with_lmdb:	--with-lmdb} \
+    %{?with_gdbm:	--with-gdbm} \
+    %{?with_qdbm:	--with-qdbm} \
+    %{?with_bdb:	--with-bdb} \
     %endif
 \
     %if %{with imap} || %{with pop} || %{with smtp}
