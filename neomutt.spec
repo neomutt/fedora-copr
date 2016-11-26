@@ -9,20 +9,23 @@
 %bcond_without hcache
 %bcond_without tokyocabinet
 %bcond_without lmdb
-%bcond_without kyotocabinet
-%bcond_without bdb
-%bcond_without qdbm
-%bcond_without gdbm
+%bcond_with kyotocabinet
+%bcond_with gdbm
 %bcond_without gpgme
 %bcond_without sidebar
 %bcond_without nntp
 %bcond_without compress
 
-# Notmuch doesn't exist on rhel, yet
+# Notmuch and qdbm don't exist on rhel, yet
 %if 0%{?rhel}
 %bcond_with notmuch
+%bcond_with qdbm
+%bcond_with bdb
 %else
 %bcond_without notmuch
+# Disabled
+%bcond_with qdbm
+%bcond_with bdb
 %endif
 
 %global _origname mutt
