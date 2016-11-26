@@ -1,4 +1,4 @@
-From 0c113c8915cd57c403febb06261d61d9f95fcbc5 Mon Sep 17 00:00:00 2001
+From 9ca1a176eadf1856c18cb0959dce9f3659acc111 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:39:26 +0100
 Subject: [PATCH 5/5] mutt-1.6.0-syncdebug
@@ -8,7 +8,7 @@ Subject: [PATCH 5/5] mutt-1.6.0-syncdebug
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/imap/imap.c b/imap/imap.c
-index e65d531..d5038b4 100644
+index 73809ff..1966a73 100644
 --- a/imap/imap.c
 +++ b/imap/imap.c
 @@ -1143,7 +1143,7 @@ static int sync_helper (IMAP_DATA* idata, int right, int flag, const char* name)
