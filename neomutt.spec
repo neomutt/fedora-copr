@@ -7,8 +7,8 @@
 %bcond_without sasl
 %bcond_without idn
 %bcond_without hcache
-%bcond_without tokyocabinet
-%bcond_without lmdb
+%bcond_with tokyocabinet
+%bcond_with lmdb
 %bcond_with kyotocabinet
 %bcond_with bdb
 %bcond_with qdbm
@@ -63,7 +63,7 @@ BuildRequires: w3m
 %{?with_tokyocabinet:BuildRequires: tokyocabinet-devel}
 %{?with_kyotocabinet:BuildRequires: kyotocabinet-devel}
 %{?with_lmdb:BuildRequires: lmdb-devel}
-%{?with_bdb:BuildRequires: db-devel}
+%{?with_bdb:BuildRequires: libdb-devel}
 %{?with_qdbm:BuildRequires: qdbm-devel}
 %{?with_gdbm:BuildRequires: gdbm-devel}
 %endif
@@ -143,6 +143,7 @@ autoreconf --install
     %{!?with_lmdb:	--with-lmdb} \
     %{!?with_gdbm:	--with-gdbm} \
     %{!?with_qdbm:	--with-qdbm} \
+    %{!?with_bdb:	--with-bdb} \
     %endif
 \
     %if %{with imap} || %{with pop} || %{with smtp}
