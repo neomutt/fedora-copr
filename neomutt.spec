@@ -7,12 +7,12 @@
 %bcond_without sasl
 %bcond_without idn
 %bcond_without hcache
-%bcond_with tokyocabinet
-%bcond_with lmdb
-%bcond_with kyotocabinet
-%bcond_with bdb
-%bcond_with qdbm
-%bcond_with gdbm
+%bcond_without tokyocabinet
+%bcond_without lmdb
+%bcond_without kyotocabinet
+%bcond_without bdb
+%bcond_without qdbm
+%bcond_without gdbm
 %bcond_without gpgme
 %bcond_without sidebar
 %bcond_without nntp
@@ -138,12 +138,12 @@ autoreconf --install
 \
     %if %{with hcache}
     --enable-hcache \
-    %{!?with_tokyocabinet:	--with-tokyocabinet} \
-    %{!?with_kyotocabinet:	--with-kyotocabinet} \
-    %{!?with_lmdb:	--with-lmdb} \
-    %{!?with_gdbm:	--with-gdbm} \
-    %{!?with_qdbm:	--with-qdbm} \
-    %{!?with_bdb:	--with-bdb} \
+    %{?with_tokyocabinet:	--with-tokyocabinet} \
+    %{?with_kyotocabinet:	--with-kyotocabinet} \
+    %{?with_lmdb:	--with-lmdb} \
+    %{?with_gdbm:	--with-gdbm} \
+    %{?with_qdbm:	--with-qdbm} \
+    %{?with_bdb:	--with-bdb} \
     %endif
 \
     %if %{with imap} || %{with pop} || %{with smtp}
