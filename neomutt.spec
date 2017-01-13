@@ -29,11 +29,11 @@
 %endif
 
 %global _origname mutt
-%global _date 20161126
+%global _date 20170113
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 1.7.1
+Version: 1.7.2
 Release: %{_date}%{?dist}
 Epoch: 5
 
@@ -46,7 +46,7 @@ Group: Applications/Internet
 # git snapshot created from https://github.com/neomutt/neomutt
 Source: %{_origname}-%{version}.tar.gz
 Source1: mutt_ldap_query
-Patch1: mutt-1.7.1.neomutt.patch
+Patch1: mutt-1.7.2.neomutt.patch
 Patch2: mutt-1.5.18-muttrc.patch
 Patch3: mutt-1.5.21-cabundle.patch
 Patch4: mutt-1.5.23-system_certs.patch
@@ -121,8 +121,6 @@ echo %{release} | sed -r 's/.*(201[0-9])([0-1][0-9])([0-3][0-9]).*/"\1-\2-\3";/'
 rm -f mutt_ssl.c
 
 find . -type f -size 0 -name '*.neomutt' -delete
-
-chmod +x git-version-gen
 
 %build
 # do not run ./prepare -V, because it also runs ./configure
@@ -236,6 +234,65 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Fri Jan 13 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170113
+- Features
+  - Allow custom status flags in index_format
+  - $from_chars highlights differences in authorship
+  - notmuch: make 'Folder' and 'Tags' respect (un)ignore
+  - notmuch: add "virtual-unmailboxes" command
+- Bug Fixes
+  - pick smarter default for $sidebar_divider_char
+  - status color breaks "mutt -D"
+  - Enable reconstruct-thread in the pager
+  - manually touch 'atime' when reading a mbox file
+  - allow $to_chars to contain Unicode characters
+  - increase the max lmdb database size
+  - restore limit current thread
+  - don't reset the alarm unless we set it
+  - some more places that may get NULL pointers
+  - rework initials to allow unicode characters
+- Translations
+  - Spanish translation
+  - German translation
+- Docs
+  - Improve whitespace and grammar on the NNTP feature page
+  - make $to_chars docs more legible
+  - de-tab the DocBook
+  - fix 301 redirects
+- Build
+  - New configure option --enable-everything
+  - add a constant for an aborted question
+  - enhance mutt_to_base64() (and callers)
+  - Fix configure.ac to require md5 if hcache is enabled
+  - Bail if a selected hcache backend cannot be found
+  - refactor mutt_matches_ignore
+  - fix hcache + make dist
+  - add unicode string helper function
+  - Re-indent configure.ac
+  - generate devel version suffix
+  - fix check_sec.sh warnings
+  - remove unnecessary #ifdef's
+  - add missing #ifdef for nntp
+  - ignore some configure temp files
+  - fix "make dist" target
+  - fix function prototypes
+  - fix coverity warnings
+  - notmuch: drop strndup, replace with mutt_substrdup
+- Upstream
+  - Fix failure with GPGME 1.8: do not steal the gpgme_ prefix.
+  - search muttrc file according to XDG Base Specification (closes #3207)
+  - Improve openssl interactive_check_cert. (closes #3899)
+  - Add mutt_array_size macro, change interactive_check_cert() to use it. (see #3899)
+  - Return to pager upon aborting a jump operation. (closes #3901)
+  - Change sidebar_spoolfile coloring to be lower precedence.
+  - Move '@' pattern modifier documentation to the right section.
+  - Add setenv/unsetenv commands.
+  - Rework OpenSSL certificate verification to support alternative chains. (closes #3903)
+  - Add option to control whether threads uncollapse when new mail arrives.
+  - In the manual, replaced 2 para by example (similar to the first example).
+  - Create mbchar_table type for multibyte character arrays. (see #3024)
+  - Make to_chars and status_chars accept mulitibyte characters. (closes #3024)
+
 * Sat Nov 26 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161126
 - Features
   - Upstream adoption of compress
