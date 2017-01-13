@@ -105,6 +105,13 @@ sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
 %patch5 -p1 -b .ssl_ciphers
 %patch6 -p1 -b .syncdebug
 
+%if 0%{?rhel}
+# RHEL6 can't manage the file rename in the diff
+if [ -f GPL ]; then
+	mv GPL LICENSE.md
+fi
+%endif
+
 sed -i -r 's/`$GPGME_CONFIG --libs`/"\0 -lgpg-error"/' configure
 # disable mutt_dotlock program - remove support from mutt binary
 sed -i -r 's|USE_DOTLOCK|DO_NOT_USE_DOTLOCK|' configure*
