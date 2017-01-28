@@ -29,7 +29,7 @@
 %endif
 
 %global _origname mutt
-%global _date 20170113
+%global _date 20170128
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -104,6 +104,13 @@ sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
 %patch4 -p1 -b .system_certs
 %patch5 -p1 -b .ssl_ciphers
 %patch6 -p1 -b .syncdebug
+
+%if 0%{?rhel}
+# RHEL6 can't manage the file rename in the diff
+if [ -f GPL ]; then
+	mv GPL LICENSE.md
+fi
+%endif
 
 sed -i -r 's/`$GPGME_CONFIG --libs`/"\0 -lgpg-error"/' configure
 # disable mutt_dotlock program - remove support from mutt binary
@@ -234,6 +241,38 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Sat Jan 28 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170128
+- Features
+  - Add option for missing subject replacement
+  - notmuch: Allow <modify-labels> to toggle labels
+  - Support for aborting mailbox loading
+  - Do a buffy check after shell escape
+  - Support of relative paths sourcing and cyclic source detection
+  - Support of multiple config files as CLI arguments
+  - Extend the ~m pattern to allow relative ranges
+  - Implement SASL's PLAIN mechanism as a standalone authenticator
+  - Add support for sensitive config options
+  - Searching with a window over notmuch vfolders
+- Contrib
+  - fix vim syntax file for index-color commands
+  - add .editorconfig
+- Bug Fixes
+  - fix global hooks to not take a pattern
+  - Avoid breaking relative paths when avoiding cyclic checks on
+  - Fix sorting when using '/' as a namespace separator
+- Docs
+  - Added waffle badges to readme
+  - Describe the new message ranges
+  - add documentation for -DS command line switch
+  - fix typos in section on config locations
+  - remove reference to missing keybinding
+  - fix docbook validation
+- Build
+  - Start migrating to stdbool logic
+  - add recursive mkdir()
+  - reformat the source to mutt standards
+  - appease check_sec.sh
+
 * Fri Jan 13 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170113
 - Features
   - Allow custom status flags in index_format
