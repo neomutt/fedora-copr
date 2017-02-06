@@ -29,7 +29,7 @@
 %endif
 
 %global _origname mutt
-%global _date 20170128
+%global _date 20170206
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -241,6 +241,22 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Mon Feb 06 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170206
+- Bug Fixes
+  - Unicode 0x202F is a non-break space too (#358)
+  - improve readability of find_subject()
+  - Import hcache-lmdb fixes from upstream (#363)
+  - Rework the "inbox-first" implementation to make code self-explanatory (#356)
+  - If possible, only redraw after gpgme has invoked pinentry (#352)
+  - Remove two use-after free in global hooks (#353)
+  - Handle BAD as IMAP_AUTH_UNAVAIL (#351)
+  - Do not crash when closing a non-opened mailbox (origin/requests/github/343)
+  - Import hcache benchmark
+  - fix: bug introduced by mkdir changes (#350)
+  - change pager to allow timehook-hook to fire
+- Docs
+  - Update documentation about modify-labels-then-hide
+
 * Sat Jan 28 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170128
 - Features
   - Add option for missing subject replacement
