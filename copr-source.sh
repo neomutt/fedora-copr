@@ -28,9 +28,9 @@ HERE=$(pwd)
 rm -fr rpmbuild
 rpmbuild_tree
 
-cp ../mutt-${MUTT}.tar.gz rpmbuild/SOURCES
-cp *.patch                rpmbuild/SOURCES
-cp mutt_ldap_query        rpmbuild/SOURCES
+cp ../neomutt-${DATE}.tar.gz rpmbuild/SOURCES
+cp *.patch                   rpmbuild/SOURCES
+cp mutt_ldap_query           rpmbuild/SOURCES
 
 rpmbuild -bs --target=noarch --define=_topdir\ $HERE/rpmbuild "$SPEC"
 
