@@ -93,7 +93,7 @@ for selecting groups of messages.
 
 %prep
 # unpack; cd
-%setup -q -n %{name}-%{_date}
+%setup -q -n %{name}-%{name}-%{_date}
 # disable mutt_dotlock program - disable post-install mutt_dotlock checking
 sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
 %patch1 -p1 -b .muttrc
@@ -101,12 +101,7 @@ sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
 %patch3 -p1 -b .system_certs
 %patch4 -p1 -b .ssl_ciphers
 
-%if 0%{?rhel}
-# RHEL6 can't manage the file rename in the diff
-if [ -f GPL ]; then
-	mv GPL LICENSE.md
-fi
-%endif
+autoreconf --install
 
 sed -i -r 's/`$GPGME_CONFIG --libs`/"\0 -lgpg-error"/' configure
 # disable mutt_dotlock program - remove support from mutt binary
@@ -126,8 +121,6 @@ rm -f mutt_ssl.c
 find . -type f -size 0 -name '*.neomutt' -delete
 
 %build
-# do not run ./prepare -V, because it also runs ./configure
-autoreconf --install
 %configure \
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
