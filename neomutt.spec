@@ -8,7 +8,6 @@
 %bcond_without idn
 %bcond_without hcache
 %bcond_without tokyocabinet
-%bcond_without lmdb
 %bcond_with kyotocabinet
 %bcond_with gdbm
 %bcond_without gpgme
@@ -16,13 +15,15 @@
 %bcond_without nntp
 %bcond_without compress
 
-# Notmuch and qdbm don't exist on rhel, yet
+# Notmuch, lmdb and qdbm don't exist on rhel, yet
 %if 0%{?rhel}
 %bcond_with notmuch
 %bcond_with qdbm
 %bcond_with bdb
+%bcond_with lmdb
 %else
 %bcond_without notmuch
+%bcond_without lmdb
 # Disabled
 %bcond_with qdbm
 %bcond_with bdb
@@ -44,14 +45,12 @@ Epoch: 5
 License: GPLv2+ and Public Domain
 Group: Applications/Internet
 # git snapshot created from https://github.com/neomutt/neomutt
-Source: %{_origname}-%{version}.tar.gz
+Source: %{name}-%{_date}.tar.gz
 Source1: mutt_ldap_query
-Patch1: mutt-1.8.0.neomutt.patch
-Patch2: mutt-1.5.18-muttrc.patch
-Patch3: mutt-1.5.21-cabundle.patch
-Patch4: mutt-1.5.23-system_certs.patch
-Patch5: mutt-1.5.23-ssl_ciphers.patch
-Patch6: mutt-1.6.0-syncdebug.patch
+Patch1: mutt-1.5.18-muttrc.patch
+Patch2: mutt-1.5.21-cabundle.patch
+Patch3: mutt-1.5.23-system_certs.patch
+Patch4: mutt-1.5.23-ssl_ciphers.patch
 Url: https://www.neomutt.org/
 Requires: mailcap, urlview
 Provides: %{_origname} = %{epoch}:%{version}
@@ -95,22 +94,15 @@ for selecting groups of messages.
 
 %prep
 # unpack; cd
-%setup -q -n %{_origname}-%{version}
+%setup -q -n %{name}-%{name}-%{_date}
 # disable mutt_dotlock program - disable post-install mutt_dotlock checking
 sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
-%patch1 -p1 -b .neomutt
-%patch2 -p1 -b .muttrc
-%patch3 -p1 -b .cabundle
-%patch4 -p1 -b .system_certs
-%patch5 -p1 -b .ssl_ciphers
-%patch6 -p1 -b .syncdebug
+%patch1 -p1 -b .muttrc
+%patch2 -p1 -b .cabundle
+%patch3 -p1 -b .system_certs
+%patch4 -p1 -b .ssl_ciphers
 
-%if 0%{?rhel}
-# RHEL6 can't manage the file rename in the diff
-if [ -f GPL ]; then
-	mv GPL LICENSE.md
-fi
-%endif
+autoreconf --install
 
 sed -i -r 's/`$GPGME_CONFIG --libs`/"\0 -lgpg-error"/' configure
 # disable mutt_dotlock program - remove support from mutt binary
@@ -130,8 +122,6 @@ rm -f mutt_ssl.c
 find . -type f -size 0 -name '*.neomutt' -delete
 
 %build
-# do not run ./prepare -V, because it also runs ./configure
-autoreconf --install
 %configure \
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
