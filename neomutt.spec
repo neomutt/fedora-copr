@@ -1,31 +1,34 @@
-%bcond_without debug
-%bcond_without imap
-%bcond_without pop
-%bcond_without smtp
-%bcond_without gnutls
-%bcond_without gss
-%bcond_without sasl
-%bcond_without idn
-%bcond_without hcache
-%bcond_without tokyocabinet
-%bcond_without lmdb
-%bcond_with kyotocabinet
-%bcond_with gdbm
-%bcond_without gpgme
-%bcond_without sidebar
-%bcond_without nntp
+# Enabled
 %bcond_without compress
+%bcond_without debug
+%bcond_without gnutls
+%bcond_without gpgme
+%bcond_without gss
+%bcond_without hcache
+%bcond_without idn
+%bcond_without imap
+%bcond_without nntp
+%bcond_without pop
+%bcond_without sasl
+%bcond_without sidebar
+%bcond_without smtp
+%bcond_without tokyocabinet
 
-# Notmuch and qdbm don't exist on rhel, yet
-%if 0%{?rhel}
-%bcond_with notmuch
-%bcond_with qdbm
-%bcond_with bdb
-%else
-%bcond_without notmuch
 # Disabled
-%bcond_with qdbm
 %bcond_with bdb
+%bcond_with gdbm
+%bcond_with kyotocabinet
+%bcond_with qdbm
+
+# Notmuch and lmdb don't exist on rhel, yet
+%if 0%{?rhel}
+# Disabled
+%bcond_with notmuch
+%bcond_with lmdb
+%else
+# Enabled
+%bcond_without notmuch
+%bcond_without lmdb
 %endif
 
 %global _origname mutt
@@ -134,7 +137,6 @@ find . -type f -size 0 -name '*.neomutt' -delete
     %{?with_compress:	--enable-compressed} \
 \
     %if %{with hcache}
-    --enable-hcache \
     %{?with_tokyocabinet:	--with-tokyocabinet} \
     %{?with_kyotocabinet:	--with-kyotocabinet} \
     %{?with_lmdb:	--with-lmdb} \
