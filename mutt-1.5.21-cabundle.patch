@@ -1,7 +1,7 @@
-From e14ca6f4f8e7d65853c7c3ab35d6dcf1a3dc18b8 Mon Sep 17 00:00:00 2001
+From 6f5655da380355cf23135918658268d5530288b2 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:05 +0100
-Subject: [PATCH 2/5] mutt-1.5.21-cabundle
+Subject: [PATCH 2/4] mutt-1.5.21-cabundle
 
 ---
  doc/smime-notes.txt | 6 ++++--
@@ -25,5 +25,5 @@ index 15ab849..e273148 100644
    just copy ca-bundle.crt into the place you point mutt's smime_ca_location
    variable to.
 -- 
-2.7.4
+2.9.3
 
