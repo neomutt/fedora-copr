@@ -32,7 +32,7 @@
 %endif
 
 %global _origname mutt
-%global _date 20170225
+%global _date 20170306
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -232,6 +232,23 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Mon Mar 06 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170306
+- Bug Fixes
+  - Get the correct buffer size under fmemopen/torify (#441)
+  - Use static inlines to make gcc 4.2.1 happy
+  - getdnsdomainname: cancel getaddrinfo_a if needed
+  - imap: remove useless code (#434) (origin/master)
+  - Fixes missing semi-colon compilation issue (#433)
+- Docs
+  - github: added template for Pull Requests, issues and a CONTRIBUTION.md (#339)
+  - editorconfig: support for new files, fix whitespace (#439)
+  - add blocking fmemopen bug on debian to manual (#422)
+- Upstream
+  - Increase ACCOUNT.pass field size. (closes #3921)
+  - SSL: Fix memory leak in subject alternative name code. (closes #3920)
+  - Prevent segv if open-appending to an mbox fails. (closes #3918)
+  - Clear out extraneous errors before SSL_connect() (see #3916)
+
 * Sat Feb 25 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170225
 - Features
   - Add option $show_multipart_alternative
