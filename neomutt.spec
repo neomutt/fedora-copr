@@ -1,35 +1,38 @@
-%bcond_without debug
-%bcond_without imap
-%bcond_without pop
-%bcond_without smtp
-%bcond_without gnutls
-%bcond_without gss
-%bcond_without sasl
-%bcond_without idn
-%bcond_without hcache
-%bcond_without tokyocabinet
-%bcond_without lmdb
-%bcond_with kyotocabinet
-%bcond_with gdbm
-%bcond_without gpgme
-%bcond_without sidebar
-%bcond_without nntp
+# Enabled
 %bcond_without compress
+%bcond_without debug
+%bcond_without gnutls
+%bcond_without gpgme
+%bcond_without gss
+%bcond_without hcache
+%bcond_without idn
+%bcond_without imap
+%bcond_without nntp
+%bcond_without pop
+%bcond_without sasl
+%bcond_without sidebar
+%bcond_without smtp
+%bcond_without tokyocabinet
 
-# Notmuch and qdbm don't exist on rhel, yet
-%if 0%{?rhel}
-%bcond_with notmuch
-%bcond_with qdbm
-%bcond_with bdb
-%else
-%bcond_without notmuch
 # Disabled
-%bcond_with qdbm
 %bcond_with bdb
+%bcond_with gdbm
+%bcond_with kyotocabinet
+%bcond_with qdbm
+
+# Notmuch and lmdb don't exist on rhel, yet
+%if 0%{?rhel}
+# Disabled
+%bcond_with notmuch
+%bcond_with lmdb
+%else
+# Enabled
+%bcond_without notmuch
+%bcond_without lmdb
 %endif
 
 %global _origname mutt
-%global _date 20170225
+%global _date 20170306
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -44,14 +47,12 @@ Epoch: 5
 License: GPLv2+ and Public Domain
 Group: Applications/Internet
 # git snapshot created from https://github.com/neomutt/neomutt
-Source: %{_origname}-%{version}.tar.gz
+Source: %{name}-%{_date}.tar.gz
 Source1: mutt_ldap_query
-Patch1: mutt-1.8.0.neomutt.patch
-Patch2: mutt-1.5.18-muttrc.patch
-Patch3: mutt-1.5.21-cabundle.patch
-Patch4: mutt-1.5.23-system_certs.patch
-Patch5: mutt-1.5.23-ssl_ciphers.patch
-Patch6: mutt-1.6.0-syncdebug.patch
+Patch1: mutt-1.5.18-muttrc.patch
+Patch2: mutt-1.5.21-cabundle.patch
+Patch3: mutt-1.5.23-system_certs.patch
+Patch4: mutt-1.5.23-ssl_ciphers.patch
 Url: https://www.neomutt.org/
 Requires: mailcap, urlview
 Provides: %{_origname} = %{epoch}:%{version}
@@ -95,22 +96,15 @@ for selecting groups of messages.
 
 %prep
 # unpack; cd
-%setup -q -n %{_origname}-%{version}
+%setup -q -n %{name}-%{name}-%{_date}
 # disable mutt_dotlock program - disable post-install mutt_dotlock checking
 sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
-%patch1 -p1 -b .neomutt
-%patch2 -p1 -b .muttrc
-%patch3 -p1 -b .cabundle
-%patch4 -p1 -b .system_certs
-%patch5 -p1 -b .ssl_ciphers
-%patch6 -p1 -b .syncdebug
+%patch1 -p1 -b .muttrc
+%patch2 -p1 -b .cabundle
+%patch3 -p1 -b .system_certs
+%patch4 -p1 -b .ssl_ciphers
 
-%if 0%{?rhel}
-# RHEL6 can't manage the file rename in the diff
-if [ -f GPL ]; then
-	mv GPL LICENSE.md
-fi
-%endif
+autoreconf --install
 
 sed -i -r 's/`$GPGME_CONFIG --libs`/"\0 -lgpg-error"/' configure
 # disable mutt_dotlock program - remove support from mutt binary
@@ -130,8 +124,6 @@ rm -f mutt_ssl.c
 find . -type f -size 0 -name '*.neomutt' -delete
 
 %build
-# do not run ./prepare -V, because it also runs ./configure
-autoreconf --install
 %configure \
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
@@ -145,7 +137,6 @@ autoreconf --install
     %{?with_compress:	--enable-compressed} \
 \
     %if %{with hcache}
-    --enable-hcache \
     %{?with_tokyocabinet:	--with-tokyocabinet} \
     %{?with_kyotocabinet:	--with-kyotocabinet} \
     %{?with_lmdb:	--with-lmdb} \
@@ -241,6 +232,23 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Mon Mar 06 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170306
+- Bug Fixes
+  - Get the correct buffer size under fmemopen/torify (#441)
+  - Use static inlines to make gcc 4.2.1 happy
+  - getdnsdomainname: cancel getaddrinfo_a if needed
+  - imap: remove useless code (#434) (origin/master)
+  - Fixes missing semi-colon compilation issue (#433)
+- Docs
+  - github: added template for Pull Requests, issues and a CONTRIBUTION.md (#339)
+  - editorconfig: support for new files, fix whitespace (#439)
+  - add blocking fmemopen bug on debian to manual (#422)
+- Upstream
+  - Increase ACCOUNT.pass field size. (closes #3921)
+  - SSL: Fix memory leak in subject alternative name code. (closes #3920)
+  - Prevent segv if open-appending to an mbox fails. (closes #3918)
+  - Clear out extraneous errors before SSL_connect() (see #3916)
+
 * Sat Feb 25 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170225
 - Features
   - Add option $show_multipart_alternative
