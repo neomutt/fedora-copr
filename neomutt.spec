@@ -1,36 +1,38 @@
-%bcond_without debug
-%bcond_without imap
-%bcond_without pop
-%bcond_without smtp
-%bcond_without gnutls
-%bcond_without gss
-%bcond_without sasl
-%bcond_without idn
-%bcond_without hcache
-%bcond_without tokyocabinet
-%bcond_with kyotocabinet
-%bcond_with gdbm
-%bcond_without gpgme
-%bcond_without sidebar
-%bcond_without nntp
+# Enabled
 %bcond_without compress
+%bcond_without debug
+%bcond_without gnutls
+%bcond_without gpgme
+%bcond_without gss
+%bcond_without hcache
+%bcond_without idn
+%bcond_without imap
+%bcond_without nntp
+%bcond_without pop
+%bcond_without sasl
+%bcond_without sidebar
+%bcond_without smtp
+%bcond_without tokyocabinet
 
-# Notmuch, lmdb and qdbm don't exist on rhel, yet
-%if 0%{?rhel}
-%bcond_with notmuch
-%bcond_with qdbm
+# Disabled
 %bcond_with bdb
+%bcond_with gdbm
+%bcond_with kyotocabinet
+%bcond_with qdbm
+
+# Notmuch and lmdb don't exist on rhel, yet
+%if 0%{?rhel}
+# Disabled
+%bcond_with notmuch
 %bcond_with lmdb
 %else
+# Enabled
 %bcond_without notmuch
 %bcond_without lmdb
-# Disabled
-%bcond_with qdbm
-%bcond_with bdb
 %endif
 
 %global _origname mutt
-%global _date 20170225
+%global _date 20170306
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -135,7 +137,6 @@ find . -type f -size 0 -name '*.neomutt' -delete
     %{?with_compress:	--enable-compressed} \
 \
     %if %{with hcache}
-    --enable-hcache \
     %{?with_tokyocabinet:	--with-tokyocabinet} \
     %{?with_kyotocabinet:	--with-kyotocabinet} \
     %{?with_lmdb:	--with-lmdb} \
@@ -231,6 +232,23 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Mon Mar 06 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170306
+- Bug Fixes
+  - Get the correct buffer size under fmemopen/torify (#441)
+  - Use static inlines to make gcc 4.2.1 happy
+  - getdnsdomainname: cancel getaddrinfo_a if needed
+  - imap: remove useless code (#434) (origin/master)
+  - Fixes missing semi-colon compilation issue (#433)
+- Docs
+  - github: added template for Pull Requests, issues and a CONTRIBUTION.md (#339)
+  - editorconfig: support for new files, fix whitespace (#439)
+  - add blocking fmemopen bug on debian to manual (#422)
+- Upstream
+  - Increase ACCOUNT.pass field size. (closes #3921)
+  - SSL: Fix memory leak in subject alternative name code. (closes #3920)
+  - Prevent segv if open-appending to an mbox fails. (closes #3918)
+  - Clear out extraneous errors before SSL_connect() (see #3916)
+
 * Sat Feb 25 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170225
 - Features
   - Add option $show_multipart_alternative
