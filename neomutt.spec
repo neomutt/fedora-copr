@@ -52,7 +52,9 @@ Source1: mutt_ldap_query
 Patch1: mutt-1.5.18-muttrc.patch
 Patch2: mutt-1.5.21-cabundle.patch
 Patch3: mutt-1.5.23-system_certs.patch
+%if 0%{?rhel}
 Patch4: mutt-1.5.23-ssl_ciphers.patch
+%endif
 Url: https://www.neomutt.org/
 Requires: mailcap, urlview
 Provides: %{_origname} = %{epoch}:%{version}
@@ -102,7 +104,9 @@ sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
 %patch1 -p1 -b .muttrc
 %patch2 -p1 -b .cabundle
 %patch3 -p1 -b .system_certs
+%if 0%{?rhel}
 %patch4 -p1 -b .ssl_ciphers
+%endif
 
 autoreconf --install
 
