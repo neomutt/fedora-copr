@@ -1,4 +1,4 @@
-From c8b5a83fd2460a869f98728845c621fda5aa5347 Mon Sep 17 00:00:00 2001
+From 3af28ca9a97aeb22fa95b5748c15f5a986d17f38 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:43 +0100
 Subject: [PATCH 4/4] mutt-1.5.23-system_certs
@@ -8,12 +8,12 @@ Subject: [PATCH 4/4] mutt-1.5.23-system_certs
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/init.h b/init.h
-index 637ba49..0744b7e 100644
+index eb0dcff..b746ddb 100644
 --- a/init.h
 +++ b/init.h
-@@ -3726,7 +3726,7 @@ struct option_t MuttVars[] = {
+@@ -3698,7 +3698,7 @@ struct option_t MuttVars[] = {
    */
- #if defined(USE_SSL)
+ #ifdef USE_SSL
  #ifdef USE_SSL_GNUTLS
 -  { "ssl_ca_certificates_file", DT_PATH, R_NONE, UL &SslCACertFile, 0 },
 +  { "ssl_ca_certificates_file", DT_PATH, R_NONE, UL &SslCACertFile, UL "/etc/ssl/certs/ca-bundle.crt" },
