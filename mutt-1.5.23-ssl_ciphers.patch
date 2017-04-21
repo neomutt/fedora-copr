@@ -1,4 +1,4 @@
-From 396a40c57d3335be05ed2e65698839855209af87 Mon Sep 17 00:00:00 2001
+From 206b2b8319b50fa95444f83a89e652dece0e8876 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:22 +0100
 Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
@@ -9,82 +9,82 @@ Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
  2 files changed, 28 insertions(+), 25 deletions(-)
 
 diff --git a/init.h b/init.h
-index fcc320f..637ba49 100644
+index 0f5f267..eb0dcff 100644
 --- a/init.h
 +++ b/init.h
-@@ -3829,7 +3829,7 @@ struct option_t MuttVars[] = {
-   ** URL. You should only unset this for particular known hosts, using
-   ** the \fC$<account-hook>\fP function.
+@@ -3819,7 +3819,7 @@ struct option_t MuttVars[] = {
    */
+ #  endif /* defined HAVE_SSL_PARTIAL_CHAIN */
+ # endif /* defined USE_SSL_OPENSSL */
 -  { "ssl_ciphers", DT_STR, R_NONE, UL &SslCiphers, UL 0 },
 +  { "ssl_ciphers", DT_STR, R_NONE, UL &SslCiphers, UL "@SYSTEM" },
    /*
    ** .pp
    ** Contains a colon-seperated list of ciphers to use when using SSL.
 diff --git a/mutt_ssl_gnutls.c b/mutt_ssl_gnutls.c
-index aa61d9d..bee6563 100644
+index d6e9609..6a3c646 100644
 --- a/mutt_ssl_gnutls.c
 +++ b/mutt_ssl_gnutls.c
-@@ -288,32 +288,35 @@ static int tls_set_priority(tlssockdata *data)
+@@ -925,32 +925,35 @@ static int tls_set_priority(tlssockdata *data)
    else
-     safe_strcat (priority, priority_size, "NORMAL");
+     safe_strcat(priority, priority_size, "NORMAL");
  
--  if (! option(OPTTLSV1_2))
+-  if (!option(OPTTLSV1_2))
 +  if (SslCiphers && strcmp(SslCiphers, "@SYSTEM"))
    {
 -    nproto--;
--    safe_strcat (priority, priority_size, ":-VERS-TLS1.2");
+-    safe_strcat(priority, priority_size, ":-VERS-TLS1.2");
 -  }
--  if (! option(OPTTLSV1_1))
+-  if (!option(OPTTLSV1_1))
 -  {
 -    nproto--;
--    safe_strcat (priority, priority_size, ":-VERS-TLS1.1");
+-    safe_strcat(priority, priority_size, ":-VERS-TLS1.1");
 -  }
--  if (! option(OPTTLSV1))
+-  if (!option(OPTTLSV1))
 -  {
 -    nproto--;
--    safe_strcat (priority, priority_size, ":-VERS-TLS1.0");
+-    safe_strcat(priority, priority_size, ":-VERS-TLS1.0");
 -  }
--  if (! option(OPTSSLV3))
+-  if (!option(OPTSSLV3))
 -  {
 -    nproto--;
--    safe_strcat (priority, priority_size, ":-VERS-SSL3.0");
+-    safe_strcat(priority, priority_size, ":-VERS-SSL3.0");
 -  }
-+    if (! option(OPTTLSV1_2))
++    if (!option(OPTTLSV1_2))
 +    {
 +      nproto--;
-+      safe_strcat (priority, priority_size, ":-VERS-TLS1.2");
++      safe_strcat(priority, priority_size, ":-VERS-TLS1.2");
 +    }
-+    if (! option(OPTTLSV1_1))
++    if (!option(OPTTLSV1_1))
 +    {
 +      nproto--;
-+      safe_strcat (priority, priority_size, ":-VERS-TLS1.1");
++      safe_strcat(priority, priority_size, ":-VERS-TLS1.1");
 +    }
-+    if (! option(OPTTLSV1))
++    if (!option(OPTTLSV1))
 +    {
 +      nproto--;
-+      safe_strcat (priority, priority_size, ":-VERS-TLS1.0");
++      safe_strcat(priority, priority_size, ":-VERS-TLS1.0");
 +    }
-+    if (! option(OPTSSLV3))
++    if (!option(OPTSSLV3))
 +    {
 +      nproto--;
-+      safe_strcat (priority, priority_size, ":-VERS-SSL3.0");
++      safe_strcat(priority, priority_size, ":-VERS-SSL3.0");
 +    }
  
 -  if (nproto == 0)
 -  {
--    mutt_error (_("All available protocols for TLS/SSL connection disabled"));
--    FREE (&priority);
+-    mutt_error(_("All available protocols for TLS/SSL connection disabled"));
+-    FREE(&priority);
 -    return -1;
 +    if (nproto == 0)
 +    {
-+      mutt_error (_("All available protocols for TLS/SSL connection disabled"));
-+      FREE (&priority);
++      mutt_error(_("All available protocols for TLS/SSL connection disabled"));
++      FREE(&priority);
 +      return -1;
 +    }
    }
  
-   if ((err = gnutls_priority_set_direct (data->state, priority, NULL)) < 0)
+   if ((err = gnutls_priority_set_direct(data->state, priority, NULL)) < 0)
 -- 
 2.9.3
 
