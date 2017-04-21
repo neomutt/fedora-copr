@@ -1,4 +1,4 @@
-From 9fd35298391b4e3b5328f12e8cc41f6b04a3b298 Mon Sep 17 00:00:00 2001
+From 89351f1d1bbc305e1fa6d8c9c514e1aca81d6011 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:37:32 +0100
 Subject: [PATCH 1/4] mutt-1.5.18-muttrc
@@ -8,7 +8,7 @@ Subject: [PATCH 1/4] mutt-1.5.18-muttrc
  1 file changed, 4 insertions(+)
 
 diff --git a/doc/Muttrc.head b/doc/Muttrc.head
-index dd5b3c5..28e7b6b 100644
+index c09a19b..ea45b55 100644
 --- a/doc/Muttrc.head
 +++ b/doc/Muttrc.head
 @@ -24,6 +24,8 @@ macro index,pager,attach,compose \cb "\

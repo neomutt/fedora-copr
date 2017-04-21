@@ -32,11 +32,11 @@
 %endif
 
 %global _origname mutt
-%global _date 20170306
+%global _date 20170421
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 1.8.0
+Version: 1.8.2
 Release: %{_date}%{?dist}
 Epoch: 5
 
@@ -52,12 +52,14 @@ Source1: mutt_ldap_query
 Patch1: mutt-1.5.18-muttrc.patch
 Patch2: mutt-1.5.21-cabundle.patch
 Patch3: mutt-1.5.23-system_certs.patch
+%if ! 0%{?rhel}
 Patch4: mutt-1.5.23-ssl_ciphers.patch
+%endif
 Url: https://www.neomutt.org/
 Requires: mailcap, urlview
 Provides: %{_origname} = %{epoch}:%{version}
 Obsoletes: %{_origname}
-BuildRequires: ncurses-devel, gettext, automake
+BuildRequires: ncurses-devel, gettext, automake, gettext-devel
 # manual generation
 BuildRequires: /usr/bin/xsltproc, docbook-style-xsl, perl
 # html manual -> txt manual conversion (lynx messes up the encoding)
@@ -96,13 +98,15 @@ for selecting groups of messages.
 
 %prep
 # unpack; cd
-%setup -q -n %{name}-%{name}-%{_date}
+%setup -q -n %{name}-%{_date}
 # disable mutt_dotlock program - disable post-install mutt_dotlock checking
 sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
 %patch1 -p1 -b .muttrc
 %patch2 -p1 -b .cabundle
 %patch3 -p1 -b .system_certs
+%if ! 0%{?rhel}
 %patch4 -p1 -b .ssl_ciphers
+%endif
 
 autoreconf --install
 
@@ -115,11 +119,6 @@ install -p -m644 %{SOURCE1} mutt_ldap_query
 # Create a release date based on the rpm version
 echo -n 'const char *ReleaseDate = ' > reldate.h
 echo %{release} | sed -r 's/.*(201[0-9])([0-1][0-9])([0-3][0-9]).*/"\1-\2-\3";/' >> reldate.h
-
-# remove mutt_ssl.c to be sure it won't be used because it violates
-# Packaging:CryptoPolicies
-# https://fedoraproject.org/wiki/Packaging:CryptoPolicies
-rm -f mutt_ssl.c
 
 find . -type f -size 0 -name '*.neomutt' -delete
 
@@ -232,6 +231,198 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Mon Apr 21 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170421
+- Features
+  - add lua scripting
+  - add command-line batch mode
+  - index_format: add support of %K
+- Bug Fixes
+  - attachment/pager: Use mailcap for test/* except plain
+  - Fix uncollapse_new in pager
+  - fix garbage in chdir prompt due to unescaped string
+  - Fix inbox-first functionality when using mutt_pretty_mailbox
+  - add full neomutt version to log startup
+  - fix bug in uncolor for notmuch tag
+  - fix broken from_chars behaviour
+- Coverity defects
+  - strfcpy
+  - add variable - function arg could be NULL/invalid
+  - add variable - failed function leads to invalid variable
+  - add variable - Context could become NULL
+  - add variable - alloc/strdup could return NULL
+  - add variable - route through code leads to invalid variable
+  - remove variable test
+  - test functions
+  - tidy switches
+  - unused variables
+  - refactor only
+  - check for buffer underruns
+  - fix leaks
+  - minor fixes
+  - bug: add missing break
+  - bug: don't pass large object by value
+  - fix: use correct buffer size
+  - shadow variables
+  - 0 -> NULL
+- Docs
+  - many minor updates
+  - sync translations
+  - delete trailing whitespace
+  - indent the docbook manual
+  - use w3m as default for generating UTF8 manual.txt
+- Website
+  - many minor updates
+  - fix broken links
+  - add to list of useful programs
+  - test automatic html checker
+  - remove trailing whitespace
+  - add irc description
+  - update issue labels (dev)
+  - new page: closed discussions
+  - new page: making neomutt (dev)
+- Build
+  - drop obsolete m4 scripts
+  - don't look for lua libs unless asked for
+  - workaround slang warnings
+  - lower the gettext requirement 0.18 -> 0.17
+  - add keymap_alldefs.h to BUILT_SOURCES
+  - fix make dist distcheck
+  - Remove -Iimap from CFLAGS and include imap/imap.h explicitly
+  - mx: fix conditional builds
+  - Make iconv mandatory (no more --disable-iconv)
+  - refactor: Split out BUFFER-handling functions
+- Tidy
+  - drop control characters from the source
+  - drop vim modelines
+  - delete trailing whitespace
+  - mark all local functions as static
+  - delete unused functions
+  - replace FOREVER with while (true)
+  - drop #if HAVE_CONFIG_H
+  - use #ifdef for potentially missing symbols
+  - remove #if 0 code blocks
+  - drop commented out source
+  - IMAP auth functions are stored by pointer cannot be static
+  - force OPS to be rebuilt after a reconfigure
+  - be specific about void functions
+  - expand a few more alloc macros
+  - add argument names to function prototypes
+  - drop local copy of regex code
+  - rearrange code to avoid forward declarations
+  - limit the scope of some functions
+  - give the compress functions a unique name
+  - use snake_case for function names
+  - add missing newlines to mutt_debug
+  - remove generated files from repo
+  - look for translations in all files
+  - fix arguments to printf-style functions
+  - license text
+  - unify include-guards
+  - tidy makefiles
+  - initialise pointers
+  - make strcmp-like functions clearer
+  - unify sizeof usage
+  - remove forward declarations
+  - remove ()s from return
+  - rename files hyphen to underscore
+  - remove unused macros
+  - use SEEK_SET, SEEK_CUR, SEEK_END
+  - remove constant code
+  - fix typos and grammar in the comments
+  - Switch to using an external gettext runtime
+  - apply clang-format to the source code
+  - boolify returns of 84 functions
+  - boolify lots of struct members
+  - boolify some function parameters
+- Upstream
+  - Add $ssl_verify_partial_chains option for OpenSSL
+  - Move the OpenSSL partial chain support check inside configure.ac
+  - Don't allow storing duplicate certs for OpenSSL interactive prompt
+  - Prevent skipped certs from showing a second time
+  - OpenSSL: Don't offer (a)ccept always choice for hostname mismatches
+  - Add SNI support for OpenSSL
+  - Add SNI support for GnuTLS
+  - Add shortcuts for IMAP and POP mailboxes in the file browser
+  - Change OpenSSL to use SHA-256 for cert comparison
+  - Fix conststrings type mismatches
+  - Pass envlist to filter children too
+  - Fix mutt_envlist_set() for the case that envlist is null
+  - Fix setenv overwriting to not truncate the envlist
+  - Fix (un)sidebar_whitelist to expand paths
+  - Fix mutt_refresh() pausing during macro events
+  - Add a menu stack to track current and past menus
+  - Change CurrentMenu to be controlled by the menu stack
+  - Set refresh when popping the menu stack
+  - Remove redraw parameter from crypt send_menus
+  - Don't full redraw the index when handling a command from the pager
+  - Filter other directional markers that corrupt the screen
+  - Remove the OPTFORCEREDRAW options
+  - Remove SidebarNeedsRedraw
+  - Change reflow_windows() to set full redraw
+  - Create R_MENU redraw option
+  - Remove refresh parameter from mutt_enter_fname()
+  - Remove redraw flag setting after mutt_endwin()
+  - Change km_dokey() to pass SigWinch on for the MENU_EDITOR
+  - Separate out the compose menu redrawing
+  - Separate out the index menu redrawing
+  - Prepare for pager redraw separation
+  - Separate out the pager menu redrawing
+  - Don't create query menu until after initial prompt
+  - Silence imap progress messages for pipe-message
+  - Ensure mutt stays in endwin during calls to pipe_msg()
+  - Fix memleak when attaching files
+  - Add $ssl_verify_partial_chains option for OpenSSL
+  - Move the OpenSSL partial chain support check inside configureac
+  - Don't allow storing duplicate certs for OpenSSL interactive prompt
+  - Prevent skipped certs from showing a second time
+  - OpenSSL: Don't offer (a)ccept always choice for hostname mismatches
+  - Add SNI support for OpenSSL
+  - Add SNI support for GnuTLS
+  - Add shortcuts for IMAP and POP mailboxes in the file browser
+  - Updated French translation
+  - Change OpenSSL to use SHA-256 for cert comparison
+  - Fix conststrings type mismatches
+  - Pass envlist to filter children too
+  - Fix mutt_envlist_set() for the case that envlist is null
+  - Fix setenv overwriting to not truncate the envlist
+  - Fix mutt_refresh() pausing during macro events
+  - Add a menu stack to track current and past menus
+  - Change CurrentMenu to be controlled by the menu stack
+  - Set refresh when popping the menu stack
+  - Remove redraw parameter from crypt send_menus
+  - Don't full redraw the index when handling a command from the pager
+  - Fix (un)sidebar_whitelist to expand paths
+  - Filter other directional markers that corrupt the screen
+  - Remove the OPTFORCEREDRAW options
+  - Remove SidebarNeedsRedraw
+  - Change reflow_windows() to set full redraw
+  - Create R_MENU redraw option
+  - Remove refresh parameter from mutt_enter_fname()
+  - Remove redraw flag setting after mutt_endwin()
+  - Change km_dokey() to pass SigWinch on for the MENU_EDITOR
+  - Separate out the compose menu redrawing
+  - Separate out the index menu redrawing
+  - Prepare for pager redraw separation
+  - Separate out the pager menu redrawing
+  - Don't create query menu until after initial prompt
+  - Silence imap progress messages for pipe-message
+  - Ensure mutt stays in endwin during calls to pipe_msg()
+  - Fix memleak when attaching files
+  - automatic post-release commit for mutt-181
+  - Added tag mutt-1-8-1-rel for changeset f44974c10990
+  - mutt-181 signed
+  - Add ifdefs around new mutt_resize_screen calls
+  - Add multiline and sigwinch handling to mutt_multi_choice
+  - Set pager's REDRAW_SIGWINCH when reflowing windows
+  - Add multiline and sigwinch handling to mutt_yesorno
+  - Change the sort prompt to use (s)ort style prompts
+  - Handle the pager sort prompt inside the pager
+  - Fix GPG_TTY to be added to envlist
+  - automatic post-release commit for mutt-182
+
+* Fri Apr 14 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170414
+- Devel Release
+
 * Mon Mar 06 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170306
 - Bug Fixes
   - Get the correct buffer size under fmemopen/torify (#441)
