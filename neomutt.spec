@@ -32,7 +32,7 @@
 %endif
 
 %global _origname mutt
-%global _date 20170421
+%global _date 20170428
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -98,7 +98,7 @@ for selecting groups of messages.
 
 %prep
 # unpack; cd
-%setup -q -n %{name}-%{_date}
+%setup -q -n %{name}-%{name}-%{_date}
 # disable mutt_dotlock program - disable post-install mutt_dotlock checking
 sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
 %patch1 -p1 -b .muttrc
@@ -231,7 +231,16 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
-* Mon Apr 21 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170421
+* Fri Apr 28 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170428
+- Bug Fixes
+  - Fix and simplify handling of GPGME in configure.ac (@gahr)
+- Docs
+  - Fix typo in README.neomutt (@l2dy)
+- Upstream
+  - Fix km_error_key() infinite loop and unget buffer pollution
+  - Fix error message when opening a mailbox with no read permission
+
+* Fri Apr 21 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170421
 - Features
   - add lua scripting
   - add command-line batch mode
