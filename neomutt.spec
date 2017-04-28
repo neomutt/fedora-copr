@@ -101,6 +101,10 @@ for selecting groups of messages.
 %setup -q -n %{name}-%{name}-%{_date}
 # disable mutt_dotlock program - disable post-install mutt_dotlock checking
 sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
+%if 0%{?rhel}
+# Fix the min requirement for GPGME on RHEL
+sed -i -r '/AM_PATH_GPGME(/s/1.2.0/1.1.0/' configure.ac
+%endif
 %patch1 -p1 -b .muttrc
 %patch2 -p1 -b .cabundle
 %patch3 -p1 -b .system_certs
