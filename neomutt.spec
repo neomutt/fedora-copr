@@ -7,13 +7,13 @@
 %bcond_without idn
 %bcond_without sasl
 %bcond_without tokyocabinet
-%bcond_without notmuch
 
 # Disabled
 %bcond_with bdb
 %bcond_with gdbm
 %bcond_with kyotocabinet
 %bcond_with qdbm
+%bcond_with notmuch
 
 # Notmuch and lmdb don't exist on rhel, yet
 %if 0%{?rhel}
