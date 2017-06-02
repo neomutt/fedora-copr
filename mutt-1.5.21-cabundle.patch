@@ -1,29 +1,36 @@
-From 8663eed0c76c28bf655dd037c0874c68064e39de Mon Sep 17 00:00:00 2001
+From 9b9234303a14c6b4540c8171f5faafa4235f4a91 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:05 +0100
 Subject: [PATCH 2/4] mutt-1.5.21-cabundle
 
 ---
- doc/smime-notes.txt | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ doc/smime-notes.txt | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/doc/smime-notes.txt b/doc/smime-notes.txt
-index 15ab849..7e17dc3 100644
+index a1b4440..49a4658 100644
 --- a/doc/smime-notes.txt
 +++ b/doc/smime-notes.txt
-@@ -40,8 +40,10 @@ How to add use mutt's S/MIME capabilities
+@@ -38,12 +38,13 @@ How to use mutt's S/MIME capabilities
  - Edit the smime_sign_as line in your muttrc, replacing the keyid with your
    own.
  
--- You probably want to import the trusted roots in
--  contrib/ca-bundle.crt. This makes you trust anything that was ultimately
+-- You probably want to import trusted root certificates from Mozilla or
+-  the system. This makes you trust anything that was ultimately signed by
+-  one of them. You can use "smime_keys add_root" to do so, or just download
+-  https://curl.haxx.se/ca/cacert.pem into the place you point mutt's
+-  smime_ca_location variable to.
+-
 +- There is no more ca-bundle.crt file with the trusted roots to import shipped
 +  in mutt. The upstream file is out-dated and user is encouraged to use
 +  ca-bundle.crt from ca-certificate package.
 +  This makes you trust anything that was ultimately
-   signed by one of them. You can use "smime_keys add_root" to do so, or
-   just copy ca-bundle.crt into the place you point mutt's smime_ca_location
-   variable to.
++  signed by one of them. You can use "smime_keys add_root" to do so, or
++  just copy ca-bundle.crt into the place you point mutt's smime_ca_location
++  variable to.
+ 
+ 
+ Other notes
 -- 
-2.9.3
+2.9.4
 

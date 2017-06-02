@@ -1,18 +1,13 @@
 # Enabled
-%bcond_without compress
 %bcond_without debug
 %bcond_without gnutls
 %bcond_without gpgme
 %bcond_without gss
 %bcond_without hcache
 %bcond_without idn
-%bcond_without imap
-%bcond_without nntp
-%bcond_without pop
 %bcond_without sasl
-%bcond_without sidebar
-%bcond_without smtp
 %bcond_without tokyocabinet
+%bcond_without notmuch
 
 # Disabled
 %bcond_with bdb
@@ -23,27 +18,25 @@
 # Notmuch and lmdb don't exist on rhel, yet
 %if 0%{?rhel}
 # Disabled
-%bcond_with notmuch
 %bcond_with lmdb
 %else
 # Enabled
-%bcond_without notmuch
 %bcond_without lmdb
 %endif
 
 %global _origname mutt
-%global _date 20170428
+%global _date 20170602
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 1.8.2
+Version: 1.8.3
 Release: %{_date}%{?dist}
 Epoch: 5
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}}
 
 # The entire source code is GPLv2+ except
-# pgpewrap.c setenv.c sha1.c wcwidth.c which are Public Domain
+# pgpewrap.c sha1.c wcwidth.c which are Public Domain
 License: GPLv2+ and Public Domain
 Group: Applications/Internet
 # git snapshot created from https://github.com/neomutt/neomutt
@@ -74,19 +67,13 @@ BuildRequires: w3m
 %{?with_gdbm:BuildRequires: gdbm-devel}
 %endif
 
-%if %{with imap} || %{with pop} || %{with smtp}
 %{?with_gnutls:BuildRequires: gnutls-devel}
 %{?with_sasl:BuildRequires: cyrus-sasl-devel}
-%endif
-
-%if %{with imap}
 %{?with_gss:BuildRequires: krb5-devel}
-%endif
 
 %{?with_idn:BuildRequires: libidn-devel}
 %{?with_gpgme:BuildRequires: gpgme-devel}
 %{?with_notmuch:BuildRequires: notmuch-devel}
-
 
 %description
 Mutt is a small but very powerful text-based MIME mail client.  Mutt
@@ -94,7 +81,6 @@ is highly configurable, and is well suited to the mail power user with
 advanced features like key bindings, keyboard macros, mail threading,
 regular expression searches and a powerful pattern matching language
 for selecting groups of messages.
-
 
 %prep
 # unpack; cd
@@ -127,13 +113,7 @@ find . -type f -size 0 -name '*.neomutt' -delete
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
     %{?with_debug:	--enable-debug}\
-    %{?with_pop:	--enable-pop}\
-    %{?with_imap:	--enable-imap} \
-    %{?with_smtp:	--enable-smtp} \
-    %{?with_sidebar:	--enable-sidebar} \
     %{?with_notmuch:	--enable-notmuch} \
-    %{?with_nntp:	--enable-nntp} \
-    %{?with_compress:	--enable-compressed} \
 \
     %if %{with hcache}
     %{?with_tokyocabinet:	--with-tokyocabinet} \
@@ -144,14 +124,9 @@ find . -type f -size 0 -name '*.neomutt' -delete
     %{?with_bdb:	--with-bdb} \
     %endif
 \
-    %if %{with imap} || %{with pop} || %{with smtp}
     %{?with_gnutls:	--with-gnutls} \
     %{?with_sasl:	--with-sasl} \
-    %endif
-\
-    %if %{with imap}
     %{?with_gss:	--with-gss} \
-    %endif
 \
     %{!?with_idn:	--without-idn} \
     %{?with_gpgme:	--enable-gpgme} \
@@ -213,12 +188,14 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %files -f %{_origname}.lang
 %config(noreplace) %{_sysconfdir}/Muttrc
 %config(noreplace) %{_sysconfdir}/Muttrc.local
-%doc COPYRIGHT ChangeLog* LICENSE.md NEWS README* UPDATING mutt_ldap_query
+%doc COPYRIGHT ChangeLog* LICENSE.md README* UPDATING mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
 %doc doc/muttrc.* doc/neomutt-syntax.vim
 %doc doc/manual.txt doc/smime-notes.txt
 %doc doc/*.html
 %doc contrib/keybase
+%doc contrib/hcache-bench
+%doc contrib/lua
 %doc contrib/vim-keys
 %{_bindir}/mutt
 %{_bindir}/pgpring
@@ -231,6 +208,114 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Fri Jun 02 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170602
+- Features
+  - Warn on bindkey aliasing
+  - Drop PATCHES, tidy 'mutt -v' output
+  - Add %z format strings to index_format
+  - Add debug_level/debug_file options
+- Bug Fixes
+  - Fix nntp group selection
+  - Fix status color
+  - Tidy up S/MIME contrib
+  - Do not try to create Maildir if it is an NNTP URI
+  - Fix missing NONULL for mutt.set() in Lua
+- Translations
+  - Fix German PGP shortkeys
+- Docs
+  - Remove feature muttrc files
+  - Merge README.notmuch into manual
+  - Remove unneded scripts
+  - Remove README.SECURITY
+  - Remove BEWARE and devel-notes.txt
+  - Update Makefiles
+  - Delete TODO files
+  - Remove legacy files
+  - Don't generate vim-neomutt syntax file
+  - Remove LaTeX/pdf manual generation
+  - Add missing docs for expandos
+  - Fix sidebar howto examples
+  - Remove some upstream references
+  - Drop refs to patches
+  - Improve PR template and CONTRIBUTING.md
+- Website
+  - Fix list items in newbie-tutorial's Mailing List Guidelines
+  - Remove configure options that no longer exist
+  - fix newbie tutorial
+  - document signing tags / releases
+  - config: drop unused paginate command
+  - script: split tests up into several
+  - convert credits page to markdown
+  - simpify 404 page
+  - improve newbie tutorial
+  - remove help.html and integrate its content elsewhere
+  - make: "graphviz" program is needed for generating diagram
+  - improve getting started guide // include legacy files
+  - dev: add list of architectures/operating systems
+  - numerous small fixes
+- Build
+  - Remove typedefs and rename ~130 structs
+  - Add separate hcache dir
+  - Move crypto files to ncrypt dir
+  - Split up mutt.h, protos.h
+  - Always build: sidebar, imap, pop, smtp, compressed, nntp
+  - Remove --enable-mailtool configure option
+  - Make dotlock optional
+  - Change gpgme requirement back to 1.1.0
+  - Remove check_sec.sh
+  - Fix safe_calloc args
+  - Remove unused macros
+  - Remove unused option: SmimeSignOpaqueCommand
+  - Move configure-generated files
+  - Update distcheck build flags
+  - Drop obsolete iconv check
+  - Unused prototypes - unsupported systems
+  - Drop many configure tests for things defined in POSIX:2001
+  - Kill useless crypthash.h file
+  - Run clang-format on the code
+  - Fail early if ncursesw cannot be found
+  - Add names prototype arguments
+  - Abbreviate pointer tests against NULL
+  - Initialise pointers to NULL
+  - Reduce the scope of for loop variables
+  - Coverity: fix defects
+- Upstream
+  - Convert all exec calls to use mutt_envlist(), remove setenv function
+  - Note that mbox-hooks are dependent on $move
+  - Refresh header color when updating label
+  - Remove glibc-specific execvpe() call in sendlib.c
+  - Add color commands for the compose menu headers and security status
+  - Fix sidebar count updates when closing mailbox
+  - Don't modify LastFolder/CurrentFolder upon aborting a change folder operation
+  - Change message modifying operations to additively set redraw flags
+  - Improve maildir and mh to report flag changes in mx_check_mailbox()
+  - Add $header_color_partial to allow partial coloring of headers
+  - Rename REDRAW_SIGWINCH to REDRAW_FLOW
+  - Create R_PAGER_FLOW config variable flag
+  - Turn IMAP_EXPUNGE_EXPECTED back off when syncing
+  - Add $history_remove_dups option to remove dups from history ring
+  - Also remove duplicates from the history file
+  - Don't filter new entries when compacting history save file
+  - Move the IMAP msn field to IMAP_HEADER_DATA
+  - Fix imap expunge to match msn and fix index
+  - Fix cmd_parse_fetch() to match against MSN
+  - Start fixing imap_read_headers() to account for MSN gaps
+  - Add msn_index and max_msn to find and check boundaries by MSN
+  - Properly adjust fetch ranges when handling new mail
+  - Small imap fetch fixes
+  - Don't abort header cache evaluation when there is a hole
+  - Fix mfc overflow check and uninitialized variable
+  - Fix potential segv if mx_open_mailbox is passed an empty string
+  - Don't clean up idata when closing an open-append mailbox
+  - Don't clean up msn idata when closing an open-append mailbox
+  - Fix memory leak when closing mailbox and using the sidebar
+  - Change imap body cache cleanup to use the uid_hash
+  - Convert classic s/mime to space delimit findKeys output
+  - Add self-encrypt options for PGP and S/MIME
+  - Change $postpone_encrypt to use self-encrypt variables first
+  - Automatic post-release commit for mutt-1.8.3
+  - Add note about message scoring and thread patterns
+
 * Fri Apr 28 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170428
 - Bug Fixes
   - Fix and simplify handling of GPGME in configure.ac (@gahr)
