@@ -25,7 +25,7 @@
 %endif
 
 %global _origname mutt
-%global _date 20170602
+%global _date 20170609
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -208,6 +208,33 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Fri Jun 09 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170609
+- Contrib
+  - unbind mappings before overwriting in vim-keys
+- Bug Fixes
+  - latest coverity issues (#624)
+  - don't pass colour-codes to filters
+  - Don't set a colour unless it's been defined.
+  - crash if no from is set or founds
+  - ifdef command
+- Translations
+  - fix translations
+  - fix some remaining translation problems
+- Docs
+  - explain binding warnings
+  - don't document unsupported arches
+- Build
+  - fix make git_ver.h
+  - allow xsltproc and w3m calls to fail
+  - fix make dist
+- Upstream
+  - Add a mutt_endwin() before invoking $sendmail
+  - Restore setenv function
+  - Fix tag-prefix to not abort on $timeout
+  - Change km_dokey() to return -2 on a timeout/sigwinch
+  - Enable TEXTDOMAINDIR override to make translation testing easier
+  - Fix "format string is not a string literal" warnings
+
 * Fri Jun 02 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170602
 - Features
   - Warn on bindkey aliasing
