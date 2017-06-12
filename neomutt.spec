@@ -85,8 +85,6 @@ for selecting groups of messages.
 %prep
 # unpack; cd
 %setup -q -n %{name}-%{name}-%{_date}
-# disable mutt_dotlock program - disable post-install mutt_dotlock checking
-sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
 %patch1 -p1 -b .muttrc
 %patch2 -p1 -b .cabundle
 %patch3 -p1 -b .system_certs
@@ -97,8 +95,6 @@ sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
 autoreconf --install
 
 sed -i -r 's/`$GPGME_CONFIG --libs`/"\0 -lgpg-error"/' configure
-# disable mutt_dotlock program - remove support from mutt binary
-sed -i -r 's|USE_DOTLOCK|DO_NOT_USE_DOTLOCK|' configure*
 
 install -p -m644 %{SOURCE1} mutt_ldap_query
 
@@ -158,13 +154,6 @@ echo "# Local configuration for Mutt." > \
 # remove unpackaged files from the buildroot
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/*.dist
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
-# disable mutt_dotlock program - remove the compiled binary
-rm -f $RPM_BUILD_ROOT%{_bindir}/mutt_dotlock
-rm -f $RPM_BUILD_ROOT%{_bindir}/muttbug
-rm -f $RPM_BUILD_ROOT%{_bindir}/flea
-rm -f $RPM_BUILD_ROOT%{_mandir}/man1/mutt_dotlock.1*
-rm -f $RPM_BUILD_ROOT%{_mandir}/man1/muttbug.1*
-rm -f $RPM_BUILD_ROOT%{_mandir}/man1/flea.1*
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mmdf.5*
 
