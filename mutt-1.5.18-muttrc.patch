@@ -1,4 +1,4 @@
-From 2726a728428737d5eeb501c26ba35c44be226ac5 Mon Sep 17 00:00:00 2001
+From 17541f5f94586cd40711c83731f7ba97cbe4d77b Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:37:32 +0100
 Subject: [PATCH 1/4] mutt-1.5.18-muttrc
@@ -29,6 +29,3 @@ index c09a19b..ea45b55 100644
  # If Mutt is unable to determine your site's domain name correctly, you can
  # set the default here.
  #
--- 
-2.9.4
-
