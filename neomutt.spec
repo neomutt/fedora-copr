@@ -25,7 +25,7 @@
 %endif
 
 %global _origname mutt
-%global _date 20170707
+%global _date 20170714
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -198,6 +198,18 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Fri Jul 14 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170714
+- Translations
+  - Update German translation
+- Docs
+  - compile-time output: use two lists
+  - doxygen: add config file
+  - doxygen: tidy existing comments
+- Build
+  - fix hcachever.sh script
+- Upstream
+  - Fix crash when $postponed is on another server.
+
 * Fri Jul 07 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170707
 - Features
   - Support Gmail's X-GM-RAW server-side search
