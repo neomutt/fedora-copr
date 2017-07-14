@@ -25,7 +25,7 @@
 %endif
 
 %global _origname mutt
-%global _date 20170609
+%global _date 20170714
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -85,8 +85,6 @@ for selecting groups of messages.
 %prep
 # unpack; cd
 %setup -q -n %{name}-%{name}-%{_date}
-# disable mutt_dotlock program - disable post-install mutt_dotlock checking
-sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
 %patch1 -p1 -b .muttrc
 %patch2 -p1 -b .cabundle
 %patch3 -p1 -b .system_certs
@@ -97,8 +95,6 @@ sed -i -r 's|install-exec-hook|my-useless-label|' Makefile.am
 autoreconf --install
 
 sed -i -r 's/`$GPGME_CONFIG --libs`/"\0 -lgpg-error"/' configure
-# disable mutt_dotlock program - remove support from mutt binary
-sed -i -r 's|USE_DOTLOCK|DO_NOT_USE_DOTLOCK|' configure*
 
 install -p -m644 %{SOURCE1} mutt_ldap_query
 
@@ -158,19 +154,11 @@ echo "# Local configuration for Mutt." > \
 # remove unpackaged files from the buildroot
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/*.dist
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
-# disable mutt_dotlock program - remove the compiled binary
-rm -f $RPM_BUILD_ROOT%{_bindir}/mutt_dotlock
-rm -f $RPM_BUILD_ROOT%{_bindir}/muttbug
-rm -f $RPM_BUILD_ROOT%{_bindir}/flea
-rm -f $RPM_BUILD_ROOT%{_mandir}/man1/mutt_dotlock.1*
-rm -f $RPM_BUILD_ROOT%{_mandir}/man1/muttbug.1*
-rm -f $RPM_BUILD_ROOT%{_mandir}/man1/flea.1*
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mmdf.5*
 
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/samples
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/applying-patches.txt
-rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/devel-notes.txt
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/INSTALL
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/patch-notes.txt
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/PGP-Notes.txt
@@ -188,13 +176,15 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %files -f %{_origname}.lang
 %config(noreplace) %{_sysconfdir}/Muttrc
 %config(noreplace) %{_sysconfdir}/Muttrc.local
-%doc COPYRIGHT ChangeLog* LICENSE.md README* UPDATING mutt_ldap_query
+%doc CODE_OF_CONDUCT.md COPYRIGHT ChangeLog* LICENSE.md README* mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
 %doc doc/muttrc.* doc/neomutt-syntax.vim
 %doc doc/manual.txt doc/smime-notes.txt
 %doc doc/*.html
-%doc contrib/keybase
+%doc contrib/colorschemes
 %doc contrib/hcache-bench
+%doc contrib/keybase
+%doc contrib/logo
 %doc contrib/lua
 %doc contrib/vim-keys
 %{_bindir}/mutt
@@ -208,6 +198,102 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Fri Jul 14 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170714
+- Translations
+  - Update German translation
+- Docs
+  - compile-time output: use two lists
+  - doxygen: add config file
+  - doxygen: tidy existing comments
+- Build
+  - fix hcachever.sh script
+- Upstream
+  - Fix crash when $postponed is on another server.
+
+* Fri Jul 07 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170707
+- Features
+  - Support Gmail's X-GM-RAW server-side search
+  - Include pattern for broken threads
+  - Allow sourcing of multiple files
+- Contrib
+  - vombatidae colorscheme
+  - zenburn colorscheme
+  - black 256 solarized colorscheme
+  - neonwolf colorscheme
+  - Mutt logos
+- Bug Fixes
+  - flags: update the hdr message last
+  - gpgme S/MIME non-detached signature handling
+  - menu: the thread tree color
+  - Uses CurrentFolder to populate LastDir with IMAP
+  - stabilise sidebar sort order
+  - colour emails with a '+' in them
+  - the padding expando '%>'
+  - Do not set old flag if mark_old is false
+  - maildir creation
+  - Decode CRLF line endings to LF when copying headers
+  - score address pattern do not match personal name
+  - open attachments in read-only mode
+  - Add Cc, In-Reply-To, and References to default mailto_allow
+  - Improve search for mime.types
+- Translations
+  - Update Chinese (Simplified) translation
+- Coverity defects
+  - dodgy buffers
+  - leaks in lua get/set options
+  - some resource leaks
+- Docs
+  - update credits
+  - limitations of new-mail %f expando
+  - escape <>'s in nested conditions
+  - add code of conduct
+  - fix ifdef examples
+  - update mailmap
+  - Update modify-labels-then-hide
+  - fix mailmap
+  - drop UPDATING files
+- Website
+  - Changes pages (diff)
+  - Update Arch distro page
+  - Update NixOS distro page
+  - Add new Exherbo distro page
+  - Update translation hi-score table
+  - Update code of conduct
+  - Update Newbies page
+  - Add page about Rebuilding the Documentation
+  - Add page of hard problems
+- Build
+  - remove unnecessary steps
+  - drop instdoc script
+  - move smime_keys into contrib
+  - fixes for Solaris
+  - don't delete non-existent files
+  - remove another reference to devel-notes.txt
+  - Handle native Solaris GSSAPI.
+  - drop configure options --enable-exact-address
+  - drop configure option --with-exec-shell
+  - drop configure option --enable-nfs-fix
+  - drop configure option --disable-warnings
+  - Completely remove dotlock
+  - More sophisticated check for BDB version + support for DB6 (non default)
+- Tidy
+  - drop VirtIncoming
+  - split mutt_parse_mailboxes into mutt_parse_unmailboxes
+  - tidy some buffy code
+  - tidy the version strings
+- Upstream
+  - Add ~<() and ~>() immediate parent/children patterns
+  - Add L10N comments to the GNUTLS certificate prompt
+  - Add more description for the %S and %Z $index_format characters
+  - Add config vars for forwarded message attribution intro/trailer
+  - Block SIGWINCH during connect()
+  - Improve the L10N comment about Sign as
+  - Auto-pad translation for the GPGME key selection "verify key" headers
+  - Enable all header fields in the compose menu to be translated
+  - Force hard redraw after $sendmail instead of calling mutt_endwin
+  - Make GPGME key selection behavior the same as classic-PGP
+  - Rename 'sign as' to 'Sign as'; makes compose menu more consistent
+  - Change the compose menu fields to be dynamically padded
 * Fri Jun 09 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170609
 - Contrib
   - unbind mappings before overwriting in vim-keys
