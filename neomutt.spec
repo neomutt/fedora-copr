@@ -7,22 +7,12 @@
 %bcond_without idn
 %bcond_without sasl
 %bcond_without tokyocabinet
-%bcond_with notmuch
 
 # Disabled
 %bcond_with bdb
 %bcond_with gdbm
 %bcond_with kyotocabinet
 %bcond_with qdbm
-
-# Notmuch and lmdb don't exist on rhel, yet
-%if 0%{?rhel}
-# Disabled
-%bcond_with lmdb
-%else
-# Enabled
-%bcond_without lmdb
-%endif
 
 %global _origname mutt
 %global _date 20170907
@@ -61,7 +51,6 @@ BuildRequires: w3m
 %if %{with hcache}
 %{?with_tokyocabinet:BuildRequires: tokyocabinet-devel}
 %{?with_kyotocabinet:BuildRequires: kyotocabinet-devel}
-%{?with_lmdb:BuildRequires: lmdb-devel}
 %{?with_bdb:BuildRequires: libdb-devel}
 %{?with_qdbm:BuildRequires: qdbm-devel}
 %{?with_gdbm:BuildRequires: gdbm-devel}
@@ -73,7 +62,6 @@ BuildRequires: w3m
 
 %{?with_idn:BuildRequires: libidn-devel}
 %{?with_gpgme:BuildRequires: gpgme-devel}
-%{?with_notmuch:BuildRequires: notmuch-devel}
 
 %description
 Mutt is a small but very powerful text-based MIME mail client.  Mutt
@@ -109,12 +97,10 @@ find . -type f -size 0 -name '*.neomutt' -delete
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
     %{?with_debug:	--enable-debug}\
-    %{?with_notmuch:	--enable-notmuch} \
 \
     %if %{with hcache}
     %{?with_tokyocabinet:	--with-tokyocabinet} \
     %{?with_kyotocabinet:	--with-kyotocabinet} \
-    %{?with_lmdb:	--with-lmdb} \
     %{?with_gdbm:	--with-gdbm} \
     %{?with_qdbm:	--with-qdbm} \
     %{?with_bdb:	--with-bdb} \
