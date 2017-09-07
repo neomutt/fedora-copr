@@ -1,4 +1,4 @@
-From 9a47afb42311ea627b2a951da3250e779de55ecc Mon Sep 17 00:00:00 2001
+From f32b738cc40116001419251b24b01d4ebf8799a7 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:22 +0100
 Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
@@ -9,63 +9,63 @@ Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
  2 files changed, 28 insertions(+), 25 deletions(-)
 
 diff --git a/init.h b/init.h
-index ed547a6..1f39dc2 100644
+index 34ee1dc..9914745 100644
 --- a/init.h
 +++ b/init.h
-@@ -3911,7 +3911,7 @@ struct Option MuttVars[] = {
+@@ -3948,7 +3948,7 @@ struct Option MuttVars[] = {
    */
- #  endif /* defined HAVE_SSL_PARTIAL_CHAIN */
- # endif /* defined USE_SSL_OPENSSL */
--  { "ssl_ciphers", DT_STR, R_NONE, UL &SslCiphers, UL 0 },
-+  { "ssl_ciphers", DT_STR, R_NONE, UL &SslCiphers, UL "@SYSTEM" },
+ #endif /* defined HAVE_SSL_PARTIAL_CHAIN */
+ #endif /* defined USE_SSL_OPENSSL */
+-  { "ssl_ciphers", DT_STRING, R_NONE, UL &SslCiphers, UL 0 },
++  { "ssl_ciphers", DT_STRING, R_NONE, UL &SslCiphers, UL "@SYSTEM" },
    /*
    ** .pp
    ** Contains a colon-seperated list of ciphers to use when using SSL.
 diff --git a/mutt_ssl_gnutls.c b/mutt_ssl_gnutls.c
-index f0958b6..5b52419 100644
+index 8c3293a..7476c63 100644
 --- a/mutt_ssl_gnutls.c
 +++ b/mutt_ssl_gnutls.c
-@@ -945,32 +945,35 @@ static int tls_set_priority(tlssockdata *data)
+@@ -936,32 +936,35 @@ static int tls_set_priority(struct TlsSockData *data)
    else
      safe_strcat(priority, priority_size, "NORMAL");
  
--  if (!option(OPTTLSV1_2))
+-  if (!option(OPT_SSL_USE_TLSV1_2))
 +  if (SslCiphers && strcmp(SslCiphers, "@SYSTEM"))
    {
 -    nproto--;
 -    safe_strcat(priority, priority_size, ":-VERS-TLS1.2");
 -  }
--  if (!option(OPTTLSV1_1))
+-  if (!option(OPT_SSL_USE_TLSV1_1))
 -  {
 -    nproto--;
 -    safe_strcat(priority, priority_size, ":-VERS-TLS1.1");
 -  }
--  if (!option(OPTTLSV1))
+-  if (!option(OPT_SSL_USE_TLSV1))
 -  {
 -    nproto--;
 -    safe_strcat(priority, priority_size, ":-VERS-TLS1.0");
 -  }
--  if (!option(OPTSSLV3))
+-  if (!option(OPT_SSL_USE_SSLV3))
 -  {
 -    nproto--;
 -    safe_strcat(priority, priority_size, ":-VERS-SSL3.0");
 -  }
-+    if (!option(OPTTLSV1_2))
++    if (!option(OPT_SSL_USE_TLSV1_2))
 +    {
 +      nproto--;
 +      safe_strcat(priority, priority_size, ":-VERS-TLS1.2");
 +    }
-+    if (!option(OPTTLSV1_1))
++    if (!option(OPT_SSL_USE_TLSV1_1))
 +    {
 +      nproto--;
 +      safe_strcat(priority, priority_size, ":-VERS-TLS1.1");
 +    }
-+    if (!option(OPTTLSV1))
++    if (!option(OPT_SSL_USE_TLSV1))
 +    {
 +      nproto--;
 +      safe_strcat(priority, priority_size, ":-VERS-TLS1.0");
 +    }
-+    if (!option(OPTSSLV3))
++    if (!option(OPT_SSL_USE_SSLV3))
 +    {
 +      nproto--;
 +      safe_strcat(priority, priority_size, ":-VERS-SSL3.0");
