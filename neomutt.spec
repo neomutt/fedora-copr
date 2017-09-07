@@ -25,11 +25,11 @@
 %endif
 
 %global _origname mutt
-%global _date 20170714
+%global _date 20170907
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 1.8.3
+Version: 1.9.0
 Release: %{_date}%{?dist}
 Epoch: 5
 
@@ -198,6 +198,49 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Thu Sep 07 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170907
+- Contrib
+  - Add guix build support
+- Bug Fixes
+  - Only match real mailboxes when looking for new mail
+  - Fix the printing of ncurses version in -v output
+  - Bind editor \<delete\> to delete-char
+  - Fix overflowing colours
+  - Fix empty In-Reply-To generation
+  - Trim trailing slash from completed dirs
+  - Add guix-neomutt.scm
+  - Fix setting custom query_type in notmuch query
+- Website
+  - New technical documentation LINK
+  - Improve Gentoo distro page
+- Build
+  - Better curses identification
+  - Use the system's wchar_t support
+  - Use the system's md5 tool (or equivalent)
+  - Clean up configure.ac
+  - Teach gen-map-doc about the new opcode header
+- Source
+  - Rename functions (snake_case)
+  - Rename constants/defines (UPPER_CASE)
+  - Create library of shared functions
+  - Much tidying
+  - Rename globals to match user config
+  - Drop unnecessary functions/macros
+  - Use a standard list implementation
+  - Coverity fixes
+  - Use explicit NUL for string terminators
+  - Drop OPS\* in favour of opcodes.h
+- Upstream
+  - Fix menu color calls to occur before positioning the cursor
+  - When guessing an attachment type, don't allow text/plain if there is a null character
+  - Add $imap_poll_timeout to allow mailbox polling to time out
+  - Handle error if REGCOMP in pager fails when resizing
+  - Change recvattach to allow nested encryption
+  - Fix attachment check_traditional and extract_keys operations
+  - Add edit-content-type helper and warning for decrypted attachments
+  - Add option to run command to query attachment mime type
+  - Add warning about using inline pgp with format=flowed
+
 * Fri Jul 14 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170714
 - Translations
   - Update German translation
