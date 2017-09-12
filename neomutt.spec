@@ -14,8 +14,17 @@
 %bcond_with kyotocabinet
 %bcond_with qdbm
 
+# Notmuch and lmdb don't exist on rhel, yet
+%if 0%{?rhel}
+# Disabled
+%bcond_with lmdb
+%else
+# Enabled
+%bcond_without lmdb
+%endif
+
 %global _origname mutt
-%global _date 20170907
+%global _date 20170912
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -51,6 +60,7 @@ BuildRequires: w3m
 %if %{with hcache}
 %{?with_tokyocabinet:BuildRequires: tokyocabinet-devel}
 %{?with_kyotocabinet:BuildRequires: kyotocabinet-devel}
+%{?with_lmdb:BuildRequires: lmdb-devel}
 %{?with_bdb:BuildRequires: libdb-devel}
 %{?with_qdbm:BuildRequires: qdbm-devel}
 %{?with_gdbm:BuildRequires: gdbm-devel}
@@ -101,6 +111,7 @@ find . -type f -size 0 -name '*.neomutt' -delete
     %if %{with hcache}
     %{?with_tokyocabinet:	--with-tokyocabinet} \
     %{?with_kyotocabinet:	--with-kyotocabinet} \
+    %{?with_lmdb:	--with-lmdb} \
     %{?with_gdbm:	--with-gdbm} \
     %{?with_qdbm:	--with-qdbm} \
     %{?with_bdb:	--with-bdb} \
@@ -184,6 +195,15 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Tue Sep 12 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170912
+- Bug Fixes
+  - broken check on resend message
+  - crash in vfolder-from-query
+- Build
+  - Be more formal about quoting in m4 macros
+  - fix warnings raised by gcc7
+  - notmuch: add support for the v5 API
+
 * Thu Sep 07 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170907
 - Contrib
   - Add guix build support
