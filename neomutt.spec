@@ -25,7 +25,7 @@
 %endif
 
 %global _origname mutt
-%global _date 20170907
+%global _date 20170912
 
 Summary: A text mode mail user agent
 Name: neomutt
@@ -198,6 +198,15 @@ ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
 %{_mandir}/man5/muttrc.*
 
 %changelog
+* Tue Sep 12 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170912
+- Bug Fixes
+  - broken check on resend message
+  - crash in vfolder-from-query
+- Build
+  - Be more formal about quoting in m4 macros
+  - fix warnings raised by gcc7
+  - notmuch: add support for the v5 API
+
 * Thu Sep 07 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170907
 - Contrib
   - Add guix build support
