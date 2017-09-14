@@ -30,7 +30,7 @@
 Summary: A text mode mail user agent
 Name: neomutt
 Version: 1.9.0
-Release: 20170914%{?dist}
+Release: %{_date}%{?dist}
 Epoch: 5
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}}
