@@ -25,12 +25,12 @@
 %endif
 
 %global _origname mutt
-%global _date 20170912
+%global _date 20170914
 
 Summary: A text mode mail user agent
 Name: neomutt
 Version: 1.9.0
-Release: %{_date}%{?dist}
+Release: 20170914%{?dist}
 Epoch: 5
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}}
