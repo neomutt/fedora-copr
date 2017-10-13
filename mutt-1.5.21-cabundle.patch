@@ -1,4 +1,4 @@
-From 7c6daf396365a156a85a07c5364b9ebff2c10d78 Mon Sep 17 00:00:00 2001
+From 3c7608195c839558b22c775dbeb9bf11e05359a6 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:05 +0100
 Subject: [PATCH 2/4] mutt-1.5.21-cabundle
@@ -8,7 +8,7 @@ Subject: [PATCH 2/4] mutt-1.5.21-cabundle
  1 file changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/doc/smime-notes.txt b/doc/smime-notes.txt
-index c355f87..8fb316a 100644
+index c355f87e..8fb316ac 100644
 --- a/doc/smime-notes.txt
 +++ b/doc/smime-notes.txt
 @@ -38,12 +38,13 @@ How to use mutt's S/MIME capabilities

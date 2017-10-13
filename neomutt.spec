@@ -24,13 +24,10 @@
 %bcond_without lmdb
 %endif
 
-%global _origname mutt
-%global _date 20170914
-
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 1.9.0
-Release: %{_date}%{?dist}
+Version: 20171013
+Release: 1%{?dist}
 Epoch: 5
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}}
@@ -40,7 +37,7 @@ Epoch: 5
 License: GPLv2+ and Public Domain
 Group: Applications/Internet
 # git snapshot created from https://github.com/neomutt/neomutt
-Source: %{name}-%{_date}.tar.gz
+Source: %{name}-%{version}.tar.gz
 Source1: mutt_ldap_query
 Patch1: mutt-1.5.18-muttrc.patch
 Patch2: mutt-1.5.21-cabundle.patch
@@ -50,12 +47,10 @@ Patch4: mutt-1.5.23-ssl_ciphers.patch
 %endif
 Url: https://www.neomutt.org/
 Requires: mailcap, urlview
-Provides: %{_origname} = %{epoch}:%{version}
-Obsoletes: %{_origname}
 BuildRequires: ncurses-devel, gettext, automake, gettext-devel
 # manual generation
 BuildRequires: /usr/bin/xsltproc, docbook-style-xsl, perl
-# html manual -> txt manual conversion (lynx messes up the encoding)
+# html manual -> txt manual conversion
 BuildRequires: w3m
 
 %if %{with hcache}
@@ -84,7 +79,7 @@ for selecting groups of messages.
 
 %prep
 # unpack; cd
-%setup -q -n %{name}-%{name}-%{_date}
+%setup -q -n %{name}-%{name}-%{version}
 %patch1 -p1 -b .muttrc
 %patch2 -p1 -b .cabundle
 %patch3 -p1 -b .system_certs
@@ -92,71 +87,51 @@ for selecting groups of messages.
 %patch4 -p1 -b .ssl_ciphers
 %endif
 
-autoreconf --install
-
-sed -i -r 's/`$GPGME_CONFIG --libs`/"\0 -lgpg-error"/' configure
-
 install -p -m644 %{SOURCE1} mutt_ldap_query
 
 # Create a release date based on the rpm version
 echo -n 'const char *ReleaseDate = ' > reldate.h
 echo %{release} | sed -r 's/.*(201[0-9])([0-1][0-9])([0-3][0-9]).*/"\1-\2-\3";/' >> reldate.h
 
-find . -type f -size 0 -name '*.neomutt' -delete
-
 %build
-%configure \
+sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.autosetup
+./configure.autosetup \
+    --sysconfdir=/etc \
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
-    %{?with_debug:	--enable-debug}\
-    %{?with_notmuch:	--enable-notmuch} \
+    %{?with_debug:	--logging}\
+    %{?with_notmuch:	--notmuch} \
 \
     %if %{with hcache}
-    %{?with_tokyocabinet:	--with-tokyocabinet} \
-    %{?with_kyotocabinet:	--with-kyotocabinet} \
-    %{?with_lmdb:	--with-lmdb} \
-    %{?with_gdbm:	--with-gdbm} \
-    %{?with_qdbm:	--with-qdbm} \
-    %{?with_bdb:	--with-bdb} \
+    %{?with_tokyocabinet:	--tokyocabinet} \
+    %{?with_kyotocabinet:	--kyotocabinet} \
+    %{?with_lmdb:	--lmdb} \
+    %{?with_gdbm:	--gdbm} \
+    %{?with_qdbm:	--qdbm} \
+    %{?with_bdb:	--bdb} \
     %endif
 \
-    %{?with_gnutls:	--with-gnutls} \
-    %{?with_sasl:	--with-sasl} \
-    %{?with_gss:	--with-gss} \
+    %{?with_gnutls:	--gnutls} \
+    %{?with_sasl:	--sasl} \
+    %{?with_gss:	--gss} \
 \
     %{!?with_idn:	--without-idn} \
-    %{?with_gpgme:	--enable-gpgme} \
-    --with-docdir=%{_pkgdocdir}
+    %{?with_gpgme:	--gpgme}
 
 make %{?_smp_mflags}
 
 # remove unique id in manual.html because multilib conflicts
 sed -i -r 's/<a id="id[a-z0-9]\+">/<a id="id">/g' doc/manual.html
 
-
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
 
 # we like GPG here
-cat contrib/gpg.rc >> \
-      $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc
+cat contrib/gpg.rc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomuttrc
 
-grep -5 "^color" contrib/sample.muttrc >> \
-      $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc
-
-cat >> $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc <<\EOF
-source %{_sysconfdir}/Muttrc.local
-EOF
-
-echo "# Local configuration for Mutt." > \
-      $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.local
+grep -5 "^color" contrib/sample.neomuttrc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomuttrc
 
 # remove unpackaged files from the buildroot
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/*.dist
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
-rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
-rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mmdf.5*
-
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/samples
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/applying-patches.txt
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/INSTALL
@@ -168,36 +143,85 @@ rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/TODO
 rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %endif
 
-# provide muttrc.local(5): the same as muttrc(5)
-ln -sf ./muttrc.5 $RPM_BUILD_ROOT%{_mandir}/man5/muttrc.local.5
+%find_lang %{name}
 
-%find_lang %{_origname}
-
-%files -f %{_origname}.lang
-%config(noreplace) %{_sysconfdir}/Muttrc
-%config(noreplace) %{_sysconfdir}/Muttrc.local
+%files -f %{name}.lang
+%config(noreplace) %{_sysconfdir}/neomuttrc
 %doc CODE_OF_CONDUCT.md COPYRIGHT ChangeLog* LICENSE.md README* mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
-%doc doc/muttrc.* doc/neomutt-syntax.vim
+%doc doc/neomuttrc.* doc/neomutt-syntax.vim
 %doc doc/manual.txt doc/smime-notes.txt
 %doc doc/*.html
+%doc doc/mime.types
 %doc contrib/colorschemes
 %doc contrib/hcache-bench
 %doc contrib/keybase
 %doc contrib/logo
 %doc contrib/lua
 %doc contrib/vim-keys
-%{_bindir}/mutt
-%{_bindir}/pgpring
-%{_bindir}/pgpewrap
-%{_bindir}/smime_keys
-%{_mandir}/man1/mutt.*
-%{_mandir}/man1/smime_keys.*
-%{_mandir}/man1/pgpring.*
-%{_mandir}/man1/pgpewrap.*
-%{_mandir}/man5/muttrc.*
+%{_bindir}/neomutt
+/usr/lib/neomutt/pgpring
+/usr/lib/neomutt/pgpewrap
+/usr/lib/neomutt/smime_keys
+%{_mandir}/man1/neomutt.*
+%{_mandir}/man1/pgpewrap_neomutt.*
+%{_mandir}/man1/pgpring_neomutt.*
+%{_mandir}/man1/smime_keys_neomutt.*
+%{_mandir}/man5/mbox_neomutt.*
+%{_mandir}/man5/mmdf_neomutt.*
+%{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Oct 13 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20171013
+- Features
+  - Add IMAP keywords support
+- Bug Fixes
+  - set mbox_type
+  - %{fmt} date format
+  - Fix off-by-one buffer overflow in add_index_color
+  - crash in mbox_to_udomain
+  - crash in mutt_substrdup
+  - crash looking up mime body type
+  - digest_collapse was broken
+  - crash using notmuch expando with imap
+  - imap: Fix mx.mbox leak in imap_get_parent_path
+  - overflow in mutt_mktime()
+  - add more range-checking on dates/times
+  - Remove spurious error message
+  - Unsubscribe after deleting an imap folder
+  - Do not pop from MuttrcStack what wasn't pushed
+  - crash using uncolor
+  - Sort the folders list when browsing an IMAP server
+  - Prefer a helpful error message over a BEEP
+- Docs
+  - replace mutt refs with neomutt
+  - drop old vim syntax file
+- Code
+  - convert functions to use 'bool'
+  - convert structs to use STAILQ
+- Build
+  - Autosetup-based configuration
+  - drop upstream mutt references
+  - rename everything 'mutt' to 'neomutt'
+  - move helper programs to lib dir
+  - rename regexp to regex
+  - expand buffers to avoid gcc7 warnings
+  - Do not fail if deflate is not in libz
+  - Support EXTRA_CFLAGS and EXTRA_LDFLAGS, kill unused variable
+- Upstream
+  - Remove \Seen flag setting for imap trash
+  - Change imap copy/save and trash to sync flags, excluding deleted
+  - Improve imap fetch handler to accept an initial UID
+  - Display an error message when delete mailbox fails
+  - Updated French translation
+  - Fix imap sync segfault due to inactive headers during an expunge
+  - Close the imap socket for the selected mailbox on error
+  - Add missing IMAP_CMD_POLL flag in imap buffy check
+  - Change maildir and mh check_mailbox to use dynamic sized hash
+  - Fix uses of context->changed as a counter
+  - Make cmd_parse_fetch() more precise about setting reopen/check flags
+  - Enable $reply_self for group-reply, even with $metoo unset
+
 * Tue Sep 12 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170912
 - Bug Fixes
   - broken check on resend message
