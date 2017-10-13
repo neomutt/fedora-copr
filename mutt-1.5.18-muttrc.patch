@@ -1,16 +1,16 @@
-From 6b7a42f6c5f6c982582659e6bae11ea1e7b30404 Mon Sep 17 00:00:00 2001
+From 0d3b5ae47d7d314ea609f018faac9a117fac8f07 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:37:32 +0100
 Subject: [PATCH 1/4] mutt-1.5.18-muttrc
 
 ---
- doc/Muttrc.head | 4 ++++
+ doc/neomuttrc.head | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/doc/Muttrc.head b/doc/Muttrc.head
-index 095cdc7..3650a06 100644
---- a/doc/Muttrc.head
-+++ b/doc/Muttrc.head
+diff --git a/doc/neomuttrc.head b/doc/neomuttrc.head
+index 095cdc7e..3650a06e 100644
+--- a/doc/neomuttrc.head
++++ b/doc/neomuttrc.head
 @@ -24,6 +24,8 @@ macro index,pager,attach,compose \cb "\
  
  # Show documentation when pressing F1
