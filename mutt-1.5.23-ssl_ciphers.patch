@@ -1,4 +1,4 @@
-From f32b738cc40116001419251b24b01d4ebf8799a7 Mon Sep 17 00:00:00 2001
+From b268f175cdf64b4c16f747f57905b145a6307ff2 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:22 +0100
 Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
@@ -9,10 +9,10 @@ Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
  2 files changed, 28 insertions(+), 25 deletions(-)
 
 diff --git a/init.h b/init.h
-index 34ee1dc..9914745 100644
+index f22c542c..42aaa3c3 100644
 --- a/init.h
 +++ b/init.h
-@@ -3948,7 +3948,7 @@ struct Option MuttVars[] = {
+@@ -3924,7 +3924,7 @@ struct Option MuttVars[] = {
    */
  #endif /* defined HAVE_SSL_PARTIAL_CHAIN */
  #endif /* defined USE_SSL_OPENSSL */
@@ -22,7 +22,7 @@ index 34ee1dc..9914745 100644
    ** .pp
    ** Contains a colon-seperated list of ciphers to use when using SSL.
 diff --git a/mutt_ssl_gnutls.c b/mutt_ssl_gnutls.c
-index 8c3293a..7476c63 100644
+index 1ea0cda0..14344277 100644
 --- a/mutt_ssl_gnutls.c
 +++ b/mutt_ssl_gnutls.c
 @@ -936,32 +936,35 @@ static int tls_set_priority(struct TlsSockData *data)
