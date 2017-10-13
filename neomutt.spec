@@ -95,6 +95,8 @@ echo %{release} | sed -r 's/.*(201[0-9])([0-1][0-9])([0-3][0-9]).*/"\1-\2-\3";/'
 
 %build
 sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.autosetup
+sed -i 's/sasl_client_done/sasl_done/' mutt_sasl.c
+
 ./configure.autosetup \
     --sysconfdir=/etc \
     SENDMAIL=%{_sbindir}/sendmail \
