@@ -26,7 +26,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20171027
+Version: 20171107
 Release: 1%{?dist}
 Epoch: 5
 
@@ -172,6 +172,10 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Tue Nov 07 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20171107
+- Build
+  - Fix sendmail build issue
+
 * Fri Oct 27 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20171027
 - Bug Fixes
   - variable type when using fread
