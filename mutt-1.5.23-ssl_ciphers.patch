@@ -1,31 +1,18 @@
-From e6de49145d5c0b87fdeed6800b8c9b97efc38eb1 Mon Sep 17 00:00:00 2001
+From 64cb56de5cb02cb436728084bf925ab0f0683257 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:22 +0100
 Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
 
 ---
+ conn/ssl_gnutls.c | 51 +++++++++++++++++++++++++++------------------------
  init.h            |  2 +-
- mutt_ssl_gnutls.c | 51 +++++++++++++++++++++++++++------------------------
  2 files changed, 28 insertions(+), 25 deletions(-)
 
-diff --git a/init.h b/init.h
-index 726d2bac..c10da727 100644
---- a/init.h
-+++ b/init.h
-@@ -3924,7 +3924,7 @@ struct Option MuttVars[] = {
-   */
- #endif /* defined HAVE_SSL_PARTIAL_CHAIN */
- #endif /* defined USE_SSL_OPENSSL */
--  { "ssl_ciphers", DT_STRING, R_NONE, UL &SslCiphers, UL 0 },
-+  { "ssl_ciphers", DT_STRING, R_NONE, UL &SslCiphers, UL "@SYSTEM" },
-   /*
-   ** .pp
-   ** Contains a colon-seperated list of ciphers to use when using SSL.
-diff --git a/mutt_ssl_gnutls.c b/mutt_ssl_gnutls.c
-index c6d0a131..3761e9f3 100644
---- a/mutt_ssl_gnutls.c
-+++ b/mutt_ssl_gnutls.c
-@@ -938,32 +938,35 @@ static int tls_set_priority(struct TlsSockData *data)
+diff --git a/conn/ssl_gnutls.c b/conn/ssl_gnutls.c
+index a5f2ce831..6cf0d870a 100644
+--- a/conn/ssl_gnutls.c
++++ b/conn/ssl_gnutls.c
+@@ -1044,32 +1044,35 @@ static int tls_set_priority(struct TlsSockData *data)
    else
      safe_strcat(priority, priority_size, "NORMAL");
  
@@ -85,3 +72,16 @@ index c6d0a131..3761e9f3 100644
    }
  
    err = gnutls_priority_set_direct(data->state, priority, NULL);
+diff --git a/init.h b/init.h
+index 1f14d4d6c..db92d972a 100644
+--- a/init.h
++++ b/init.h
+@@ -3925,7 +3925,7 @@ struct Option MuttVars[] = {
+   */
+ #endif /* defined HAVE_SSL_PARTIAL_CHAIN */
+ #endif /* defined USE_SSL_OPENSSL */
+-  { "ssl_ciphers", DT_STRING, R_NONE, UL &SslCiphers, UL 0 },
++  { "ssl_ciphers", DT_STRING, R_NONE, UL &SslCiphers, UL "@SYSTEM" },
+   /*
+   ** .pp
+   ** Contains a colon-seperated list of ciphers to use when using SSL.
