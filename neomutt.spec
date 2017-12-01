@@ -7,7 +7,6 @@
 %bcond_without idn
 %bcond_without sasl
 %bcond_without tokyocabinet
-%bcond_without notmuch
 
 # Disabled
 %bcond_with bdb
@@ -15,7 +14,7 @@
 %bcond_with kyotocabinet
 %bcond_with qdbm
 
-# Notmuch and lmdb don't exist on rhel, yet
+# lmdb doesn't exist on rhel, yet
 %if 0%{?rhel}
 # Disabled
 %bcond_with lmdb
@@ -24,9 +23,18 @@
 %bcond_without lmdb
 %endif
 
+# Notmuch doesn't exist in in rhel6
+%if "0%{?rhel}" == "06"
+# Disabled
+%bcond_with notmuch
+%else
+# Enabled
+%bcond_without notmuch
+%endif
+
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20171027
+Version: 20171201
 Release: 1%{?dist}
 Epoch: 5
 
@@ -47,11 +55,11 @@ Patch4: mutt-1.5.23-ssl_ciphers.patch
 %endif
 Url: https://www.neomutt.org/
 Requires: mailcap, urlview
-BuildRequires: ncurses-devel, gettext, automake, gettext-devel
+BuildRequires: ncurses-devel, gettext, gettext-devel
 # manual generation
 BuildRequires: /usr/bin/xsltproc, docbook-style-xsl, perl
 # html manual -> txt manual conversion
-BuildRequires: w3m
+BuildRequires: lynx
 
 %if %{with hcache}
 %{?with_tokyocabinet:BuildRequires: tokyocabinet-devel}
@@ -99,7 +107,6 @@ sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.au
     --sysconfdir=/etc \
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
-    %{?with_debug:	--logging}\
     %{?with_notmuch:	--notmuch} \
 \
     %if %{with hcache}
@@ -149,7 +156,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %config(noreplace) %{_sysconfdir}/neomuttrc
 %doc CODE_OF_CONDUCT.md COPYRIGHT ChangeLog* LICENSE.md README* mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
-%doc doc/neomuttrc.* doc/neomutt-syntax.vim
+%doc doc/neomuttrc.*
 %doc doc/manual.txt doc/smime-notes.txt
 %doc doc/*.html
 %doc doc/mime.types
