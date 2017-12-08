@@ -1,4 +1,4 @@
-From 64cb56de5cb02cb436728084bf925ab0f0683257 Mon Sep 17 00:00:00 2001
+From 65986847cf667c859f543efef21f12ccf3ecf725 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:22 +0100
 Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
@@ -9,53 +9,53 @@ Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
  2 files changed, 28 insertions(+), 25 deletions(-)
 
 diff --git a/conn/ssl_gnutls.c b/conn/ssl_gnutls.c
-index a5f2ce831..6cf0d870a 100644
+index fcbff0f7..496a9ee7 100644
 --- a/conn/ssl_gnutls.c
 +++ b/conn/ssl_gnutls.c
-@@ -1044,32 +1044,35 @@ static int tls_set_priority(struct TlsSockData *data)
+@@ -1042,32 +1042,35 @@ static int tls_set_priority(struct TlsSockData *data)
    else
-     safe_strcat(priority, priority_size, "NORMAL");
+     mutt_str_strcat(priority, priority_size, "NORMAL");
  
 -  if (!option(OPT_SSL_USE_TLSV1_2))
 +  if (SslCiphers && strcmp(SslCiphers, "@SYSTEM"))
    {
 -    nproto--;
--    safe_strcat(priority, priority_size, ":-VERS-TLS1.2");
+-    mutt_str_strcat(priority, priority_size, ":-VERS-TLS1.2");
 -  }
 -  if (!option(OPT_SSL_USE_TLSV1_1))
 -  {
 -    nproto--;
--    safe_strcat(priority, priority_size, ":-VERS-TLS1.1");
+-    mutt_str_strcat(priority, priority_size, ":-VERS-TLS1.1");
 -  }
 -  if (!option(OPT_SSL_USE_TLSV1))
 -  {
 -    nproto--;
--    safe_strcat(priority, priority_size, ":-VERS-TLS1.0");
+-    mutt_str_strcat(priority, priority_size, ":-VERS-TLS1.0");
 -  }
 -  if (!option(OPT_SSL_USE_SSLV3))
 -  {
 -    nproto--;
--    safe_strcat(priority, priority_size, ":-VERS-SSL3.0");
+-    mutt_str_strcat(priority, priority_size, ":-VERS-SSL3.0");
 -  }
 +    if (!option(OPT_SSL_USE_TLSV1_2))
 +    {
 +      nproto--;
-+      safe_strcat(priority, priority_size, ":-VERS-TLS1.2");
++      mutt_str_strcat(priority, priority_size, ":-VERS-TLS1.2");
 +    }
 +    if (!option(OPT_SSL_USE_TLSV1_1))
 +    {
 +      nproto--;
-+      safe_strcat(priority, priority_size, ":-VERS-TLS1.1");
++      mutt_str_strcat(priority, priority_size, ":-VERS-TLS1.1");
 +    }
 +    if (!option(OPT_SSL_USE_TLSV1))
 +    {
 +      nproto--;
-+      safe_strcat(priority, priority_size, ":-VERS-TLS1.0");
++      mutt_str_strcat(priority, priority_size, ":-VERS-TLS1.0");
 +    }
 +    if (!option(OPT_SSL_USE_SSLV3))
 +    {
 +      nproto--;
-+      safe_strcat(priority, priority_size, ":-VERS-SSL3.0");
++      mutt_str_strcat(priority, priority_size, ":-VERS-SSL3.0");
 +    }
  
 -  if (nproto == 0)
@@ -73,10 +73,10 @@ index a5f2ce831..6cf0d870a 100644
  
    err = gnutls_priority_set_direct(data->state, priority, NULL);
 diff --git a/init.h b/init.h
-index 1f14d4d6c..db92d972a 100644
+index 117598fc..3d129cfb 100644
 --- a/init.h
 +++ b/init.h
-@@ -3925,7 +3925,7 @@ struct Option MuttVars[] = {
+@@ -3942,7 +3942,7 @@ struct Option MuttVars[] = {
    */
  #endif /* defined HAVE_SSL_PARTIAL_CHAIN */
  #endif /* defined USE_SSL_OPENSSL */
@@ -84,4 +84,4 @@ index 1f14d4d6c..db92d972a 100644
 +  { "ssl_ciphers", DT_STRING, R_NONE, UL &SslCiphers, UL "@SYSTEM" },
    /*
    ** .pp
-   ** Contains a colon-seperated list of ciphers to use when using SSL.
+   ** Contains a colon-separated list of ciphers to use when using SSL.

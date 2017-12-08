@@ -7,7 +7,6 @@
 %bcond_without idn
 %bcond_without sasl
 %bcond_without tokyocabinet
-%bcond_without notmuch
 
 # Disabled
 %bcond_with bdb
@@ -15,7 +14,7 @@
 %bcond_with kyotocabinet
 %bcond_with qdbm
 
-# Notmuch and lmdb don't exist on rhel, yet
+# lmdb doesn't exist on rhel, yet
 %if 0%{?rhel}
 # Disabled
 %bcond_with lmdb
@@ -24,9 +23,18 @@
 %bcond_without lmdb
 %endif
 
+# Notmuch doesn't exist in in rhel6
+%if "0%{?rhel}" == "06"
+# Disabled
+%bcond_with notmuch
+%else
+# Enabled
+%bcond_without notmuch
+%endif
+
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20171107
+Version: 20171208
 Release: 1%{?dist}
 Epoch: 5
 
@@ -47,11 +55,11 @@ Patch4: mutt-1.5.23-ssl_ciphers.patch
 %endif
 Url: https://www.neomutt.org/
 Requires: mailcap, urlview
-BuildRequires: ncurses-devel, gettext, automake, gettext-devel
+BuildRequires: ncurses-devel, gettext, gettext-devel
 # manual generation
 BuildRequires: /usr/bin/xsltproc, docbook-style-xsl, perl
 # html manual -> txt manual conversion
-BuildRequires: w3m
+BuildRequires: lynx
 
 %if %{with hcache}
 %{?with_tokyocabinet:BuildRequires: tokyocabinet-devel}
@@ -99,7 +107,6 @@ sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.au
     --sysconfdir=/etc \
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
-    %{?with_debug:	--logging}\
     %{?with_notmuch:	--notmuch} \
 \
     %if %{with hcache}
@@ -149,7 +156,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %config(noreplace) %{_sysconfdir}/neomuttrc
 %doc CODE_OF_CONDUCT.md COPYRIGHT ChangeLog* LICENSE.md README* mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
-%doc doc/neomuttrc.* doc/neomutt-syntax.vim
+%doc doc/neomuttrc.*
 %doc doc/manual.txt doc/smime-notes.txt
 %doc doc/*.html
 %doc doc/mime.types
@@ -160,9 +167,9 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %doc contrib/lua
 %doc contrib/vim-keys
 %{_bindir}/neomutt
-/usr/lib/neomutt/pgpring
-/usr/lib/neomutt/pgpewrap
-/usr/lib/neomutt/smime_keys
+/usr/libexec/neomutt/pgpring
+/usr/libexec/neomutt/pgpewrap
+/usr/libexec/neomutt/smime_keys
 %{_mandir}/man1/neomutt.*
 %{_mandir}/man1/pgpewrap_neomutt.*
 %{_mandir}/man1/pgpring_neomutt.*
@@ -172,9 +179,68 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
-* Tue Nov 07 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20171107
+* Fri Dec 08 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20171208
+- Features
+  - Enhance ifdef feature to support my_ vars
+  - Add <edit-or-view-raw-message>
+  - Remove vim syntax file from the main repo
+  - Support reading FQDN from mailname files
+- Bug Fixes
+  - Do not turn CRLF into LF when dealing with transfer-encoding=base64
+  - Cleanup "SSL is unavailable" error in mutt_conn_find
+  - Don't clear the macro buffer during startup
+  - Fixup smart modify-labels-then-hide for !tag case
+  - Add sleep after SMTP error
+  - Restore folder settings after folder-hook
+  - Fix segfault when pipe'ing a deleted message
+- Docs
+  - Display_filter escape sequence
+  - Correct spelling mistakes
+  - Add a sentence to quasi-delete docs
+  - Modify gpg.rc to accommodate GPG 2.1 changes
 - Build
-  - Fix sendmail build issue
+  - Fix build for RHEL6
+  - Define NCURSES_WIDECHAR to require wide-char support from ncurses
+  - Autosetup: fix check for missing sendmail
+  - Respect --with-ssl path
+  - Check that OpenSSL md5 supports -r before using it
+  - Autosetup: expand --everything in `neomutt -v`
+  - Make sure objects are not compiled before git_ver.h is generated
+  - Build: fix update-po target
+  - Fix out-of-tree builds
+  - Fix stdout + stderr redirection in hcachever.sh
+  - Build: moved the check for idn before the check for notmuch
+  - Define prefix in Makefile.autosetup
+  - Install stuff to $(PACKAGE) in $(libexecdir), not $(libdir)
+  - Update autosetup to latest master
+- Code
+  - Rename files
+  - Rename functions
+  - Rename variables
+  - Rename constants
+  - Remove unused parameters
+  - Document functions
+  - Rearrange functions
+  - Move functions to libraries
+  - Add new library functions
+  - Rearrange switch statements
+  - Boolification
+  - Drop #ifdef DEBUG
+  - Fix Coverity defects
+  - Insert braces
+  - Split ifs
+  - Fallthrough
+  - Fix shadow variable
+  - Replace mutt_debug with a macro
+  - Return early where possible
+- Upstream
+  - Note which ssl config vars are GnuTLS or OpenSSL only
+  - Add message count to $move quadoption prompt
+  - Add %R (number of read messages) for $status_format
+  - Add $change_folder_next option to control mailbox suggestion order
+  - Fix $smart_wrap to not be disabled by whitespace-prefixed lines
+  - Remove useless else branch in the $smart_wrap code
+  - Fix ansi escape sequences with both reset and color parameters
 
 * Fri Oct 27 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20171027
 - Bug Fixes
