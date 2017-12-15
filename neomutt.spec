@@ -34,7 +34,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20171208
+Version: 20171215
 Release: 1%{?dist}
 Epoch: 5
 
@@ -103,7 +103,7 @@ echo %{release} | sed -r 's/.*(201[0-9])([0-1][0-9])([0-3][0-9]).*/"\1-\2-\3";/'
 
 %build
 sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.autosetup
-./configure.autosetup \
+./configure \
     --sysconfdir=/etc \
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
@@ -179,6 +179,10 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Dec 15 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20171215
+- Bug Fixes
+  - Fix some regressions in the previous release
+
 * Fri Dec 08 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20171208
 - Features
   - Enhance ifdef feature to support my_ vars
