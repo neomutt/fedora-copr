@@ -34,7 +34,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20171208
+Version: 20180223
 Release: 1%{?dist}
 Epoch: 5
 
@@ -103,7 +103,7 @@ echo %{release} | sed -r 's/.*(201[0-9])([0-1][0-9])([0-3][0-9]).*/"\1-\2-\3";/'
 
 %build
 sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.autosetup
-./configure.autosetup \
+./configure \
     --sysconfdir=/etc \
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
@@ -179,6 +179,68 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Feb 23 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180223
+- Features
+  - browser: `<goto-parent>` function bound to "p"
+  - editor: `<history-search>` function bound to "Ctrl-r"
+  - Cygwin support: https://www.neomutt.org/distro/cygwin
+  - OpenSUSE support: https://www.neomutt.org/distro/suse
+  - Upstream Homebrew support: Very soon - https://www.neomutt.org/distro/homebrew
+- Bug Fixes
+  - gmail server-size search
+  - nested-if: correctly handle "<" and ">" with %?
+  - display of special chars
+  - lua: enable myvars
+  - for pgpewrap in default gpg.rc
+  - reply_regexp which wasn't formatted correctly.
+  - parsing of urls containing '?'
+  - out-of-bounds read in mutt_str_lws_len
+- Translations
+  - Review fuzzy lt translations
+  - Updated French translation
+- Website
+  - Installation guide for Cygwin
+  - Installation guide for OpenSUSE
+  - Installation guide for CRUX
+- Build
+  - check that DTDs are installed
+  - autosetup improvements
+  - option for which version of bdb to use
+  - drop test for resizeterm -- it's always present
+- Code
+  - split if's containing assignments
+  - doxygen: add/improve comments
+  - rename functions / parameters for consistency
+  - add missing {}s for clarity
+  - move functions to library
+  - reduce scope of variables
+  - boolify more variables
+  - iwyu: remove unnecessary headers
+  - name unicode chars
+  - tailq: migrate parameter api
+  - md5: refactor and tidy
+  - rfc2047: refactor and tidy
+  - buffer: improvements
+  - create unit test framework
+  - fix several coverity defects
+- Upstream
+  - Fix s/mime certificate deletion bug
+  - Disable message security if the backend is not available
+  - Fix improper signed int conversion of IMAP uid and msn values
+  - Change imap literal counts to parse and store unsigned ints
+  - Fix imap status count range check
+  - cmd_handle_fatal: make error message a bit more descriptive
+  - Create pgp and s/mime default and sign_as key vars
+  - Add missing setup calls when resuming encrypted drafts
+  - mutt_pretty_size: show real number for small files
+  - examine_directory: set directory/symlink size to zero
+  - Add history-search function, bound to ctrl-r
+  - Avoid a potential integer overflow if a Content-Length value is huge
+
+* Fri Dec 15 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20171215
+- Bug Fixes
+  - Fix some regressions in the previous release
+
 * Fri Dec 08 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20171208
 - Features
   - Enhance ifdef feature to support my_ vars
