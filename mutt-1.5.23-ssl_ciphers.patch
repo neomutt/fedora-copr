@@ -1,4 +1,4 @@
-From 7c8de3953fcc8951e8f095fa1a2fb394e6254589 Mon Sep 17 00:00:00 2001
+From db17e991ed40ee947f309f78f9076ab471b3b70e Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:22 +0100
 Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
@@ -9,10 +9,10 @@ Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
  2 files changed, 28 insertions(+), 25 deletions(-)
 
 diff --git a/conn/ssl_gnutls.c b/conn/ssl_gnutls.c
-index 553e7e9e..b6a05ed2 100644
+index be1df16d..ea02b68e 100644
 --- a/conn/ssl_gnutls.c
 +++ b/conn/ssl_gnutls.c
-@@ -1043,32 +1043,35 @@ static int tls_set_priority(struct TlsSockData *data)
+@@ -1020,32 +1020,35 @@ static int tls_set_priority(struct TlsSockData *data)
    else
      mutt_str_strcat(priority, priority_size, "NORMAL");
  
@@ -73,13 +73,13 @@ index 553e7e9e..b6a05ed2 100644
  
    err = gnutls_priority_set_direct(data->state, priority, NULL);
 diff --git a/init.h b/init.h
-index 8d505011..26e47202 100644
+index 4df6113e..c2d8579f 100644
 --- a/init.h
 +++ b/init.h
-@@ -3921,7 +3921,7 @@ struct Option MuttVars[] = {
+@@ -3844,7 +3844,7 @@ struct Option MuttVars[] = {
+   ** .te
    */
- #endif /* defined HAVE_SSL_PARTIAL_CHAIN */
- #endif /* defined USE_SSL_OPENSSL */
+ #endif /* USE_SSL_GNUTLS */
 -  { "ssl_ciphers", DT_STRING, R_NONE, UL &SslCiphers, UL 0 },
 +  { "ssl_ciphers", DT_STRING, R_NONE, UL &SslCiphers, UL "@SYSTEM" },
    /*
