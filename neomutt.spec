@@ -34,7 +34,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20180223
+Version: 20180323
 Release: 1%{?dist}
 Epoch: 5
 
@@ -179,6 +179,41 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Mar 23 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180323
+- Features
+  - unify logging/messaging
+  - add alert (blink) colors
+- Contrib
+  - Vim syntax for NeoMutt log files
+- Bug Fixes
+  - Fix progress bar range
+  - notmuch: stop if db open fails
+  - Improve index color cache flushing behavior
+  - lua: fix crash when setting a string
+- Translations
+  - Update Czech translation (100%)
+  - Update German translation (100%)
+  - Update Polish translation (94%)
+  - Update Portuguese (BR) translation (100%)
+  - Update Spanish translation (64%)
+  - Update Turkish translation (75%)
+  - Merge simliar messages
+- Docs
+  - Clarify precedence of settings in config files
+  - Fix subjectrx example in the manual
+- Website
+  - Update Gentoo distro page
+  - Devel: Static analysis
+- Build
+  - Support —with-sysroot configure arg
+  - Expose EXTRA_CFLAGS_FOR_BUILD and EXTRA_LDFLAGS_FOR_BUIlD
+  - Update to latest autosetup
+  - Make sure git_ver.h doesn't eat random 'g's out of tag names
+- Code
+  - Refactor to reduce complexity
+  - Refactor to reduce variables' scope
+  - Sort functions/config to make docs more legible
+
 * Fri Feb 23 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180223
 - Features
   - browser: `<goto-parent>` function bound to "p"
