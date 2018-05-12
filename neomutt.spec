@@ -34,7 +34,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20180323
+Version: 20180512
 Release: 1%{?dist}
 Epoch: 5
 
@@ -79,11 +79,11 @@ BuildRequires: lynx
 %{?with_notmuch:BuildRequires: notmuch-devel}
 
 %description
-Mutt is a small but very powerful text-based MIME mail client.  Mutt
-is highly configurable, and is well suited to the mail power user with
-advanced features like key bindings, keyboard macros, mail threading,
-regular expression searches and a powerful pattern matching language
-for selecting groups of messages.
+NeoMutt is a small but very powerful text-based MIME mail client.  NeoMutt is
+highly configurable, and is well suited to the mail power user with advanced
+features like key bindings, keyboard macros, mail threading, regular expression
+searches and a powerful pattern matching language for selecting groups of
+messages.
 
 %prep
 # unpack; cd
@@ -154,7 +154,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 
 %files -f %{name}.lang
 %config(noreplace) %{_sysconfdir}/neomuttrc
-%doc CODE_OF_CONDUCT.md COPYRIGHT ChangeLog* LICENSE.md README* mutt_ldap_query
+%doc CODE_OF_CONDUCT.md COPYRIGHT.md ChangeLog* LICENSE.md README* mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
 %doc doc/neomuttrc.*
 %doc doc/manual.txt doc/smime-notes.txt
@@ -179,6 +179,58 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Sat May 12 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180512
+- Features
+  - echo command
+  - Add $browser_abbreviate_mailboxes
+  - Add ~M pattern to match mime Content-Types
+  - Add support for multipart/multilingual emails
+  - Jump to a collapsed email
+  - Add support for idn2 (IDNA2008)
+- Bug Fixes
+  - Let mutt_ch_choose report conversion failure
+  - minor IMAP string handling fixes
+- Translations
+  - Chinese (Simplified) (100%)
+  - Czech (100%)
+  - German (100%)
+  - Lithuanian (62%)
+  - Portuguese (Brazil) (100%)
+- Coverity defects
+  - match prototypes to their functions
+  - make logic clearer
+  - reduce scope of variables
+  - fix coverity defects
+- Docs
+  - development: analysis
+  - development: easy tasks
+  - development: roadmap
+- Code
+  - start refactoring libconn
+  - split out progress functions
+  - split out window functions
+  - split out terminal setting
+  - convert MyVars to use TAILQ
+  - split mutt_file_{lock,unlock}
+  - Move IDN version string to mutt/idna.c
+  - refactor: init_locale()
+  - Eliminate static variable in mutt_file_dirname
+- Tidy
+  - test int functions against 0
+  - rename lots of constants
+  - rename lots of functions
+  - sort lots of fields/definitions
+- Upstream
+  - Increase account.user/login size to 128
+  - Fix comparison of flags with multiple bits set
+  - Change mutt_error call in mutt_gpgme_set_sender() to dprint
+  - Improve the error message when a signature is missing
+  - pager specific "show incoming mailboxes list" macro
+  - Improve gss debug printing of status_string
+  - Remove trailing null count from gss_buffer_desc.length field
+  - Add a comment in auth_gss about RFCs and null-termination
+  - Change prompt string for $crypt_verify_sig
+
 * Fri Mar 23 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180323
 - Features
   - unify logging/messaging
