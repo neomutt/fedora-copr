@@ -34,7 +34,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20180512
+Version: 20180622
 Release: 1%{?dist}
 Epoch: 5
 
@@ -140,11 +140,6 @@ grep -5 "^color" contrib/sample.neomuttrc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomu
 
 # remove unpackaged files from the buildroot
 rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/samples
-rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/applying-patches.txt
-rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/INSTALL
-rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/patch-notes.txt
-rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/PGP-Notes.txt
-rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/TODO
 
 %if 0%{?rhel}
 rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
@@ -154,7 +149,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 
 %files -f %{name}.lang
 %config(noreplace) %{_sysconfdir}/neomuttrc
-%doc CODE_OF_CONDUCT.md COPYRIGHT.md ChangeLog* LICENSE.md README* mutt_ldap_query
+%doc CODE_OF_CONDUCT.md COPYRIGHT.md ChangeLog* LICENSE.md README* INSTALL.md mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
 %doc doc/neomuttrc.*
 %doc doc/manual.txt doc/smime-notes.txt
@@ -167,18 +162,43 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %doc contrib/lua
 %doc contrib/vim-keys
 %{_bindir}/neomutt
-/usr/libexec/neomutt/pgpring
 /usr/libexec/neomutt/pgpewrap
 /usr/libexec/neomutt/smime_keys
 %{_mandir}/man1/neomutt.*
 %{_mandir}/man1/pgpewrap_neomutt.*
-%{_mandir}/man1/pgpring_neomutt.*
 %{_mandir}/man1/smime_keys_neomutt.*
 %{_mandir}/man5/mbox_neomutt.*
 %{_mandir}/man5/mmdf_neomutt.*
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Jun 22 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180622
+- Features
+  - Expand variables inside backticks
+  - Honour SASL-IR IMAP capability in SASL PLAIN
+- Bug Fixes
+  - Fix toggle-read
+  - Do not truncate shell commands on ; or #
+  - pager: index must be rebuilt on MUTT_REOPENED
+  - Handle a BAD response in AUTH PLAIN w/o initial response
+  - fcc_attach: Don't ask every time
+  - Enlarge path buffers PATH_MAX (4096)
+  - Move LSUB call from connection establishment to mailbox SELECTion
+- Translations
+  - Update Chinese (Simplified): 100%
+  - Update Czech: 100%
+  - Update German: 100%
+  - Update Lithuanian: 100%
+  - Update Portuguese (Brazil): 100%
+  - Update Slovak: 59% 
+  - Reduce duplication of messages
+- Code
+  - Tidy up the mailbox API
+  - Tidy up the header cache API
+  - Tidy up the encryption API
+  - Add doxygen docs for more functions
+  - Refactor more structs to use STAILQ
+
 * Sat May 12 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180512
 - Features
   - echo command
