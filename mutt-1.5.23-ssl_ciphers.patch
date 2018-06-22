@@ -1,4 +1,4 @@
-From 2f4eef55809f914e86816cca76e4cff9fba4462b Mon Sep 17 00:00:00 2001
+From 339dd3e83ffdf650ab93b92e87b7904451127459 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:22 +0100
 Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
@@ -9,10 +9,10 @@ Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
  2 files changed, 28 insertions(+), 25 deletions(-)
 
 diff --git a/conn/ssl_gnutls.c b/conn/ssl_gnutls.c
-index ce049edec..eb7f39238 100644
+index bccf41a8b..ce8aed500 100644
 --- a/conn/ssl_gnutls.c
 +++ b/conn/ssl_gnutls.c
-@@ -1015,32 +1015,35 @@ static int tls_set_priority(struct TlsSockData *data)
+@@ -1017,32 +1017,35 @@ static int tls_set_priority(struct TlsSockData *data)
    else
      mutt_str_strcat(priority, priority_size, "NORMAL");
  
@@ -73,10 +73,10 @@ index ce049edec..eb7f39238 100644
  
    int err = gnutls_priority_set_direct(data->state, priority, NULL);
 diff --git a/init.h b/init.h
-index e8e93e4d7..b608935f4 100644
+index 4691cd16d..3de04d9c8 100644
 --- a/init.h
 +++ b/init.h
-@@ -3885,7 +3885,7 @@ struct Option MuttVars[] = {
+@@ -3899,7 +3899,7 @@ struct Option MuttVars[] = {
    ** .te
    */
  #endif /* USE_SSL_GNUTLS */
