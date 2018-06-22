@@ -1,4 +1,4 @@
-From 9c3fdfe2cc1daf4b2e3d8192d7c5407aeff8c9f7 Mon Sep 17 00:00:00 2001
+From 8b97f6388969d530d77cad0b25378a02427601b2 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:05 +0100
 Subject: [PATCH 2/4] mutt-1.5.21-cabundle
@@ -11,7 +11,7 @@ diff --git a/doc/smime-notes.txt b/doc/smime-notes.txt
 index 7380ab4f9..c3ceef6e4 100644
 --- a/doc/smime-notes.txt
 +++ b/doc/smime-notes.txt
-@@ -38,14 +38,14 @@ How to use neomutt's S/MIME capabilities
+@@ -38,14 +38,14 @@
  - Edit the smime_default_key line in your muttrc, replacing the keyid with your
    own.
  
