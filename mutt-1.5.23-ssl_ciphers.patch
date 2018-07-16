@@ -1,4 +1,4 @@
-From 339dd3e83ffdf650ab93b92e87b7904451127459 Mon Sep 17 00:00:00 2001
+From c4608af5fa839e985381a021a6d56dfb98212252 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:22 +0100
 Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
@@ -73,10 +73,10 @@ index bccf41a8b..ce8aed500 100644
  
    int err = gnutls_priority_set_direct(data->state, priority, NULL);
 diff --git a/init.h b/init.h
-index 4691cd16d..3de04d9c8 100644
+index e2623ea9d..4f11f572f 100644
 --- a/init.h
 +++ b/init.h
-@@ -3899,7 +3899,7 @@ struct Option MuttVars[] = {
+@@ -3902,7 +3902,7 @@ struct Option MuttVars[] = {
    ** .te
    */
  #endif /* USE_SSL_GNUTLS */
