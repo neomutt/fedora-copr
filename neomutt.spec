@@ -34,7 +34,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20180622
+Version: 20180716
 Release: 1%{?dist}
 Epoch: 5
 
@@ -172,6 +172,14 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Mon Jul 16 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180716
+- Features
+  - <check-stats> function
+- Contrib
+  - description
+- Bug Fixes
+  - Lots
+
 * Fri Jun 22 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180622
 - Features
   - Expand variables inside backticks
