@@ -1,0 +1,87 @@
+From c4608af5fa839e985381a021a6d56dfb98212252 Mon Sep 17 00:00:00 2001
+From: Richard Russon <rich@flatcap.org>
+Date: Wed, 1 Jun 2016 21:38:22 +0100
+Subject: [PATCH 3/4] mutt-1.5.23-ssl_ciphers
+
+---
+ conn/ssl_gnutls.c | 51 +++++++++++++++++++++++++----------------------
+ init.h            |  2 +-
+ 2 files changed, 28 insertions(+), 25 deletions(-)
+
+diff --git a/conn/ssl_gnutls.c b/conn/ssl_gnutls.c
+index bccf41a8b..ce8aed500 100644
+--- a/conn/ssl_gnutls.c
++++ b/conn/ssl_gnutls.c
+@@ -1017,32 +1017,35 @@ static int tls_set_priority(struct TlsSockData *data)
+   else
+     mutt_str_strcat(priority, priority_size, "NORMAL");
+ 
+-  if (!SslUseTlsv12)
++  if (SslCiphers && strcmp(SslCiphers, "@SYSTEM"))
+   {
+-    nproto--;
+-    mutt_str_strcat(priority, priority_size, ":-VERS-TLS1.2");
+-  }
+-  if (!SslUseTlsv11)
+-  {
+-    nproto--;
+-    mutt_str_strcat(priority, priority_size, ":-VERS-TLS1.1");
+-  }
+-  if (!SslUseTlsv1)
+-  {
+-    nproto--;
+-    mutt_str_strcat(priority, priority_size, ":-VERS-TLS1.0");
+-  }
+-  if (!SslUseSslv3)
+-  {
+-    nproto--;
+-    mutt_str_strcat(priority, priority_size, ":-VERS-SSL3.0");
+-  }
++    if (!SslUseTlsv12)
++    {
++      nproto--;
++      mutt_str_strcat(priority, priority_size, ":-VERS-TLS1.2");
++    }
++    if (!SslUseTlsv11)
++    {
++      nproto--;
++      mutt_str_strcat(priority, priority_size, ":-VERS-TLS1.1");
++    }
++    if (!SslUseTlsv1)
++    {
++      nproto--;
++      mutt_str_strcat(priority, priority_size, ":-VERS-TLS1.0");
++    }
++    if (!SslUseSslv3)
++    {
++      nproto--;
++      mutt_str_strcat(priority, priority_size, ":-VERS-SSL3.0");
++    }
+ 
+-  if (nproto == 0)
+-  {
+-    mutt_error(_("All available protocols for TLS/SSL connection disabled"));
+-    FREE(&priority);
+-    return -1;
++    if (nproto == 0)
++    {
++      mutt_error(_("All available protocols for TLS/SSL connection disabled"));
++      FREE(&priority);
++      return -1;
++    }
+   }
+ 
+   int err = gnutls_priority_set_direct(data->state, priority, NULL);
+diff --git a/init.h b/init.h
+index e2623ea9d..4f11f572f 100644
+--- a/init.h
++++ b/init.h
+@@ -3902,7 +3902,7 @@ struct Option MuttVars[] = {
+   ** .te
+   */
+ #endif /* USE_SSL_GNUTLS */
+-  { "ssl_ciphers", DT_STRING, R_NONE, &SslCiphers, 0 },
++  { "ssl_ciphers", DT_STRING, R_NONE, &SslCiphers, IP "@SYSTEM" },
+   /*
+   ** .pp
+   ** Contains a colon-separated list of ciphers to use when using SSL.
