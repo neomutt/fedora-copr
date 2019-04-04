@@ -1,0 +1,31 @@
+From 0ff505698f165cd0b6b792551606aa65ee4e33ba Mon Sep 17 00:00:00 2001
+From: Richard Russon <rich@flatcap.org>
+Date: Wed, 1 Jun 2016 21:37:32 +0100
+Subject: [PATCH 1/4] mutt-1.5.18-muttrc
+
+---
+ doc/neomuttrc.head | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/doc/neomuttrc.head b/doc/neomuttrc.head
+index 33a710997..ea76e63e6 100644
+--- a/doc/neomuttrc.head
++++ b/doc/neomuttrc.head
+@@ -24,6 +24,8 @@ macro index,pager,attach,compose \cb "\
+ 
+ # Show documentation when pressing F1
+ macro generic,pager <F1> "<shell-escape> less @docdir@/manual.txt<Enter>" "show NeoMutt documentation"
++# and also F2, as some terminals use F1
++macro generic,pager <F2> "<shell-escape> less @docdir@/manual.txt<Enter>" "show NeoMutt documentation"
+ 
+ # show the incoming mailboxes list (just like "neomutt -y") and back when pressing "y"
+ macro index y "<change-folder>?" "show incoming mailboxes list"
+@@ -35,6 +37,8 @@ bind browser y exit
+ # close-hook  '\.gz$' "gzip --stdout              '%t' >  '%f'"
+ # append-hook '\.gz$' "gzip --stdout              '%t' >> '%f'"
+ 
++bind editor <delete> delete-char
++
+ # If NeoMutt is unable to determine your site's domain name correctly, you can
+ # set the default here.
+ #
