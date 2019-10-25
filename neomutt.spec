@@ -34,7 +34,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20180716
+Version: 20191025
 Release: 1%{?dist}
 Epoch: 5
 
@@ -45,7 +45,7 @@ Epoch: 5
 License: GPLv2+ and Public Domain
 Group: Applications/Internet
 # git snapshot created from https://github.com/neomutt/neomutt
-Source: %{name}-%{version}.tar.gz
+Source: %{version}.tar.gz
 Source1: mutt_ldap_query
 Patch1: mutt-1.5.18-muttrc.patch
 Patch2: mutt-1.5.21-cabundle.patch
@@ -172,6 +172,110 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Oct 25 2019 Richard Russon <rich@flatcap.org> - NeoMutt-2019-10-25
+- Features
+  - Add $fcc_before_send, defaulting unset
+  - Deprecate TLS 1.0 and 1.1 by default
+  - Turn on $ssl_force_tls by default
+  - Command line -z and -Z options to work with IMAP
+  - Add size display configuration variables
+  - Summary pages: version, set, set all, bind, macro
+  - CONDSTORE and QRESYNC support
+  - OAUTHBEARER support
+  - inotify support
+  - add index-format-hook
+  - Add $auto_subscribe variable
+  - Allow relative date hour/min/sec offsets
+  - Add attributes support on color declarations
+  - Style Menu Options
+  - Add new pattern type ~I for external searches
+  - Add <named-mailboxes> command
+- Changed Config
+  - folder_format
+  - pgp_use_gpg_agent
+  - shell
+  - ssl_force_tls
+  - ssl_use_tlsv1
+  - ssl_use_tlsv1_1
+  - status_format
+  - to_chars
+  - user_agent
+- New Config
+  - attach_save_dir
+  - attach_save_without_prompting
+  - autocrypt
+  - autocrypt_acct_format
+  - autocrypt_dir
+  - autocrypt_reply
+  - auto_subscribe
+  - crypt_chars
+  - crypt_protected_headers_read
+  - crypt_protected_headers_save
+  - crypt_protected_headers_subject
+  - crypt_protected_headers_write
+  - external_search_command
+  - fcc_before_send
+  - forward_attachments
+  - imap_condstore
+  - imap_fetch_chunk_size
+  - imap_oauth_refresh_command
+  - imap_qresync
+  - imap_rfc5161
+  - include_encrypted
+  - nm_flagged_tag
+  - nm_replied_tag
+  - pop_oauth_refresh_command
+  - sidebar_non_empty_mailbox_only
+  - size_show_bytes
+  - size_show_fractions
+  - size_show_mb
+  - size_units_on_left
+  - smtp_oauth_refresh_command
+  - ssl_use_tlsv1_3
+- New Commands
+  - index-format-hook
+  - named-mailboxes
+  - unbind
+  - unmacro
+- New Functions
+  - autocrypt-acct-menu
+  - autocrypt-menu
+  - compose-to-sender
+  - create-account
+  - delete-account
+  - descend-directory
+  - group-chat-reply
+  - mailbox-cycle
+  - mailbox-list
+  - toggle-active
+  - toggle-prefer-encrypt
+  - toggle-write
+  - vfolder-from-query-readonly
+- Bug Fixes
+  - Fix crashes
+  - Fix memory leaks
+  - Fix undefined behaviour
+  - Fix coverity defects
+- Translations
+  - 100% Lithuanian
+  - 100% Chinese (Simplified)
+  - 100% Portuguese (Brazil)
+  - 95% German
+  - 95% Finnish
+  - 95% Czech
+  - 91% Polish
+  - 78% Japanese
+  - 73% Dutch
+  - 72% Spanish
+  - 62% Swedish
+  - 55% Slovak
+- Docs
+  - OpenPGP and S/MIME configuration
+  - Quick-starter config section
+  - Autocrypt feature
+  - "Message Composition Flow" section to manual
+  - OAUTH support
+
 * Mon Jul 16 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180716
 - Features
   - <check-stats> function
