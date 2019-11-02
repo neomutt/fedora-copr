@@ -34,7 +34,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20191025
+Version: 20191102
 Release: 1%{?dist}
 Epoch: 5
 
@@ -87,7 +87,7 @@ messages.
 
 %prep
 # unpack; cd
-%setup -q -n %{name}-%{name}-%{version}
+%setup -q -n %{name}-%{version}
 %patch1 -p1 -b .muttrc
 %patch2 -p1 -b .cabundle
 %patch3 -p1 -b .system_certs
