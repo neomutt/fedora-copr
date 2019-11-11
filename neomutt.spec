@@ -34,7 +34,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20191102
+Version: 20191111
 Release: 1%{?dist}
 Epoch: 5
 
@@ -172,6 +172,46 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Mon Nov 11 2019 Richard Russon <rich@flatcap.org> - NeoMutt-2019-11-11
+- Features
+  - 'sidebar_unread' color
+- Bug Fixes
+  - browser: fix directory view
+  - fix crash in mutt_extract_token()
+  - force a screen refresh
+  - fix crash sending message from command line
+  - notmuch: use nm_default_uri if no mailbox data
+  - fix forward attachments
+  - fix: vfprintf undefined behaviour in body_handler
+  - Fix relative symlink resolution
+  - fix: trash to non-existent file/dir
+  - fix re-opening of mbox Mailboxes
+  - close logging as late as possible
+  - log unknown mailboxes
+  - fix crash in command line postpone
+  - fix memory leaks
+  - fix icommand parsing
+  - fix new mail interaction with mail_check_recent
+
+* Mon Nov 02 2019 Richard Russon <rich@flatcap.org> - NeoMutt-2019-11-11
+- Bug Fixes
+  - Mailboxes command with empty backticks
+  - Mbox save-to-trash
+  - Mkdir for new maildir folders
+  - Maildir: new mail detection
+  - Truncation of "set" command on a path variable
+  - Update crash (when changing folder)
+  - Resolve symbolic links when saving a message
+  - Folder-hook calling "unmailboxes *"
+  - Failed ssl negotiation
+  - Crash when using "alias -group"
+  - LibIDN error when charset wasn't set
+  - Notmuch abort entire-thread if database lacks message
+- Translations
+  - 100% Lithuanian
+  - 100% German
+  - 100% Czech 
+
 * Fri Oct 25 2019 Richard Russon <rich@flatcap.org> - NeoMutt-2019-10-25
 - Features
   - Add $fcc_before_send, defaulting unset
