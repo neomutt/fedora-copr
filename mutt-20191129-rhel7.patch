@@ -1,0 +1,42 @@
+diff --exclude CVS --exclude .svn --exclude tags --exclude .git -urN neomutt-20191129/auto.def neomutt-20191129-rhel6/auto.def
+--- neomutt-20191129/auto.def	2019-11-29 15:02:20.000000000 +0000
++++ neomutt-20191129-rhel6/auto.def	2019-11-30 00:29:29.760276820 +0000
+@@ -443,13 +443,12 @@
+       if {$gpgme_maj < 1 || $gpgme_min < 8} {
+         user-error "Found GPGME version $gpgme_version, need 1.8.0 for AutoCrypt"
+       }
+-    } else {
+-      if {$gpgme_maj < 1 || $gpgme_min < 4} {
+-        user-error "Found GPGME version $gpgme_version, need 1.4.0"
+-      }
+     }
+     define GPGME_VERSION_NUMBER [format "0x%02x%02x%02x" $gpgme_maj $gpgme_min $gpgme_patch]
+ 
++    # RHEL6 doesn't have this function yet
++    cc-check-functions gpgme_op_export_keys
++
+     # CFLAGS
+     if {[catch {exec-with-stderr $gpgme_config --cflags} res err]} {
+       user-error "Could not derive --cflags from $gpgme_config"
+diff --exclude CVS --exclude .svn --exclude tags --exclude .git -urN neomutt-20191129/ncrypt/crypt_gpgme.c neomutt-20191129-rhel6/ncrypt/crypt_gpgme.c
+--- neomutt-20191129/ncrypt/crypt_gpgme.c	2019-11-29 15:02:20.000000000 +0000
++++ neomutt-20191129-rhel6/ncrypt/crypt_gpgme.c	2019-11-30 00:29:29.762276833 +0000
+@@ -5383,6 +5383,7 @@
+  */
+ struct Body *pgp_gpgme_make_key_attachment(void)
+ {
++#ifdef HAVE_GPGME_OP_EXPORT_KEYS
+   gpgme_ctx_t context = NULL;
+   gpgme_key_t export_keys[2] = { 0 };
+   gpgme_data_t keydata = NULL;
+@@ -5437,6 +5438,10 @@
+   gpgme_release(context);
+ 
+   return att;
++#else
++  mutt_error("gpgme_op_export_keys not supported");
++  return NULL;
++#endif
+ }
+ 
+ /**
