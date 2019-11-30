@@ -7,6 +7,7 @@
 %bcond_without idn
 %bcond_without sasl
 %bcond_without tokyocabinet
+%bcond_without lua
 
 # Disabled
 %bcond_with bdb
@@ -77,6 +78,8 @@ BuildRequires: lynx
 %{?with_idn:BuildRequires: libidn-devel}
 %{?with_gpgme:BuildRequires: gpgme-devel}
 %{?with_notmuch:BuildRequires: notmuch-devel}
+%{?with_lua:BuildRequires: lua-devel}
+%{?with_lua:Requires: lua}
 
 %description
 NeoMutt is a small but very powerful text-based MIME mail client.  NeoMutt is
@@ -122,6 +125,7 @@ sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.au
     %{?with_sasl:	--sasl} \
     %{?with_gss:	--gss} \
 \
+    %{?with_lua:        --lua} \
     %{!?with_idn:	--without-idn} \
     %{?with_gpgme:	--gpgme}
 
