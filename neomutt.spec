@@ -32,9 +32,22 @@
 %bcond_without notmuch
 %endif
 
+# Autocrypt, IDN2 and Lua don't work in rhel6/7
+%if "0%{?rhel}" == "06" || "0%{?rhel}" == "07"
+# Disabled
+%bcond_with autocrypt
+%bcond_with lua
+%bcond_with idn2
+%else
+# Enabled
+%bcond_without autocrypt
+%bcond_without lua
+%bcond_without idn2
+%endif
+
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20191102
+Version: 20191204
 Release: 1%{?dist}
 Epoch: 5
 
@@ -50,10 +63,10 @@ Source1: mutt_ldap_query
 Patch1: mutt-1.5.18-muttrc.patch
 Patch2: mutt-1.5.21-cabundle.patch
 Patch3: mutt-1.5.23-system_certs.patch
-%if ! 0%{?rhel}
 Patch4: mutt-1.5.23-ssl_ciphers.patch
-%endif
-Url: https://www.neomutt.org/
+Patch5: neomutt-2019-rhel.patch
+
+Url: https://neomutt.org/
 Requires: mailcap, urlview
 BuildRequires: ncurses-devel, gettext, gettext-devel
 # manual generation
@@ -78,6 +91,10 @@ BuildRequires: lynx
 %{?with_gpgme:BuildRequires: gpgme-devel}
 %{?with_notmuch:BuildRequires: notmuch-devel}
 
+%{?with_autocrypt:BuildRequires: sqlite-devel}
+%{?with_idn2:BuildRequires: libidn2-devel}
+%{?with_lua:BuildRequires: lua-devel}
+
 %description
 NeoMutt is a small but very powerful text-based MIME mail client.  NeoMutt is
 highly configurable, and is well suited to the mail power user with advanced
@@ -93,6 +110,9 @@ messages.
 %patch3 -p1 -b .system_certs
 %if ! 0%{?rhel}
 %patch4 -p1 -b .ssl_ciphers
+%endif
+%if 0%{?rhel}
+%patch5 -p1 -b .rhel
 %endif
 
 install -p -m644 %{SOURCE1} mutt_ldap_query
@@ -123,7 +143,11 @@ sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.au
     %{?with_gss:	--gss} \
 \
     %{!?with_idn:	--without-idn} \
-    %{?with_gpgme:	--gpgme}
+    %{?with_gpgme:	--gpgme} \
+\
+    %{?with_idn2:	--disable-idn --idn2} \
+    %{?with_autocrypt:	--autocrypt} \
+    %{?with_lua:	--lua}
 
 make %{?_smp_mflags}
 
@@ -172,6 +196,90 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Wed Dec 04 2019 Richard Russon <rich@flatcap.org> - NeoMutt-20191204
+- Tweak spec to cover all targets
+- Add autocrypt support (rhel8, fedora)
+- Add lua support (rhel8, fedora)
+- Fix web links
+
+* Fri Nov 29 2019 Richard Russon <rich@flatcap.org> - NeoMutt-20191129
+- Features
+  - Add raw mailsize expando (%cr)
+- Bug Fixes
+  - Avoid double question marks in bounce confirmation msg
+  - Fix bounce confirmation
+  - fix new-mail flags and behaviour
+  - fix: browser <descend-directory>
+  - fix ssl crash
+  - fix move to trash
+  - fix flickering
+  - Do not check hidden mailboxes for new mail
+  - Fix new_mail_command notifications
+  - fix crash in examine_mailboxes()
+  - fix crash in mutt_sort_threads()
+  - fix: crash after sending
+  - Fix crash in tunnel's conn_close
+  - fix fcc for deep dirs
+  - imap: fix crash when new mail arrives
+  - fix colour 'quoted9'
+  - quieten messages on exit
+  - fix: crash after failed mbox_check
+  - browser: default to a file/dir view when attaching a file
+- Changed Config
+  - Change $write_bcc to default off
+- Translations
+  - 100% Portuguese (Brazil)
+  -  92% Polish
+- Docs
+  - Add a bit more documentation about sending
+  - Clarify $write_bcc documentation.
+  - Update documentation for raw size expando
+  - docbook: set generate.consistent.ids to make generated html reproducible
+- Build
+  - fix build/tests for 32-bit arches
+  - tests: fix test that would fail soon
+  - tests: fix context for failing idna tests
+
+* Mon Nov 11 2019 Richard Russon <rich@flatcap.org> - NeoMutt-2019-11-11
+- Features
+  - 'sidebar_unread' color
+- Bug Fixes
+  - browser: fix directory view
+  - fix crash in mutt_extract_token()
+  - force a screen refresh
+  - fix crash sending message from command line
+  - notmuch: use nm_default_uri if no mailbox data
+  - fix forward attachments
+  - fix: vfprintf undefined behaviour in body_handler
+  - Fix relative symlink resolution
+  - fix: trash to non-existent file/dir
+  - fix re-opening of mbox Mailboxes
+  - close logging as late as possible
+  - log unknown mailboxes
+  - fix crash in command line postpone
+  - fix memory leaks
+  - fix icommand parsing
+  - fix new mail interaction with mail_check_recent
+
+* Sat Nov 02 2019 Richard Russon <rich@flatcap.org> - NeoMutt-2019-02-11
+- Bug Fixes
+  - Mailboxes command with empty backticks
+  - Mbox save-to-trash
+  - Mkdir for new maildir folders
+  - Maildir: new mail detection
+  - Truncation of "set" command on a path variable
+  - Update crash (when changing folder)
+  - Resolve symbolic links when saving a message
+  - Folder-hook calling "unmailboxes *"
+  - Failed ssl negotiation
+  - Crash when using "alias -group"
+  - LibIDN error when charset wasn't set
+  - Notmuch abort entire-thread if database lacks message
+- Translations
+  - 100% Lithuanian
+  - 100% German
+  - 100% Czech 
+
 * Fri Oct 25 2019 Richard Russon <rich@flatcap.org> - NeoMutt-2019-10-25
 - Features
   - Add $fcc_before_send, defaulting unset
@@ -402,9 +510,9 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 - Features
   - browser: `<goto-parent>` function bound to "p"
   - editor: `<history-search>` function bound to "Ctrl-r"
-  - Cygwin support: https://www.neomutt.org/distro/cygwin
-  - OpenSUSE support: https://www.neomutt.org/distro/suse
-  - Upstream Homebrew support: Very soon - https://www.neomutt.org/distro/homebrew
+  - Cygwin support: https://neomutt.org/distro/cygwin
+  - OpenSUSE support: https://neomutt.org/distro/suse
+  - Upstream Homebrew support: Very soon - https://neomutt.org/distro/homebrew
 - Bug Fixes
   - gmail server-size search
   - nested-if: correctly handle "<" and ">" with %?

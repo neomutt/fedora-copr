@@ -1,7 +1,7 @@
-From 1f6ebb1b3c8a2ceb37cad959903e4fc1b9714faf Mon Sep 17 00:00:00 2001
+From 65b4ed34e4e94b35306fe1645e5aeaee08481495 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:37:32 +0100
-Subject: [PATCH 1/4] mutt-1.5.18-muttrc
+Subject: [PATCH 1/5] mutt-1.5.18-muttrc
 
 ---
  doc/neomuttrc.head | 4 ++++
