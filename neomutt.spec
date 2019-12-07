@@ -32,9 +32,22 @@
 %bcond_without notmuch
 %endif
 
+# Autocrypt, IDN2 and Lua don't work in rhel6/7
+%if "0%{?rhel}" == "06" || "0%{?rhel}" == "07"
+# Disabled
+%bcond_with autocrypt
+%bcond_with lua
+%bcond_with idn2
+%else
+# Enabled
+%bcond_without autocrypt
+%bcond_without lua
+%bcond_without idn2
+%endif
+
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20191129
+Version: 20191207
 Release: 1%{?dist}
 Epoch: 5
 
@@ -50,10 +63,9 @@ Source1: mutt_ldap_query
 Patch1: mutt-1.5.18-muttrc.patch
 Patch2: mutt-1.5.21-cabundle.patch
 Patch3: mutt-1.5.23-system_certs.patch
-%if ! 0%{?rhel}
 Patch4: mutt-1.5.23-ssl_ciphers.patch
-%endif
-Patch5: mutt-20191129-rhel7.patch
+Patch5: neomutt-2019-rhel.patch
+
 Url: https://neomutt.org/
 Requires: mailcap, urlview
 BuildRequires: ncurses-devel, gettext, gettext-devel
@@ -79,6 +91,10 @@ BuildRequires: lynx
 %{?with_gpgme:BuildRequires: gpgme-devel}
 %{?with_notmuch:BuildRequires: notmuch-devel}
 
+%{?with_autocrypt:BuildRequires: sqlite-devel}
+%{?with_idn2:BuildRequires: libidn2-devel}
+%{?with_lua:BuildRequires: lua-devel}
+
 %description
 NeoMutt is a small but very powerful text-based MIME mail client.  NeoMutt is
 highly configurable, and is well suited to the mail power user with advanced
@@ -95,7 +111,9 @@ messages.
 %if ! 0%{?rhel}
 %patch4 -p1 -b .ssl_ciphers
 %endif
-%patch5 -p1 -b .rhel6
+%if 0%{?rhel}
+%patch5 -p1 -b .rhel
+%endif
 
 install -p -m644 %{SOURCE1} mutt_ldap_query
 
@@ -125,7 +143,11 @@ sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.au
     %{?with_gss:	--gss} \
 \
     %{!?with_idn:	--without-idn} \
-    %{?with_gpgme:	--gpgme}
+    %{?with_gpgme:	--gpgme} \
+\
+    %{?with_idn2:	--disable-idn --idn2} \
+    %{?with_autocrypt:	--autocrypt} \
+    %{?with_lua:	--lua}
 
 make %{?_smp_mflags}
 
@@ -174,6 +196,33 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Sat Dec 07 2019 Richard Russon <rich@flatcap.org> - NeoMutt-20191207
+- Features
+  - compose: draw status bar with highlights
+- Bug Fixes
+  - crash opening notmuch mailbox
+  - crash in mutt_autocrypt_ui_recommendation
+  - Avoid negative allocation
+  - Mbox new mail
+  - Setting of DT_MAILBOX type variables from Lua
+  - imap: empty cmdbuf before connecting
+  - imap: select the mailbox on reconnect
+  - compose: fix attach message
+- Build
+  - make files conditional
+  - add gpgme check for RHEL6
+- Code
+  - enum-ify log levels
+  - fix function prototypes
+  - refactor virtual email lookups
+  - factor out global Context
+
+* Wed Dec 04 2019 Richard Russon <rich@flatcap.org> - NeoMutt-20191204
+- Tweak spec to cover all targets
+- Add autocrypt support (rhel8, fedora)
+- Add lua support (rhel8, fedora)
+- Fix web links
+
 * Fri Nov 29 2019 Richard Russon <rich@flatcap.org> - NeoMutt-20191129
 - Features
   - Add raw mailsize expando (%cr)
