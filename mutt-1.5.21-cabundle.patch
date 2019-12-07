@@ -1,7 +1,7 @@
-From b376b5fd198db2cf33e52ba458378d0b9619e650 Mon Sep 17 00:00:00 2001
+From bf42d1788d502ea44a59cf3e84b50cedf49de8f0 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:05 +0100
-Subject: [PATCH 2/4] mutt-1.5.21-cabundle
+Subject: [PATCH 2/5] mutt-1.5.21-cabundle
 
 ---
  doc/smime-notes.txt | 10 +++++-----
