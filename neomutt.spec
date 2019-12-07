@@ -47,7 +47,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20191204
+Version: 20191207
 Release: 1%{?dist}
 Epoch: 5
 
@@ -196,6 +196,27 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Sat Dec 07 2019 Richard Russon <rich@flatcap.org> - NeoMutt-20191207
+- Features
+  - compose: draw status bar with highlights
+- Bug Fixes
+  - crash opening notmuch mailbox
+  - crash in mutt_autocrypt_ui_recommendation
+  - Avoid negative allocation
+  - Mbox new mail
+  - Setting of DT_MAILBOX type variables from Lua
+  - imap: empty cmdbuf before connecting
+  - imap: select the mailbox on reconnect
+  - compose: fix attach message
+- Build
+  - make files conditional
+  - add gpgme check for RHEL6
+- Code
+  - enum-ify log levels
+  - fix function prototypes
+  - refactor virtual email lookups
+  - factor out global Context
+
 * Wed Dec 04 2019 Richard Russon <rich@flatcap.org> - NeoMutt-20191204
 - Tweak spec to cover all targets
 - Add autocrypt support (rhel8, fedora)
