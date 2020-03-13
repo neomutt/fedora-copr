@@ -1,18 +1,18 @@
-From c7a02f5fe69fe6877229663686897563c4fd6211 Mon Sep 17 00:00:00 2001
+From 389b24e4a7672c420aa54b907d37a7962cd8bc28 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:22 +0100
 Subject: [PATCH 3/5] mutt-1.5.23-ssl_ciphers
 
 ---
- conn/ssl_gnutls.c | 59 +++++++++++++++++++++++++----------------------
- init.h            |  2 +-
+ conn/gnutls.c | 59 +++++++++++++++++++++++++++------------------------
+ mutt_config.c |  2 +-
  2 files changed, 32 insertions(+), 29 deletions(-)
 
-diff --git a/conn/ssl_gnutls.c b/conn/ssl_gnutls.c
-index 654899b73..d19989d51 100644
---- a/conn/ssl_gnutls.c
-+++ b/conn/ssl_gnutls.c
-@@ -919,36 +919,39 @@ static int tls_set_priority(struct TlsSockData *data)
+diff --git a/conn/gnutls.c b/conn/gnutls.c
+index 37b8c8a13e..4cc03f281f 100644
+--- a/conn/gnutls.c
++++ b/conn/gnutls.c
+@@ -769,36 +769,39 @@ static int tls_set_priority(struct TlsSockData *data)
    else
      mutt_buffer_strcpy(priority, "NORMAL");
  
@@ -80,11 +80,11 @@ index 654899b73..d19989d51 100644
    }
  
    int err = gnutls_priority_set_direct(data->state, mutt_b2s(priority), NULL);
-diff --git a/init.h b/init.h
-index 188bc73d4..7d117bb03 100644
---- a/init.h
-+++ b/init.h
-@@ -4349,7 +4349,7 @@ struct ConfigDef MuttVars[] = {
+diff --git a/mutt_config.c b/mutt_config.c
+index 7037633beb..1b0d4bf913 100644
+--- a/mutt_config.c
++++ b/mutt_config.c
+@@ -4400,7 +4400,7 @@ struct ConfigDef MuttVars[] = {
    ** .te
    */
  #endif /* USE_SSL_GNUTLS */
