@@ -47,7 +47,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20191207
+Version: 20200313
 Release: 1%{?dist}
 Epoch: 5
 
@@ -196,6 +196,84 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Mar 13 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200313
+- Features
+  - UI: add number of old messages to sidebar_format
+  - UI: support ISO 8601 calendar date
+  - UI: fix commands that don’t need to have a non-empty mailbox to be valid
+  - PGP: inform about successful decryption of inline PGP messages
+  - PGP: try to infer the signing key from the From address
+  - PGP: enable GPGMe by default
+  - Notmuch: use query as name for vfolder-from-query
+  - IMAP: add network traffic compression (COMPRESS=DEFLATE, RFC4978)
+  - Header cache: add support for generic header cache compression
+- Bug Fixes
+  - Fix uncollapse_jump
+  - Only try to perform entire-thread on maildir/mh mailboxes
+  - Fix crash in pager
+  - Avoid logging single new lines at the end of header fields
+  - Fix listing mailboxes
+  - Do not recurse a non-threaded message
+  - Fix initial window order
+  - Fix leaks on IMAP error paths
+  - Notmuch: compose(attach-message): support notmuch backend
+  - Fix IMAP flag comparison code
+  - Fix $move for IMAP mailboxes
+  - Maildir: maildir_mbox_check_stats should only update mailbox stats if requested
+  - Fix unmailboxes for virtual mailboxes
+  - Maildir: sanitize filename before hashing
+  - OAuth: if 'login' name isn't available use 'user'
+  - Add error message on failed encryption
+  - Fix a bunch of crashes
+  - Force C locale for email date
+  - Abort if run without a terminal
+- Changed Config
+  - $crypt_use_gpgme - Now defaults to 'yes' (enabled)
+  - $abort_backspace - Hitting backspace against an empty prompt aborts the prompt
+  - $abort_key - String representation of key to abort prompts
+  - $arrow_string - Use an custom string for arrow_cursor
+  - $crypt_opportunistic_encrypt_strong_keys - Enable encryption only when strong a key is available
+  - $header_cache_compress_dictionary - Filepath to dictionary for zstd compression
+  - $header_cache_compress_level - Level of compression for method
+  - $header_cache_compress_method - Enable generic hcache database compression
+  - $imap_deflate - Compress network traffic
+  - $smtp_user - Username for the SMTP server
+- Translations
+  - 100% Lithuanian
+  - 81% Spanish
+  - 78% Russian
+- Build
+  - Add libdebug
+  - Rename public headers to lib.h
+  - Create libcompress for compressed folders code
+  - Enable Cirrus CI for FreeBSD
+- Code
+  - Refactor Windows and Dialogs
+  - Lots of code tidying
+  - Refactor: mutt_addrlist_{search,write}
+  - Lots of improvements to the Config code
+  - Use Buffers more pervasively
+  - Unify API function naming
+  - Rename library shared headers
+  - Refactor libconn gui dependencies
+  - Refactor: init.[ch]
+  - Refactor config to use subsets
+  - Config: add path type
+  - Remove backend deps from the connection code
+- Upstream
+  - Allow ~b ~B ~h patterns in send2-hook
+  - Rename smime oppenc mode parameter to get_keys_by_addr()
+  - Add $crypt_opportunistic_encrypt_strong_keys config var
+  - Fix crash when polling a closed ssl connection
+  - Turn off auto-clear outside of autocrypt initialization
+  - Add protected-headers="v1" to Content-Type when protecting headers
+  - Fix segv in IMAP postponed menu caused by reopen_allow
+  - Adding ISO 8601 calendar date
+  - Fix $fcc_attach to not prompt in batch mode
+  - Convert remaining mutt_encode_path() call to use struct Buffer
+  - Fix rendering of replacement_char when Charset_is_utf8
+  - Update to latest acutest.h
+
 * Sat Dec 07 2019 Richard Russon <rich@flatcap.org> - NeoMutt-20191207
 - Features
   - compose: draw status bar with highlights
