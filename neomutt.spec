@@ -7,6 +7,9 @@
 %bcond_without idn
 %bcond_without sasl
 %bcond_without tokyocabinet
+%bcond_without lz4
+%bcond_without zlib
+%bcond_without zstd
 
 # Disabled
 %bcond_with bdb
@@ -81,6 +84,9 @@ BuildRequires: lynx
 %{?with_bdb:BuildRequires: libdb-devel}
 %{?with_qdbm:BuildRequires: qdbm-devel}
 %{?with_gdbm:BuildRequires: gdbm-devel}
+%{?with_lz4:BuildRequires: lz4-devel}
+%{?with_zlib:BuildRequires: zlib-devel}
+%{?with_zstd:BuildRequires: libzstd-devel}
 %endif
 
 %{?with_gnutls:BuildRequires: gnutls-devel}
@@ -136,6 +142,9 @@ sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.au
     %{?with_gdbm:	--gdbm} \
     %{?with_qdbm:	--qdbm} \
     %{?with_bdb:	--bdb} \
+    %{?with_lz4:	--lz4} \
+    %{?with_zlib:	--zlib} \
+    %{?with_zstd:	--zstd} \
     %endif
 \
     %{?with_gnutls:	--gnutls} \
