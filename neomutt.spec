@@ -50,7 +50,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20200313
+Version: 20200320
 Release: 1%{?dist}
 Epoch: 5
 
@@ -205,6 +205,33 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Mar 20 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200320
+- Bug Fixes
+  - Fix COLUMNS env var
+  - Fix sync after delete
+  - Fix crash in notmuch
+  - Fix sidebar indent
+  - Fix emptying trash
+  - Fix command line sending
+  - Fix reading large address lists
+  - Resolve symlinks only when necessary
+- Translations
+  - 100% Lithuanian
+  - 96% Spanish
+- Docs
+  - Include OpenSSL/LibreSSL/GnuTLS version in neomutt -v output
+  - Fix case of GPGME and SQLite
+- Build
+  - Create libcompress (lz4, zlib, zstd)
+  - Create libhistory
+  - Create libbcache
+  - Move zstrm to libconn
+- Code
+  - Add more test coverage
+  - Rename magic to type
+  - Use mutt_file_fopen() on config variables
+  - Change commands to use intptr_t for data
+
 * Fri Mar 13 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200313
 - Features
   - UI: add number of old messages to sidebar_format
