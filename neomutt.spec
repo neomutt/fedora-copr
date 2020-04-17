@@ -383,7 +383,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 
 * Fri Nov 29 2019 Richard Russon <rich@flatcap.org> - NeoMutt-20191129
 - Features
-  - Add raw mailsize expando (%cr)
+  - Add raw mailsize expando (\%cr)
 - Bug Fixes
   - Avoid double question marks in bounce confirmation msg
   - Fix bounce confirmation
@@ -804,7 +804,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 - Upstream
   - Note which ssl config vars are GnuTLS or OpenSSL only
   - Add message count to $move quadoption prompt
-  - Add %R (number of read messages) for $status_format
+  - Add \%R (number of read messages) for $status_format
   - Add $change_folder_next option to control mailbox suggestion order
   - Fix $smart_wrap to not be disabled by whitespace-prefixed lines
   - Remove useless else branch in the $smart_wrap code
@@ -1013,7 +1013,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
   - some resource leaks
 - Docs
   - update credits
-  - limitations of new-mail %f expando
+  - limitations of new-mail \%f expando
   - escape <>'s in nested conditions
   - add code of conduct
   - fix ifdef examples
@@ -1053,7 +1053,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 - Upstream
   - Add ~<() and ~>() immediate parent/children patterns
   - Add L10N comments to the GNUTLS certificate prompt
-  - Add more description for the %S and %Z $index_format characters
+  - Add more description for the \%S and \%Z $index_format characters
   - Add config vars for forwarded message attribution intro/trailer
   - Block SIGWINCH during connect()
   - Improve the L10N comment about Sign as
@@ -1094,7 +1094,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 - Features
   - Warn on bindkey aliasing
   - Drop PATCHES, tidy 'mutt -v' output
-  - Add %z format strings to index_format
+  - Add \%z format strings to index_format
   - Add debug_level/debug_file options
 - Bug Fixes
   - Fix nntp group selection
@@ -1211,7 +1211,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 - Features
   - add lua scripting
   - add command-line batch mode
-  - index_format: add support of %K
+  - index_format: add support of \%K
 - Bug Fixes
   - attachment/pager: Use mailcap for test/* except plain
   - Fix uncollapse_new in pager
@@ -1661,9 +1661,9 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
   - Implement mutt_strchrnul()
   - Rename vim-keybindings to vim-keys
 - Upstream
-  - attach_format: add new %F placeholder
+  - attach_format: add new \%F placeholder
   - Compose: add operation to rename an attachment
-  - Chain %d->%F->%f in the attachment menu
+  - Chain \%d->\%F->\%f in the attachment menu
   - Move mbox close-append logic inside mbox_close_mailbox()
   - When $flag_safe is set, flagged messages cannot be deleted
   - Adds the '@' pattern modifier to limit matches to known aliases
@@ -1942,11 +1942,11 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 - Bug Fixes
   - rework mutt_draw_statusline()
   - fix cursor position after sidebar redraw
-  - Add sidebar_format flag '%n' to display 'N' on new mail.
+  - Add sidebar_format flag '\%n' to display 'N' on new mail.
   - fix index_format truncation problem
   - Fix compiler warnings due to always true condition
   - Change sidebar next/prev-new to look at buffy->new too.
-  - Change the default for sidebar_format to use %n.
+  - Change the default for sidebar_format to use \%n.
   - sidebar "unsorted" order to match Buffy list order.
   - Include ncurses tinfo library if found.
   - Sidebar width problem
