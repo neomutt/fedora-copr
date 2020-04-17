@@ -1,4 +1,4 @@
-From 07692ecdf18406711930bd36878004a97d988bf4 Mon Sep 17 00:00:00 2001
+From 119b8a5a21c9f124d6f254cb7e73bb1965ec3612 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Tue, 3 Dec 2019 15:58:06 +0000
 Subject: [PATCH 5/5] neomutt-2019-rhel
@@ -8,10 +8,10 @@ Subject: [PATCH 5/5] neomutt-2019-rhel
  1 file changed, 4 deletions(-)
 
 diff --git a/auto.def b/auto.def
-index c1ba45761f..6a834a8885 100644
+index 1678d7dddc..a83463b13d 100644
 --- a/auto.def
 +++ b/auto.def
-@@ -445,10 +445,6 @@ if {[get-define want-gpgme]} {
+@@ -455,10 +455,6 @@ if {[get-define want-gpgme]} {
        if {$gpgme_maj < 1 || $gpgme_min < 8} {
          user-error "Found GPGME version $gpgme_version, need 1.8.0 for AutoCrypt"
        }
