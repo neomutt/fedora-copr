@@ -50,14 +50,14 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20200320
+Version: 20200417
 Release: 1%{?dist}
 Epoch: 5
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}}
 
 # The entire source code is GPLv2+ except
-# pgpewrap.c sha1.c wcwidth.c which are Public Domain
+# pgpewrap.c which is Public Domain
 License: GPLv2+ and Public Domain
 Group: Applications/Internet
 # git snapshot created from https://github.com/neomutt/neomutt
@@ -161,7 +161,7 @@ sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.au
 make %{?_smp_mflags}
 
 # remove unique id in manual.html because multilib conflicts
-sed -i -r 's/<a id="id[a-z0-9]\+">/<a id="id">/g' doc/manual.html
+sed -i -r 's/<a id="id[a-z0-9]\+">/<a id="id">/g' docs/manual.html
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -182,12 +182,12 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 
 %files -f %{name}.lang
 %config(noreplace) %{_sysconfdir}/neomuttrc
-%doc CODE_OF_CONDUCT.md COPYRIGHT.md ChangeLog* LICENSE.md README* INSTALL.md mutt_ldap_query
+%doc CODE_OF_CONDUCT.md ChangeLog* LICENSE.md README* INSTALL.md mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
-%doc doc/neomuttrc.*
-%doc doc/manual.txt doc/smime-notes.txt
-%doc doc/*.html
-%doc doc/mime.types
+%doc docs/neomuttrc.*
+%doc docs/manual.txt docs/smime-notes.txt
+%doc docs/*.html
+%doc docs/mime.types
 %doc contrib/colorschemes
 %doc contrib/hcache-bench
 %doc contrib/keybase
@@ -205,6 +205,50 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Apr 17 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200417
+- Features
+  - Fluid layout for Compose Screen, see: https://vimeo.com/407231157
+  - Trivial Database (TDB) header cache backend
+  - RocksDB header cache backend
+  - Add <sidebar-first> and <sidebar-last> functions
+- Bug Fixes
+  - add error for CLI empty emails
+  - Allow spaces and square brackets in paths
+  - browser: fix hidden mailboxes
+  - fix initial email display
+  - notmuch: fix time window search.
+  - fix resize bugs
+  - notmuch: fix entire-thread: update current email pointer
+  - sidebar: support indenting and shortening of names
+  - Handle variables inside backticks in sidebar_whitelist
+  - browser: fix mask regex error reporting
+- Translations
+  - 100% Lithuanian
+  - 99% Chinese (simplified)
+- Build
+  - Use regexes for common parsing tasks: urls, dates
+  - Add configure option --pcre2 -- Enable PCRE2 regular expressions
+  - Add configure option --tdb -- Use TDB for the header cache
+  - Add configure option --rocksdb -- Use RocksDB for the header cache
+  - Create libstore (key/value backends)
+  - Update to latest autosetup
+  - Update to latest acutest.h
+  - Rename doc/ directory to docs/
+  - make: fix location of .Po dependency files
+  - Change libcompress to be more universal
+  - Fix test fails on х32
+  - fix uidvalidity to unsigned 32-bit int
+- Code
+  - Increase test coverage
+  - Fix memory leaks
+  - Fix null checks
+- Upstream
+  - Buffer refactoring
+  - Fix use-after-free in mutt_str_replace()
+  - Clarify PGP Pseudo-header S<id> duration
+  - Try to respect MUTT_QUIET for IMAP contexts too
+  - Limit recurse depth when parsing mime messages
+
 * Fri Mar 20 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200320
 - Bug Fixes
   - Fix COLUMNS env var
