@@ -182,7 +182,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 
 %files -f %{name}.lang
 %config(noreplace) %{_sysconfdir}/neomuttrc
-%doc CODE_OF_CONDUCT.md ChangeLog* LICENSE.md README* INSTALL.md mutt_ldap_query
+%doc docs/CODE_OF_CONDUCT.md ChangeLog* LICENSE.md README* INSTALL.md mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
 %doc docs/neomuttrc.*
 %doc docs/manual.txt docs/smime-notes.txt
@@ -1053,7 +1053,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 - Upstream
   - Add ~<() and ~>() immediate parent/children patterns
   - Add L10N comments to the GNUTLS certificate prompt
-  - Add more description for the %S and %Z $index_format characters
+  - Add more description for the S and Z $index_format characters
   - Add config vars for forwarded message attribution intro/trailer
   - Block SIGWINCH during connect()
   - Improve the L10N comment about Sign as
