@@ -182,7 +182,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 
 %files -f %{name}.lang
 %config(noreplace) %{_sysconfdir}/neomuttrc
-%doc CODE_OF_CONDUCT.md ChangeLog* LICENSE.md README* INSTALL.md mutt_ldap_query
+%doc docs/CODE_OF_CONDUCT.md ChangeLog* LICENSE.md README* INSTALL.md mutt_ldap_query
 %doc contrib/*.rc contrib/sample.* contrib/colors.*
 %doc docs/neomuttrc.*
 %doc docs/manual.txt docs/smime-notes.txt
