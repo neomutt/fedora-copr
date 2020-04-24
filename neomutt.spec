@@ -50,7 +50,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20200417
+Version: 20200424
 Release: 1%{?dist}
 Epoch: 5
 
@@ -205,6 +205,23 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Apr 24 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200424
+- Bug Fixes
+  -Fix history corruption
+  -Handle pretty much anything in a URL query part
+  -Correctly parse escaped characters in header phrases
+  -Fix crash reading received header
+  -Fix sidebar indentation
+  -Avoid crashing on failure to parse an IMAP mailbox
+  -Maildir: handle deleted emails correctly
+  -Ensure OP_NULL is always first
+- Translations
+  -100% Czech
+- Build
+  -cirrus: enable pcre2, make pkgconf a special case
+  -Fix finding pcre2 w/o pkgconf
+  -build: tdb.h needs size_t, bring it in with stddef.h
+
 * Fri Apr 17 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200417
 - Features
   - Fluid layout for Compose Screen, see: https://vimeo.com/407231157
