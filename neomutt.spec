@@ -50,7 +50,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20200424
+Version: 20200501
 Release: 1%{?dist}
 Epoch: 5
 
@@ -205,6 +205,15 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri May 01 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200501
+- Bug Fixes
+  - Make sure buffers are initialized on error
+  - fix(sidebar): use abbreviated path if possible
+- Translations
+  - 100% Lithuanian
+- Docs
+  - make header cache config more explicit
+
 * Fri Apr 24 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200424
 - Bug Fixes
   -Fix history corruption
