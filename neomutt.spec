@@ -50,7 +50,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20200619
+Version: 20200626
 Release: 1%{?dist}
 Epoch: 5
 
