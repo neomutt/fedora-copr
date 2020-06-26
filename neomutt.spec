@@ -205,6 +205,18 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Jun 26 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200626
+- Bug Fixes
+  - Avoid opening the same hcache file twice
+  - Re-open Mailbox after folder-hook
+  - Fix the matching of the spoolfile Mailbox
+  - Fix link-thread to link all tagged emails
+- Changed Config
+  - Add $tunnel_is_secure config, defaulting to true
+- Upstream
+  - Don't check IMAP PREAUTH encryption if $tunnel is in use
+  - Add recommendation to use $ssl_force_tls
+
 * Fri Jun 19 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20206019
 - Security
   - Abort GnuTLS certificate check if a cert in the chain is rejected
