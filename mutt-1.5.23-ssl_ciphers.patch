@@ -1,18 +1,31 @@
-From b9039dd2143cfb528a034391c4a3ddbc2ae970ba Mon Sep 17 00:00:00 2001
+From 31018b98500b3d6a377a83441ad86157eea7d7f9 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:22 +0100
 Subject: [PATCH 3/5] mutt-1.5.23-ssl_ciphers
 
 ---
+ conn/config.c |  2 +-
  conn/gnutls.c | 59 +++++++++++++++++++++++++++------------------------
- mutt_config.c |  2 +-
  2 files changed, 32 insertions(+), 29 deletions(-)
 
+diff --git a/conn/config.c b/conn/config.c
+index 4c04eb456..e8f9c9486 100644
+--- a/conn/config.c
++++ b/conn/config.c
+@@ -92,7 +92,7 @@ struct ConfigDef ConnVars[] = {
+     "File containing trusted CA certificates"
+   },
+ #endif
+-  { "ssl_ciphers", DT_STRING, &C_SslCiphers, 0, 0, NULL,
++  { "ssl_ciphers", DT_STRING, &C_SslCiphers, IP "@SYSTEM", 0, NULL,
+     "Ciphers to use when using SSL"
+   },
+   { "ssl_client_cert", DT_PATH|DT_PATH_FILE, &C_SslClientCert, 0, 0, NULL,
 diff --git a/conn/gnutls.c b/conn/gnutls.c
-index 3759630be5..3942670e5b 100644
+index 1ae7ee3a2..b8f0404c1 100644
 --- a/conn/gnutls.c
 +++ b/conn/gnutls.c
-@@ -757,36 +757,39 @@ static int tls_set_priority(struct TlsSockData *data)
+@@ -761,36 +761,39 @@ static int tls_set_priority(struct TlsSockData *data)
    else
      mutt_buffer_strcpy(priority, "NORMAL");
  
@@ -80,16 +93,3 @@ index 3759630be5..3942670e5b 100644
    }
  
    int err = gnutls_priority_set_direct(data->state, mutt_b2s(priority), NULL);
-diff --git a/mutt_config.c b/mutt_config.c
-index 88005ddaf8..0648f12b8f 100644
---- a/mutt_config.c
-+++ b/mutt_config.c
-@@ -4381,7 +4381,7 @@ struct ConfigDef MuttVars[] = {
-   ** .te
-   */
- #endif /* USE_SSL_GNUTLS */
--  { "ssl_ciphers", DT_STRING, &C_SslCiphers, 0 },
-+  { "ssl_ciphers", DT_STRING, &C_SslCiphers, IP "@SYSTEM" },
-   /*
-   ** .pp
-   ** Contains a colon-separated list of ciphers to use when using SSL.
