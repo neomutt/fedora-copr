@@ -50,7 +50,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20200626
+Version: 20200802
 Release: 1%{?dist}
 Epoch: 5
 
@@ -205,6 +205,9 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Sun Aug 02 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200802
+- WIP
+
 * Fri Jun 26 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200626
 - Bug Fixes
   - Avoid opening the same hcache file twice
