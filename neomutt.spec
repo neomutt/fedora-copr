@@ -205,8 +205,61 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
-* Sun Aug 02 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200802
-- WIP
+* Fri Aug 07 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200807
+- Security
+  - Add mitigation against DoS from thousands of parts
+- Features
+  - Allow index-style searching in postpone menu
+  - Open NeoMutt using a mailbox name
+  - Add `cd` command to change the current working directory
+  - Add tab-completion menu for patterns
+  - Allow renaming existing mailboxes
+  - Check for missing attachments in alternative parts
+  - Add one-liner docs to config items
+- Bug Fixes
+  - Fix logic in checking an empty From address
+  - Fix Imap crash in `cmd_parse_expunge()`
+  - Fix setting attributes with S-Lang
+  - Fix: redrawing of `$pager_index_lines`
+  - Fix progress percentage for syncing large mboxes
+  - Fix sidebar drawing in presence of indentation + named mailboxes
+  - Fix retrieval of drafts when "postponed" is not in the mailboxes list
+  - Do not add comments to address group terminators
+- Changed Config
+  - Add `$copy_decode_weed`, `$pipe_decode_weed`, `$print_decode_weed`
+  - Change default of `$crypt_protected_headers_subject` to "..."
+  - Add default keybindings to history-up/down
+- Build
+  - Allow building against Lua 5.4
+  - Fix when sqlite3.h is missing
+- Docs
+  - Add a brief section on stty to the manual
+  - Update section "Terminal Keybindings" in the manual
+  - Clarify PGP Pseudo-header `S<id>` duration
+- Code
+  - Clean up String API
+  - Make the Sidebar more independent
+  - De-centralise the Config Variables
+  - Refactor dialogs
+  - Refactor: Help Bar generation
+  - Make more APIs Context-free
+  - Adjust the edata use in Maildir and Notmuch
+  - Window refactoring
+  - Convert libsend to use Config functions
+  - Refactor notifications to reduce noise
+  - Convert Keymaps to use STAILQ
+  - Track currently selected email by msgid
+  - Config: no backing global variable
+  - Add events for key binding
+- Upstream
+  - Fix imap postponed mailbox use-after-free error
+  - Speed up thread sort when many long threads exist
+  - Fix ~v tagging when switching to non-threaded sorting
+  - Add message/global to the list of known "message" types
+  - Print progress meter when copying/saving tagged messages
+  - Remove ansi formatting from autoview generated quoted replies
+  - Change postpone mode to write Date header too
+  - Unstuff `format=flowed`
 
 * Fri Jun 26 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200626
 - Bug Fixes
