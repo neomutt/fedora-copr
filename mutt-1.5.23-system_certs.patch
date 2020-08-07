@@ -1,22 +1,22 @@
-From d9e23682fcc9a72636f01364c49fd3b17667c54d Mon Sep 17 00:00:00 2001
+From c9f527e9de97fdfb127f0578c5d566decd68ff76 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:43 +0100
 Subject: [PATCH 4/5] mutt-1.5.23-system_certs
 
 ---
- mutt_config.c | 2 +-
+ conn/config.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mutt_config.c b/mutt_config.c
-index 0648f12b8f..4d83db8132 100644
---- a/mutt_config.c
-+++ b/mutt_config.c
-@@ -4368,7 +4368,7 @@ struct ConfigDef MuttVars[] = {
-   */
+diff --git a/conn/config.c b/conn/config.c
+index e8f9c9486..b6a78a6cb 100644
+--- a/conn/config.c
++++ b/conn/config.c
+@@ -88,7 +88,7 @@ struct ConfigDef ConnVars[] = {
+   },
  #ifdef USE_SSL
  #ifdef USE_SSL_GNUTLS
--  { "ssl_ca_certificates_file", DT_PATH|DT_PATH_FILE, &C_SslCaCertificatesFile, 0 },
-+  { "ssl_ca_certificates_file", DT_PATH|DT_PATH_FILE, &C_SslCaCertificatesFile, IP "/etc/ssl/certs/ca-bundle.crt" },
-   /*
-   ** .pp
-   ** This variable specifies a file containing trusted CA certificates.
+-  { "ssl_ca_certificates_file", DT_PATH|DT_PATH_FILE, &C_SslCaCertificatesFile, 0, 0, NULL,
++  { "ssl_ca_certificates_file", DT_PATH|DT_PATH_FILE, &C_SslCaCertificatesFile, IP "/etc/ssl/certs/ca-bundle.crt", 0, NULL,
+     "File containing trusted CA certificates"
+   },
+ #endif
