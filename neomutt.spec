@@ -50,7 +50,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20200807
+Version: 20200814
 Release: 1%{?dist}
 Epoch: 5
 
@@ -73,7 +73,7 @@ Url: https://neomutt.org/
 Requires: mailcap, urlview
 BuildRequires: ncurses-devel, gettext, gettext-devel
 # manual generation
-BuildRequires: /usr/bin/xsltproc, docbook-style-xsl, perl
+BuildRequires: /usr/bin/xsltproc, docbook-dtds, docbook-style-xsl, perl
 # html manual -> txt manual conversion
 BuildRequires: lynx
 
@@ -205,7 +205,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
-* Fri Aug 07 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200807
+* Fri Aug 14 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200814
 - Security
   - Add mitigation against DoS from thousands of parts
 - Features
@@ -225,10 +225,18 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
   - Fix sidebar drawing in presence of indentation + named mailboxes
   - Fix retrieval of drafts when "postponed" is not in the mailboxes list
   - Do not add comments to address group terminators
+  - Fix alias sorting for degenerate addresses
+  - Fix attaching emails
+  - Create directories for nonexistent file hcache case
+  - Avoid creating mailboxes for failed subscribes
+  - Fix crash if rejecting cert
 - Changed Config
   - Add `$copy_decode_weed`, `$pipe_decode_weed`, `$print_decode_weed`
   - Change default of `$crypt_protected_headers_subject` to "..."
   - Add default keybindings to history-up/down
+- Translations
+  - 100% Czech
+  - 100% Spanish
 - Build
   - Allow building against Lua 5.4
   - Fix when sqlite3.h is missing
@@ -260,6 +268,9 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
   - Remove ansi formatting from autoview generated quoted replies
   - Change postpone mode to write Date header too
   - Unstuff `format=flowed`
+
+* Fri Aug 07 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200807
+  - Devel release - see NeoMutt-20200814
 
 * Fri Jun 26 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200626
 - Bug Fixes
