@@ -50,7 +50,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20200814
+Version: 20200821
 Release: 1%{?dist}
 Epoch: 5
 
@@ -205,6 +205,18 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Aug 21 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200821
+- Bug Fixes
+  - fix maildir flag generation
+  - fix query notmuch if file is missing
+  - notmuch: don't abort sync on error
+  - fix type checking for send config variables
+- Changed Config
+  - `$sidebar_format` - Use `%D` rather than `%B` for named mailboxes
+- Translations
+  - 96% Lithuanian
+  - 90% Polish
+
 * Fri Aug 14 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200814
 - Security
   - Add mitigation against DoS from thousands of parts
