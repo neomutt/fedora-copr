@@ -73,7 +73,7 @@ Url: https://neomutt.org/
 Requires: mailcap, urlview
 BuildRequires: ncurses-devel, gettext, gettext-devel
 # manual generation
-BuildRequires: /usr/bin/xsltproc, docbook-style-xsl, perl
+BuildRequires: /usr/bin/xsltproc, docbook-dtds, docbook-style-xsl, perl
 # html manual -> txt manual conversion
 BuildRequires: lynx
 
