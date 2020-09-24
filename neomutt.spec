@@ -7,9 +7,7 @@
 %bcond_without idn
 %bcond_without sasl
 %bcond_without tokyocabinet
-%bcond_without lz4
 %bcond_without zlib
-%bcond_without zstd
 
 # Disabled
 %bcond_with bdb
@@ -39,13 +37,19 @@
 %if "0%{?rhel}" == "06" || "0%{?rhel}" == "07"
 # Disabled
 %bcond_with autocrypt
-%bcond_with lua
 %bcond_with idn2
+%bcond_with lua
+%bcond_with lz4
+%bcond_with pcre2
+%bcond_with zstd
 %else
 # Enabled
 %bcond_without autocrypt
-%bcond_without lua
 %bcond_without idn2
+%bcond_without lua
+%bcond_without lz4
+%bcond_without pcre2
+%bcond_without zstd
 %endif
 
 Summary: A text mode mail user agent
@@ -100,6 +104,7 @@ BuildRequires: lynx
 %{?with_autocrypt:BuildRequires: sqlite-devel}
 %{?with_idn2:BuildRequires: libidn2-devel}
 %{?with_lua:BuildRequires: lua-devel}
+%{?with_pcre2:BuildRequires: pcre2-devel}
 
 %description
 NeoMutt is a small but very powerful text-based MIME mail client.  NeoMutt is
@@ -156,7 +161,8 @@ sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.au
 \
     %{?with_idn2:	--disable-idn --idn2} \
     %{?with_autocrypt:	--autocrypt} \
-    %{?with_lua:	--lua}
+    %{?with_lua:	--lua} \
+    %{?with_pcre2:	--pcre2}
 
 make %{?_smp_mflags}
 
