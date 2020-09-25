@@ -54,7 +54,7 @@
 
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20200821
+Version: 20200925
 Release: 1%{?dist}
 Epoch: 5
 
@@ -211,6 +211,49 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Sep 25 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200925
+- Features
+  - Compose: display user-defined headers
+  - Address Book / Query: live sorting
+  - Address Book / Query: patterns for searching
+  - Config: Add '+=' and '-=' operators for String Lists 
+  - Config: Add '+=' operator for Strings
+  - Allow postfix query ':setenv NAME?' for env vars
+- Bug Fixes
+  - Fix crash when searching with invalid regexes
+  - Compose: Prevent infinite loop of `send2-hook`s
+  - Fix sidebar on new/removed mailboxes
+  - Restore indentation for named mailboxes
+  - Prevent half-parsing an alias
+  - Remove folder creation prompt for POP path
+  - Show error if `$message_cachedir` doesn't point to a valid directory
+  - Fix tracking LastDir in case of IMAP paths with Unicode characters
+  - Make sure all mail gets applied the index limit
+  - Add warnings to -Q query CLI option
+  - Fix index tracking functionality
+- Changed Config
+  - Add `$compose_show_user_headers` (yes)
+- Translations
+  - 100% Czech
+  - 100% Lithuanian
+  - Split up usage strings
+- Build
+  - Run shellcheck on hcachever.sh
+  - Add the Address Sanitizer
+  - Move compose files to lib under compose/
+  - Move address config into libaddress
+  - Update to latest acutest - fixes a memory leak in the unit tests
+- Code
+  - Implement ARRAY API
+  - Deglobalised the Config Sort functions
+  - Refactor the Sidebar to be Event-Driven
+  - Refactor the Color Event
+  - Refactor the Commands list
+  - Make ctx_update_tables private
+  - Reduce the scope/deps of some Validator functions
+  - Use the Email's IMAP UID instead of an increasing number as index
+  - debug: log window focus
+
 * Fri Aug 21 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200821
 - Bug Fixes
   - fix maildir flag generation
