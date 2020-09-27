@@ -121,12 +121,7 @@ messages.
 
 install -p -m644 %{SOURCE1} mutt_ldap_query
 
-# Create a release date based on the rpm version
-echo -n 'const char *ReleaseDate = ' > reldate.h
-echo %{release} | sed -r 's/.*(201[0-9])([0-1][0-9])([0-3][0-9]).*/"\1-\2-\3";/' >> reldate.h
-
 %build
-sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.autosetup
 ./configure \
     --sysconfdir=/etc \
     --full-doc \
@@ -169,9 +164,6 @@ cat contrib/gpg.rc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomuttrc
 
 grep -5 "^color" contrib/sample.neomuttrc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomuttrc
 
-# remove unpackaged files from the buildroot
-rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/samples
-
 %if 0%{?rhel}
 rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %endif
@@ -180,10 +172,8 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 
 %files -f %{name}.lang
 %config(noreplace) %{_sysconfdir}/neomuttrc
-%doc docs/CODE_OF_CONDUCT.md ChangeLog* LICENSE.md README* INSTALL.md mutt_ldap_query
-%doc contrib/*.rc contrib/sample.* contrib/colors.*
-%doc docs/neomuttrc.*
-%doc docs/manual.txt docs/smime-notes.txt
+%doc *.md docs/CODE_OF_CONDUCT.md mutt_ldap_query
+%doc docs/*.txt
 %doc docs/*.html
 %doc docs/mime.types
 %doc contrib/colorschemes
@@ -191,6 +181,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %doc contrib/keybase
 %doc contrib/logo
 %doc contrib/lua
+%doc contrib/samples
 %doc contrib/vim-keys
 %{_bindir}/neomutt
 /usr/libexec/neomutt/pgpewrap
