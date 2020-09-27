@@ -1,9 +1,7 @@
 # Enabled
-%bcond_without debug
 %bcond_without gnutls
 %bcond_without gpgme
 %bcond_without gss
-%bcond_without hcache
 %bcond_without idn
 %bcond_without sasl
 %bcond_without tokyocabinet
@@ -81,7 +79,6 @@ BuildRequires: /usr/bin/xsltproc, docbook-dtds, docbook-style-xsl, perl
 # html manual -> txt manual conversion
 BuildRequires: lynx
 
-%if %{with hcache}
 %{?with_tokyocabinet:BuildRequires: tokyocabinet-devel}
 %{?with_kyotocabinet:BuildRequires: kyotocabinet-devel}
 %{?with_lmdb:BuildRequires: lmdb-devel}
@@ -91,16 +88,12 @@ BuildRequires: lynx
 %{?with_lz4:BuildRequires: lz4-devel}
 %{?with_zlib:BuildRequires: zlib-devel}
 %{?with_zstd:BuildRequires: libzstd-devel}
-%endif
-
 %{?with_gnutls:BuildRequires: gnutls-devel}
 %{?with_sasl:BuildRequires: cyrus-sasl-devel}
 %{?with_gss:BuildRequires: krb5-devel}
-
 %{?with_idn:BuildRequires: libidn-devel}
 %{?with_gpgme:BuildRequires: gpgme-devel}
 %{?with_notmuch:BuildRequires: notmuch-devel}
-
 %{?with_autocrypt:BuildRequires: sqlite-devel}
 %{?with_idn2:BuildRequires: libidn2-devel}
 %{?with_lua:BuildRequires: lua-devel}
@@ -136,11 +129,11 @@ echo %{release} | sed -r 's/.*(201[0-9])([0-1][0-9])([0-3][0-9]).*/"\1-\2-\3";/'
 sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.autosetup
 ./configure \
     --sysconfdir=/etc \
+    --full-doc \
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
     %{?with_notmuch:	--notmuch} \
 \
-    %if %{with hcache}
     %{?with_tokyocabinet:	--tokyocabinet} \
     %{?with_kyotocabinet:	--kyotocabinet} \
     %{?with_lmdb:	--lmdb} \
@@ -150,7 +143,6 @@ sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.au
     %{?with_lz4:	--lz4} \
     %{?with_zlib:	--zlib} \
     %{?with_zstd:	--zstd} \
-    %endif
 \
     %{?with_gnutls:	--gnutls} \
     %{?with_sasl:	--sasl} \
