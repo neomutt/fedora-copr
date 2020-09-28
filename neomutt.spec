@@ -7,40 +7,20 @@
 %bcond_without tokyocabinet
 %bcond_without zlib
 
-# Disabled
-%bcond_with bdb
-%bcond_with gdbm
-%bcond_with kyotocabinet
-%bcond_with qdbm
-
-# lmdb doesn't exist on rhel, yet
-%if 0%{?rhel}
-# Disabled
-%bcond_with lmdb
-%else
+# lmdb doesn't exist on rhel
+%if ! 0%{?rhel}
 # Enabled
 %bcond_without lmdb
 %endif
 
 # Notmuch doesn't exist in in rhel6
-%if "0%{?rhel}" == "06"
-# Disabled
-%bcond_with notmuch
-%else
+%if "0%{?rhel}" != "06"
 # Enabled
 %bcond_without notmuch
 %endif
 
 # Autocrypt, IDN2 and Lua don't work in rhel6/7
-%if "0%{?rhel}" == "06" || "0%{?rhel}" == "07"
-# Disabled
-%bcond_with autocrypt
-%bcond_with idn2
-%bcond_with lua
-%bcond_with lz4
-%bcond_with pcre2
-%bcond_with zstd
-%else
+%if "0%{?rhel}" != "06" && "0%{?rhel}" != "07"
 # Enabled
 %bcond_without autocrypt
 %bcond_without idn2
@@ -79,25 +59,25 @@ BuildRequires: /usr/bin/xsltproc, docbook-dtds, docbook-style-xsl, perl
 # html manual -> txt manual conversion
 BuildRequires: lynx
 
-%{?with_tokyocabinet:BuildRequires: tokyocabinet-devel}
+%{?with_autocrypt:BuildRequires: sqlite-devel}
+%{?with_bdb:BuildRequires: libdb-devel}
+%{?with_gdbm:BuildRequires: gdbm-devel}
+%{?with_gnutls:BuildRequires: gnutls-devel}
+%{?with_gpgme:BuildRequires: gpgme-devel}
+%{?with_gss:BuildRequires: krb5-devel}
+%{?with_idn2:BuildRequires: libidn2-devel}
+%{?with_idn:BuildRequires: libidn-devel}
 %{?with_kyotocabinet:BuildRequires: kyotocabinet-devel}
 %{?with_lmdb:BuildRequires: lmdb-devel}
-%{?with_bdb:BuildRequires: libdb-devel}
-%{?with_qdbm:BuildRequires: qdbm-devel}
-%{?with_gdbm:BuildRequires: gdbm-devel}
+%{?with_lua:BuildRequires: lua-devel}
 %{?with_lz4:BuildRequires: lz4-devel}
+%{?with_notmuch:BuildRequires: notmuch-devel}
+%{?with_pcre2:BuildRequires: pcre2-devel}
+%{?with_qdbm:BuildRequires: qdbm-devel}
+%{?with_sasl:BuildRequires: cyrus-sasl-devel}
+%{?with_tokyocabinet:BuildRequires: tokyocabinet-devel}
 %{?with_zlib:BuildRequires: zlib-devel}
 %{?with_zstd:BuildRequires: libzstd-devel}
-%{?with_gnutls:BuildRequires: gnutls-devel}
-%{?with_sasl:BuildRequires: cyrus-sasl-devel}
-%{?with_gss:BuildRequires: krb5-devel}
-%{?with_idn:BuildRequires: libidn-devel}
-%{?with_gpgme:BuildRequires: gpgme-devel}
-%{?with_notmuch:BuildRequires: notmuch-devel}
-%{?with_autocrypt:BuildRequires: sqlite-devel}
-%{?with_idn2:BuildRequires: libidn2-devel}
-%{?with_lua:BuildRequires: lua-devel}
-%{?with_pcre2:BuildRequires: pcre2-devel}
 
 %description
 NeoMutt is a small but very powerful text-based MIME mail client.  NeoMutt is
@@ -107,7 +87,6 @@ searches and a powerful pattern matching language for selecting groups of
 messages.
 
 %prep
-# unpack; cd
 %setup -q -n %{name}-%{version}
 %patch1 -p1 -b .muttrc
 %patch2 -p1 -b .cabundle
@@ -123,35 +102,32 @@ install -p -m644 %{SOURCE1} mutt_ldap_query
 
 %build
 ./configure \
+    --quiet \
     --sysconfdir=/etc \
     --full-doc \
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
-    %{?with_notmuch:	--notmuch} \
-\
-    %{?with_tokyocabinet:	--tokyocabinet} \
+    %{?with_autocrypt:	--autocrypt} \
+    %{?with_bdb:	--bdb} \
+    %{?with_gdbm:	--gdbm} \
+    %{?with_gnutls:	--gnutls} \
+    %{?with_gpgme:	--gpgme} \
+    %{?with_gss:	--gss} \
+    %{!?with_idn:	--without-idn} \
+    %{?with_idn2:	--disable-idn --idn2} \
     %{?with_kyotocabinet:	--kyotocabinet} \
     %{?with_lmdb:	--lmdb} \
-    %{?with_gdbm:	--gdbm} \
-    %{?with_qdbm:	--qdbm} \
-    %{?with_bdb:	--bdb} \
-    %{?with_lz4:	--lz4} \
-    %{?with_zlib:	--zlib} \
-    %{?with_zstd:	--zstd} \
-\
-    %{?with_gnutls:	--gnutls} \
-    %{?with_sasl:	--sasl} \
-    %{?with_gss:	--gss} \
-\
-    %{!?with_idn:	--without-idn} \
-    %{?with_gpgme:	--gpgme} \
-\
-    %{?with_idn2:	--disable-idn --idn2} \
-    %{?with_autocrypt:	--autocrypt} \
     %{?with_lua:	--lua} \
-    %{?with_pcre2:	--pcre2}
+    %{?with_lz4:	--lz4} \
+    %{?with_notmuch:	--notmuch} \
+    %{?with_pcre2:	--pcre2} \
+    %{?with_qdbm:	--qdbm} \
+    %{?with_sasl:	--sasl} \
+    %{?with_tokyocabinet:	--tokyocabinet} \
+    %{?with_zlib:	--zlib} \
+    %{?with_zstd:	--zstd}
 
-make %{?_smp_mflags}
+make -s %{?_smp_mflags}
 
 # remove unique id in manual.html because multilib conflicts
 sed -i -r 's/<a id="id[a-z0-9]\+">/<a id="id">/g' docs/manual.html
@@ -162,11 +138,11 @@ make install DESTDIR=$RPM_BUILD_ROOT
 # we like GPG here
 cat contrib/gpg.rc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomuttrc
 
-grep -5 "^color" contrib/sample.neomuttrc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomuttrc
+grep -C5 "^color" contrib/sample.neomuttrc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomuttrc
 
-%if 0%{?rhel}
-rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
-%endif
+# %if 0%{?rhel}
+# rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
+# %endif
 
 %find_lang %{name}
 
