@@ -102,7 +102,6 @@ install -p -m644 %{SOURCE1} mutt_ldap_query
 
 %build
 ./configure \
-    --quiet \
     --sysconfdir=/etc \
     --full-doc \
     SENDMAIL=%{_sbindir}/sendmail \
@@ -127,7 +126,7 @@ install -p -m644 %{SOURCE1} mutt_ldap_query
     %{?with_zlib:	--zlib} \
     %{?with_zstd:	--zstd}
 
-make -s %{?_smp_mflags}
+make %{?_smp_mflags}
 
 # remove unique id in manual.html because multilib conflicts
 sed -i -r 's/<a id="id[a-z0-9]\+">/<a id="id">/g' docs/manual.html
@@ -136,19 +135,21 @@ sed -i -r 's/<a id="id[a-z0-9]\+">/<a id="id">/g' docs/manual.html
 make install DESTDIR=$RPM_BUILD_ROOT
 
 # we like GPG here
-cat contrib/gpg.rc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomuttrc
+cat contrib/samples/gpg.rc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomuttrc
 
-grep -C5 "^color" contrib/sample.neomuttrc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomuttrc
+grep -C5 "^color" contrib/samples/sample.neomuttrc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomuttrc
 
-# %if 0%{?rhel}
-# rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
-# %endif
+%if 0%{?rhel}
+rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
+%endif
 
 %find_lang %{name}
 
 %files -f %{name}.lang
 %config(noreplace) %{_sysconfdir}/neomuttrc
-%doc *.md docs/CODE_OF_CONDUCT.md mutt_ldap_query
+%doc *.md
+%doc docs/CODE_OF_CONDUCT.md docs/CONTRIBUTING.md
+%doc mutt_ldap_query
 %doc docs/*.txt
 %doc docs/*.html
 %doc docs/mime.types
