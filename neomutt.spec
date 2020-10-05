@@ -1,48 +1,50 @@
+Summary: A text mode mail user agent
+Name: neomutt
+Version: 20200928
+Release: 1%{?dist}
+Epoch: 5
+License: GPLv2+
+Url: https://neomutt.org/
+BugURL: https://github.com/neomutt/neomutt/issues
+
+Source: https://github.com/neomutt/neomutt/archive/%{version}.tar.gz
+Source1: mutt_ldap_query
+Patch1: mutt-1.5.18-muttrc.patch
+Patch2: mutt-1.5.21-cabundle.patch
+Patch3: mutt-1.5.23-system_certs.patch
+Patch4: mutt-1.5.23-ssl_ciphers.patch
+Patch5: neomutt-2019-rhel.patch
+
+Requires: mailcap, urlview
+BuildRequires: ncurses-devel, gettext, gettext-devel
+# manual generation
+BuildRequires: /usr/bin/xsltproc, docbook-dtds, docbook-style-xsl, perl
+# html manual -> txt manual conversion
+BuildRequires: lynx
+
 # Enabled
-%bcond_without debug
 %bcond_without gnutls
 %bcond_without gpgme
 %bcond_without gss
-%bcond_without hcache
 %bcond_without idn
 %bcond_without sasl
 %bcond_without tokyocabinet
 %bcond_without zlib
 
-# Disabled
-%bcond_with bdb
-%bcond_with gdbm
-%bcond_with kyotocabinet
-%bcond_with qdbm
-
-# lmdb doesn't exist on rhel, yet
-%if 0%{?rhel}
-# Disabled
-%bcond_with lmdb
-%else
+# lmdb doesn't exist on rhel
+%if ! 0%{?rhel}
 # Enabled
 %bcond_without lmdb
 %endif
 
 # Notmuch doesn't exist in in rhel6
-%if "0%{?rhel}" == "06"
-# Disabled
-%bcond_with notmuch
-%else
+%if "0%{?rhel}" != "06"
 # Enabled
 %bcond_without notmuch
 %endif
 
 # Autocrypt, IDN2 and Lua don't work in rhel6/7
-%if "0%{?rhel}" == "06" || "0%{?rhel}" == "07"
-# Disabled
-%bcond_with autocrypt
-%bcond_with idn2
-%bcond_with lua
-%bcond_with lz4
-%bcond_with pcre2
-%bcond_with zstd
-%else
+%if "0%{?rhel}" != "06" && "0%{?rhel}" != "07"
 # Enabled
 %bcond_without autocrypt
 %bcond_without idn2
@@ -52,59 +54,27 @@
 %bcond_without zstd
 %endif
 
-Summary: A text mode mail user agent
-Name: neomutt
-Version: 20200925
-Release: 1%{?dist}
-Epoch: 5
-
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}}
 
-# The entire source code is GPLv2+ except
-# pgpewrap.c which is Public Domain
-License: GPLv2+ and Public Domain
-Group: Applications/Internet
-# git snapshot created from https://github.com/neomutt/neomutt
-Source: %{version}.tar.gz
-Source1: mutt_ldap_query
-Patch1: mutt-1.5.18-muttrc.patch
-Patch2: mutt-1.5.21-cabundle.patch
-Patch3: mutt-1.5.23-system_certs.patch
-Patch4: mutt-1.5.23-ssl_ciphers.patch
-Patch5: neomutt-2019-rhel.patch
-
-Url: https://neomutt.org/
-Requires: mailcap, urlview
-BuildRequires: ncurses-devel, gettext, gettext-devel
-# manual generation
-BuildRequires: /usr/bin/xsltproc, docbook-dtds, docbook-style-xsl, perl
-# html manual -> txt manual conversion
-BuildRequires: lynx
-
-%if %{with hcache}
-%{?with_tokyocabinet:BuildRequires: tokyocabinet-devel}
+%{?with_autocrypt:BuildRequires: sqlite-devel}
+%{?with_bdb:BuildRequires: libdb-devel}
+%{?with_gdbm:BuildRequires: gdbm-devel}
+%{?with_gnutls:BuildRequires: gnutls-devel}
+%{?with_gpgme:BuildRequires: gpgme-devel}
+%{?with_gss:BuildRequires: krb5-devel}
+%{?with_idn2:BuildRequires: libidn2-devel}
+%{?with_idn:BuildRequires: libidn-devel}
 %{?with_kyotocabinet:BuildRequires: kyotocabinet-devel}
 %{?with_lmdb:BuildRequires: lmdb-devel}
-%{?with_bdb:BuildRequires: libdb-devel}
-%{?with_qdbm:BuildRequires: qdbm-devel}
-%{?with_gdbm:BuildRequires: gdbm-devel}
+%{?with_lua:BuildRequires: lua-devel}
 %{?with_lz4:BuildRequires: lz4-devel}
+%{?with_notmuch:BuildRequires: notmuch-devel}
+%{?with_pcre2:BuildRequires: pcre2-devel}
+%{?with_qdbm:BuildRequires: qdbm-devel}
+%{?with_sasl:BuildRequires: cyrus-sasl-devel}
+%{?with_tokyocabinet:BuildRequires: tokyocabinet-devel}
 %{?with_zlib:BuildRequires: zlib-devel}
 %{?with_zstd:BuildRequires: libzstd-devel}
-%endif
-
-%{?with_gnutls:BuildRequires: gnutls-devel}
-%{?with_sasl:BuildRequires: cyrus-sasl-devel}
-%{?with_gss:BuildRequires: krb5-devel}
-
-%{?with_idn:BuildRequires: libidn-devel}
-%{?with_gpgme:BuildRequires: gpgme-devel}
-%{?with_notmuch:BuildRequires: notmuch-devel}
-
-%{?with_autocrypt:BuildRequires: sqlite-devel}
-%{?with_idn2:BuildRequires: libidn2-devel}
-%{?with_lua:BuildRequires: lua-devel}
-%{?with_pcre2:BuildRequires: pcre2-devel}
 
 %description
 NeoMutt is a small but very powerful text-based MIME mail client.  NeoMutt is
@@ -114,7 +84,6 @@ searches and a powerful pattern matching language for selecting groups of
 messages.
 
 %prep
-# unpack; cd
 %setup -q -n %{name}-%{version}
 %patch1 -p1 -b .muttrc
 %patch2 -p1 -b .cabundle
@@ -128,41 +97,31 @@ messages.
 
 install -p -m644 %{SOURCE1} mutt_ldap_query
 
-# Create a release date based on the rpm version
-echo -n 'const char *ReleaseDate = ' > reldate.h
-echo %{release} | sed -r 's/.*(201[0-9])([0-1][0-9])([0-3][0-9]).*/"\1-\2-\3";/' >> reldate.h
-
 %build
-sed -i 's/!= \(find $(SRCDIR) -name "\*.\[ch\]" | sort\)/= `\1`/' po/Makefile.autosetup
 ./configure \
     --sysconfdir=/etc \
+    --full-doc \
     SENDMAIL=%{_sbindir}/sendmail \
     ISPELL=%{_bindir}/hunspell \
-    %{?with_notmuch:	--notmuch} \
-\
-    %if %{with hcache}
-    %{?with_tokyocabinet:	--tokyocabinet} \
-    %{?with_kyotocabinet:	--kyotocabinet} \
-    %{?with_lmdb:	--lmdb} \
-    %{?with_gdbm:	--gdbm} \
-    %{?with_qdbm:	--qdbm} \
-    %{?with_bdb:	--bdb} \
-    %{?with_lz4:	--lz4} \
-    %{?with_zlib:	--zlib} \
-    %{?with_zstd:	--zstd} \
-    %endif
-\
-    %{?with_gnutls:	--gnutls} \
-    %{?with_sasl:	--sasl} \
-    %{?with_gss:	--gss} \
-\
-    %{!?with_idn:	--without-idn} \
-    %{?with_gpgme:	--gpgme} \
-\
-    %{?with_idn2:	--disable-idn --idn2} \
-    %{?with_autocrypt:	--autocrypt} \
-    %{?with_lua:	--lua} \
-    %{?with_pcre2:	--pcre2}
+    %{?with_autocrypt:    --autocrypt} \
+    %{?with_bdb:          --bdb} \
+    %{?with_gdbm:         --gdbm} \
+    %{?with_gnutls:       --gnutls} \
+    %{?with_gpgme:        --gpgme} \
+    %{?with_gss:          --gss} \
+    %{!?with_idn:         --without-idn} \
+    %{?with_idn2:         --disable-idn --idn2} \
+    %{?with_kyotocabinet: --kyotocabinet} \
+    %{?with_lmdb:         --lmdb} \
+    %{?with_lua:          --lua} \
+    %{?with_lz4:          --lz4} \
+    %{?with_notmuch:      --notmuch} \
+    %{?with_pcre2:        --pcre2} \
+    %{?with_qdbm:         --qdbm} \
+    %{?with_sasl:         --sasl} \
+    %{?with_tokyocabinet: --tokyocabinet} \
+    %{?with_zlib:         --zlib} \
+    %{?with_zstd:         --zstd}
 
 make %{?_smp_mflags}
 
@@ -175,10 +134,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 # we like GPG here
 cat contrib/gpg.rc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomuttrc
 
-grep -5 "^color" contrib/sample.neomuttrc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomuttrc
-
-# remove unpackaged files from the buildroot
-rm -rf $RPM_BUILD_ROOT%{_pkgdocdir}/samples
+grep -C5 "^color" contrib/sample.neomuttrc >> $RPM_BUILD_ROOT%{_sysconfdir}/neomuttrc
 
 %if 0%{?rhel}
 rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
@@ -188,10 +144,10 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 
 %files -f %{name}.lang
 %config(noreplace) %{_sysconfdir}/neomuttrc
-%doc docs/CODE_OF_CONDUCT.md ChangeLog* LICENSE.md README* INSTALL.md mutt_ldap_query
-%doc contrib/*.rc contrib/sample.* contrib/colors.*
-%doc docs/neomuttrc.*
-%doc docs/manual.txt docs/smime-notes.txt
+%doc *.md
+%doc docs/CODE_OF_CONDUCT.md docs/CONTRIBUTING.md
+%doc mutt_ldap_query
+%doc docs/*.txt
 %doc docs/*.html
 %doc docs/mime.types
 %doc contrib/colorschemes
@@ -199,6 +155,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %doc contrib/keybase
 %doc contrib/logo
 %doc contrib/lua
+%doc contrib/samples
 %doc contrib/vim-keys
 %{_bindir}/neomutt
 /usr/libexec/neomutt/pgpewrap
@@ -211,6 +168,9 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Sat Oct 03 2020 Richard Russon <rich@flatcap.org>
+- tidy and lint the spec file
+
 * Fri Sep 25 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200925
 - Features
   - Compose: display user-defined headers
@@ -345,7 +305,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
   - Don't check IMAP PREAUTH encryption if $tunnel is in use
   - Add recommendation to use $ssl_force_tls
 
-* Fri Jun 19 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20206019
+* Fri Jun 19 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200619
 - Security
   - Abort GnuTLS certificate check if a cert in the chain is rejected
   - TLS: clear data after a starttls acknowledgement
@@ -601,7 +561,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
   - refactor virtual email lookups
   - factor out global Context
 
-* Wed Dec 04 2019 Richard Russon <rich@flatcap.org> - NeoMutt-20191204
+* Wed Dec 04 2019 Richard Russon <rich@flatcap.org>
 - Tweak spec to cover all targets
 - Add autocrypt support (rhel8, fedora)
 - Add lua support (rhel8, fedora)
@@ -1096,7 +1056,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
   - Add IMAP keywords support
 - Bug Fixes
   - set mbox_type
-  - %{fmt} date format
+  - %\{fmt\} date format
   - Fix off-by-one buffer overflow in add_index_color
   - crash in mbox_to_udomain
   - crash in mutt_substrdup
