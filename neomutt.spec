@@ -1,6 +1,6 @@
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20200925
+Version: 20201127
 Release: 1%{?dist}
 Epoch: 5
 License: GPLv2+
@@ -168,6 +168,51 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Nov 27 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20201127
+- Bug Fixes
+  - Fix crash when saving an alias
+- Translations
+  - 70% Russian
+- Code
+  - Remove redundant function call
+
+* Fri Nov 20 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20201120
+- Security
+  - imap: close connection on all failures
+- Features
+  - alias: add <limit> function to Alias/Query dialogs
+  - config: add validators for {imap,smtp,pop}_authenticators
+  - config: warn when signature file is missing or not readable
+  - smtp: support for native SMTP LOGIN auth mech
+  - notmuch: show originating folder in index
+- Bug Fixes
+  - sidebar: prevent the divider colour bleeding out
+  - sidebar: fix <sidebar-{next,prev}-new>
+  - notmuch: fix <entire-thread> query for current email
+  - restore shutdown-hook functionality
+  - crash in reply-to
+  - user-after-free in folder-hook
+  - fix some leaks
+  - fix application of limits to modified mailboxes
+  - write Date header when postponing
+- Translations
+  - 100% Lithuanian
+  - 100% Czech
+  - 70% Turkish
+- Docs
+  - Document that $sort_alias affects the query menu 
+- Build
+  - improve ASAN flags 
+  - add SASL and S/MIME to --everything
+  - fix contrib (un)install
+- Code
+  - my_hdr compose screen notifications
+  - add contracts to the MXAPI
+  - maildir refactoring
+  - further reduce the use of global variables
+- Upstream
+  - Add $count_alternatives to count attachments inside alternatives
+
 * Sat Oct 03 2020 Richard Russon <rich@flatcap.org>
 - tidy and lint the spec file
 
