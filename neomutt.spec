@@ -1,6 +1,6 @@
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20201120
+Version: 20201127
 Release: 1%{?dist}
 Epoch: 5
 License: GPLv2+
@@ -168,6 +168,14 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Nov 27 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20201127
+- Bug Fixes
+  - Fix crash when saving an alias
+- Translations
+  - 70% Russian
+- Code
+  - Remove redundant function call
+
 * Fri Nov 20 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20201120
 - Security
   - imap: close connection on all failures
