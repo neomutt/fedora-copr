@@ -1,17 +1,17 @@
-From c9f527e9de97fdfb127f0578c5d566decd68ff76 Mon Sep 17 00:00:00 2001
+From 841eb7e0cb438f3b3488aa265626dc17d78ac3c9 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:43 +0100
-Subject: [PATCH 4/5] mutt-1.5.23-system_certs
+Subject: [PATCH 4/7] mutt-1.5.23-system_certs
 
 ---
  conn/config.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/conn/config.c b/conn/config.c
-index e8f9c9486..b6a78a6cb 100644
+index 07071d443..478378df4 100644
 --- a/conn/config.c
 +++ b/conn/config.c
-@@ -88,7 +88,7 @@ struct ConfigDef ConnVars[] = {
+@@ -89,7 +89,7 @@ struct ConfigDef ConnVars[] = {
    },
  #ifdef USE_SSL
  #ifdef USE_SSL_GNUTLS

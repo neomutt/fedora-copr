@@ -1,6 +1,6 @@
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20201127
+Version: 20210205
 Release: 1%{?dist}
 Epoch: 5
 License: GPLv2+
@@ -168,6 +168,34 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Feb 05 2021 Richard Russon <rich@flatcap.org> - NeoMutt-20210205
+- Features
+  - Add <skip-headers> to skip past message headers in pager
+  - Add <view-pager> function to attachment menu
+- Bug Fixes
+  - Fix detection of mbox files with new mail
+  - Fix crash on collapsed thread
+  - Fix group-chat-reply
+  - Clear the message window on resize
+  - Do not crash on return from shell-exec if there's no open mailbox
+  - Abort IMAP open if condstore/qresync updates fetch fails
+  - Fix smtp crash on invalid $smtp_authenticators list
+  - Fix pager dropped input on screen resize
+  - Fix mime forwarding
+  - Check config after hooks
+  - Always recreate a mailbox after folder-hook
+- Translations
+  - 88% Slovakian
+- Docs
+  - Adjust doc to explicitly mention $count_alternative
+  - Restore correct "$sort_re" documentation
+  - Clarify pattern completion
+  - Man pages: Clear up "-H" and "-O"
+- Build
+  - Update to latest acutest
+  - Update to latest autosetup
+  - Make the location of /tmp configurable
+
 * Fri Nov 27 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20201127
 - Bug Fixes
   - Fix crash when saving an alias
