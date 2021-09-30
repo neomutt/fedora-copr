@@ -1,4 +1,4 @@
-From c9f527e9de97fdfb127f0578c5d566decd68ff76 Mon Sep 17 00:00:00 2001
+From f9f4c72474ad3d4d4744fb860f128266286668ec Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:43 +0100
 Subject: [PATCH 4/5] mutt-1.5.23-system_certs
@@ -8,15 +8,15 @@ Subject: [PATCH 4/5] mutt-1.5.23-system_certs
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/conn/config.c b/conn/config.c
-index e8f9c9486..b6a78a6cb 100644
+index 4c3bec29b..3d8db1ea7 100644
 --- a/conn/config.c
 +++ b/conn/config.c
-@@ -88,7 +88,7 @@ struct ConfigDef ConnVars[] = {
+@@ -51,7 +51,7 @@ static struct ConfigDef ConnVars[] = {
    },
  #ifdef USE_SSL
  #ifdef USE_SSL_GNUTLS
--  { "ssl_ca_certificates_file", DT_PATH|DT_PATH_FILE, &C_SslCaCertificatesFile, 0, 0, NULL,
-+  { "ssl_ca_certificates_file", DT_PATH|DT_PATH_FILE, &C_SslCaCertificatesFile, IP "/etc/ssl/certs/ca-bundle.crt", 0, NULL,
+-  { "ssl_ca_certificates_file", DT_PATH|DT_PATH_FILE, 0, 0, NULL,
++  { "ssl_ca_certificates_file", DT_PATH|DT_PATH_FILE, IP "/etc/ssl/certs/ca-bundle.crt", 0, NULL,
      "File containing trusted CA certificates"
    },
  #endif
