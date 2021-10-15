@@ -1,14 +1,14 @@
-From 7d9fb87b278fdeb10f178b1242b43c31732bd807 Mon Sep 17 00:00:00 2001
+From 54f5b535edc904c0687cbc9e6800d291c8f1a270 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:37:32 +0100
-Subject: [PATCH 1/7] mutt-1.5.18-muttrc
+Subject: [PATCH 1/5] mutt-1.5.18-muttrc
 
 ---
  docs/neomuttrc.head | 4 ++++
  1 file changed, 4 insertions(+)
 
 diff --git a/docs/neomuttrc.head b/docs/neomuttrc.head
-index 6a46bace8..eb9cbed81 100644
+index 884b68ea1..5cfbe1b53 100644
 --- a/docs/neomuttrc.head
 +++ b/docs/neomuttrc.head
 @@ -24,6 +24,8 @@ macro index,pager,attach,compose \cb "\
