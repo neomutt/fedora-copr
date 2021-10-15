@@ -1,0 +1,112 @@
+From 1009c7710ceb724a3aac125c0f01325e064b4dcc Mon Sep 17 00:00:00 2001
+From: Richard Russon <rich@flatcap.org>
+Date: Wed, 1 Jun 2016 21:38:22 +0100
+Subject: [PATCH 3/5] mutt-1.5.23-ssl_ciphers
+
+---
+ conn/config.c |  2 +-
+ conn/gnutls.c | 75 ++++++++++++++++++++++++++-------------------------
+ 2 files changed, 40 insertions(+), 37 deletions(-)
+
+diff --git a/conn/config.c b/conn/config.c
+index a14f449b4..4c3bec29b 100644
+--- a/conn/config.c
++++ b/conn/config.c
+@@ -55,7 +55,7 @@ static struct ConfigDef ConnVars[] = {
+     "File containing trusted CA certificates"
+   },
+ #endif
+-  { "ssl_ciphers", DT_STRING, 0, 0, NULL,
++  { "ssl_ciphers", DT_STRING, IP "@SYSTEM", 0, NULL,
+     "Ciphers to use when using SSL"
+   },
+   { "ssl_client_cert", DT_PATH|DT_PATH_FILE, 0, 0, NULL,
+diff --git a/conn/gnutls.c b/conn/gnutls.c
+index 305cb3c9e..400ac9f7f 100644
+--- a/conn/gnutls.c
++++ b/conn/gnutls.c
+@@ -774,45 +774,48 @@ static int tls_set_priority(struct TlsSockData *data)
+   else
+     mutt_buffer_strcpy(priority, "NORMAL");
+ 
+-  const bool c_ssl_use_tlsv1_3 =
+-      cs_subset_bool(NeoMutt->sub, "ssl_use_tlsv1_3");
+-  if (!c_ssl_use_tlsv1_3)
++  if (c_ssl_ciphers && (strcmp(c_ssl_ciphers, "@SYSTEM") == 0))
+   {
+-    nproto--;
+-    mutt_buffer_addstr(priority, ":-VERS-TLS1.3");
+-  }
+-  const bool c_ssl_use_tlsv1_2 =
+-      cs_subset_bool(NeoMutt->sub, "ssl_use_tlsv1_2");
+-  if (!c_ssl_use_tlsv1_2)
+-  {
+-    nproto--;
+-    mutt_buffer_addstr(priority, ":-VERS-TLS1.2");
+-  }
+-  const bool c_ssl_use_tlsv1_1 =
+-      cs_subset_bool(NeoMutt->sub, "ssl_use_tlsv1_1");
+-  if (!c_ssl_use_tlsv1_1)
+-  {
+-    nproto--;
+-    mutt_buffer_addstr(priority, ":-VERS-TLS1.1");
+-  }
+-  const bool c_ssl_use_tlsv1 = cs_subset_bool(NeoMutt->sub, "ssl_use_tlsv1");
+-  if (!c_ssl_use_tlsv1)
+-  {
+-    nproto--;
+-    mutt_buffer_addstr(priority, ":-VERS-TLS1.0");
+-  }
+-  const bool c_ssl_use_sslv3 = cs_subset_bool(NeoMutt->sub, "ssl_use_sslv3");
+-  if (!c_ssl_use_sslv3)
+-  {
+-    nproto--;
+-    mutt_buffer_addstr(priority, ":-VERS-SSL3.0");
++    const bool c_ssl_use_tlsv1_3 =
++        cs_subset_bool(NeoMutt->sub, "ssl_use_tlsv1_3");
++    if (!c_ssl_use_tlsv1_3)
++    {
++      nproto--;
++      mutt_buffer_addstr(priority, ":-VERS-TLS1.3");
++    }
++    const bool c_ssl_use_tlsv1_2 =
++        cs_subset_bool(NeoMutt->sub, "ssl_use_tlsv1_2");
++    if (!c_ssl_use_tlsv1_2)
++    {
++      nproto--;
++      mutt_buffer_addstr(priority, ":-VERS-TLS1.2");
++    }
++    const bool c_ssl_use_tlsv1_1 =
++        cs_subset_bool(NeoMutt->sub, "ssl_use_tlsv1_1");
++    if (!c_ssl_use_tlsv1_1)
++    {
++      nproto--;
++      mutt_buffer_addstr(priority, ":-VERS-TLS1.1");
++    }
++    const bool c_ssl_use_tlsv1 = cs_subset_bool(NeoMutt->sub, "ssl_use_tlsv1");
++    if (!c_ssl_use_tlsv1)
++    {
++      nproto--;
++      mutt_buffer_addstr(priority, ":-VERS-TLS1.0");
++    }
++    const bool c_ssl_use_sslv3 = cs_subset_bool(NeoMutt->sub, "ssl_use_sslv3");
++    if (!c_ssl_use_sslv3)
++    {
++      nproto--;
++      mutt_buffer_addstr(priority, ":-VERS-SSL3.0");
++    }
+   }
+ 
+-  if (nproto == 0)
+-  {
+-    mutt_error(_("All available protocols for TLS/SSL connection disabled"));
+-    goto cleanup;
+-  }
++    if (nproto == 0)
++    {
++      mutt_error(_("All available protocols for TLS/SSL connection disabled"));
++      goto cleanup;
++    }
+ 
+   int err = gnutls_priority_set_direct(data->state, mutt_buffer_string(priority), NULL);
+   if (err < 0)
