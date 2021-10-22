@@ -1,6 +1,6 @@
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20211015
+Version: 20211022
 Release: 1%{?dist}
 Epoch: 5
 License: GPLv2+
@@ -169,6 +169,33 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Oct 22 2021 Richard Russon <rich@flatcap.org> - NeoMutt-20211022
+- Bug Fixes
+  - fix new mail notifications
+  - fix pattern compilation error for ~( !~>(~P) )
+  - fix menu display on window resize
+  - Stop batch mode emails with no argument or recipients
+  - Add sanitize call in print mailcap function
+  - fix `hdr_order` to use the longest match
+  - fix (un)setenv to not return an error with unset env vars
+  - fix Imap sync when closing a mailbox
+  - fix segfault on OpenBSD current
+  - sidebar: restore `sidebar_spoolfile` colour
+  - fix assert when displaying a file from the browser
+  - fix exec command in compose
+  - fix `check_stats` for Notmuch mailboxes
+  - Fallback: Open Notmuch database without config
+  - fix gui hook commands on startup
+- Changed Config
+  - Re-enable `$ssl_force_tls`
+- Translations
+  - 100% Serbian
+  - 100% Lithuanian
+  - 100% German
+- Build
+  - Remove Slang from the build
+  - Warn about deprecated configure options
+
 * Fri Oct 15 2021 Richard Russon <rich@flatcap.org> - NeoMutt-20211015
 - Security
   - Fix CVE-2021-32055
