@@ -1,6 +1,6 @@
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20211022
+Version: 20211029
 Release: 1%{?dist}
 Epoch: 5
 License: GPLv2+
@@ -169,6 +169,24 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Oct 29 2021 Richard Russon <rich@flatcap.org> - NeoMutt-20211029
+- Features
+  - Notmuch: support separate database and mail roots without .notmuch
+- Bug Fixes
+  - fix notmuch crash on open failure
+  - fix crypto crash handling pgp keys
+  - fix ncrypt/pgp file_get_size return check
+  - fix restore case-insensitive header sort
+  - fix pager redrawing of long lines
+  - fix notmuch: check database dir for xapian dir
+  - fix notmuch: update index count after `<entire-thread>`
+  - fix protect hash table against empty keys
+  - fix prevent real_subj being set but empty
+  - fix leak when saving fcc
+  - fix leak after `<edit-or-view-raw-message>`
+  - fix leak after trash to hidden mailbox
+  - fix leak restoring postponed emails
+
 * Fri Oct 22 2021 Richard Russon <rich@flatcap.org> - NeoMutt-20211022
 - Bug Fixes
   - fix new mail notifications
