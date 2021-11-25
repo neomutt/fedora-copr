@@ -37,14 +37,8 @@ BuildRequires: lynx
 %bcond_without lmdb
 %endif
 
-# Notmuch doesn't exist in in rhel6
-%if "0%{?rhel}" != "06"
-# Enabled
-%bcond_without notmuch
-%endif
-
-# Autocrypt, IDN2 and Lua don't work in rhel6/7
-%if "0%{?rhel}" != "06" && "0%{?rhel}" != "07"
+# Autocrypt, IDN2 and Lua don't work in rhel7
+%if "0%{?rhel}" != "07"
 # Enabled
 %bcond_without autocrypt
 %bcond_without idn2
