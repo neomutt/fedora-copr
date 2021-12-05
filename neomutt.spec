@@ -108,7 +108,7 @@ install -p -m644 %{SOURCE1} mutt_ldap_query
     %{?with_gnutls:       --gnutls} \
     %{?with_gpgme:        --gpgme} \
     %{?with_gss:          --gss} \
-    %{!?with_idn:         --without-idn} \
+    %{!?with_idn:         --disable-idn} \
     %{?with_idn2:         --disable-idn --idn2} \
     %{?with_kyotocabinet: --kyotocabinet} \
     %{?with_lmdb:         --lmdb} \
