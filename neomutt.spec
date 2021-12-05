@@ -26,10 +26,15 @@ BuildRequires: lynx
 %bcond_without gnutls
 %bcond_without gpgme
 %bcond_without gss
-%bcond_without idn
 %bcond_without sasl
 %bcond_without tokyocabinet
 %bcond_without zlib
+
+# Enable plain IDN isn't available centos9
+%if "0%{?rhel}" != "09"
+# enabled
+%bcond_without idn
+%endif
 
 # lmdb doesn't exist on rhel
 %if ! 0%{?rhel}
@@ -39,7 +44,7 @@ BuildRequires: lynx
 
 # Autocrypt, IDN2 and Lua don't work in rhel7
 %if "0%{?rhel}" != "07"
-# Enabled
+# enabled
 %bcond_without autocrypt
 %bcond_without idn2
 %bcond_without lua
