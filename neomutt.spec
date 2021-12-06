@@ -26,10 +26,15 @@ BuildRequires: lynx
 %bcond_without gnutls
 %bcond_without gpgme
 %bcond_without gss
-%bcond_without idn
 %bcond_without sasl
 %bcond_without tokyocabinet
 %bcond_without zlib
+
+# Enable plain IDN isn't available centos9
+%if "0%{?rhel}" != "09"
+# enabled
+%bcond_without idn
+%endif
 
 # lmdb doesn't exist on rhel
 %if ! 0%{?rhel}
@@ -44,6 +49,7 @@ BuildRequires: lynx
 %bcond_without idn2
 %bcond_without lua
 %bcond_without lz4
+%bcond_without notmuch
 %bcond_without pcre2
 %bcond_without zstd
 %endif
@@ -103,7 +109,7 @@ install -p -m644 %{SOURCE1} mutt_ldap_query
     %{?with_gnutls:       --gnutls} \
     %{?with_gpgme:        --gpgme} \
     %{?with_gss:          --gss} \
-    %{!?with_idn:         --without-idn} \
+    %{!?with_idn:         --disable-idn} \
     %{?with_idn2:         --disable-idn --idn2} \
     %{?with_kyotocabinet: --kyotocabinet} \
     %{?with_lmdb:         --lmdb} \
