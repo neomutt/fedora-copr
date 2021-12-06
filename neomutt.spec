@@ -44,11 +44,12 @@ BuildRequires: lynx
 
 # Autocrypt, IDN2 and Lua don't work in rhel7
 %if "0%{?rhel}" != "07"
-# enabled
+# Enabled
 %bcond_without autocrypt
 %bcond_without idn2
 %bcond_without lua
 %bcond_without lz4
+%bcond_without notmuch
 %bcond_without pcre2
 %bcond_without zstd
 %endif
