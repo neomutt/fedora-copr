@@ -1,6 +1,6 @@
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20211029
+Version: 20220408
 Release: 1%{?dist}
 Epoch: 5
 License: GPLv2+
@@ -26,10 +26,15 @@ BuildRequires: lynx
 %bcond_without gnutls
 %bcond_without gpgme
 %bcond_without gss
-%bcond_without idn
 %bcond_without sasl
 %bcond_without tokyocabinet
 %bcond_without zlib
+
+# Enable plain IDN isn't available centos9
+%if "0%{?rhel}" != "09"
+# enabled
+%bcond_without idn
+%endif
 
 # lmdb doesn't exist on rhel
 %if ! 0%{?rhel}
@@ -37,19 +42,14 @@ BuildRequires: lynx
 %bcond_without lmdb
 %endif
 
-# Notmuch doesn't exist in in rhel6
-%if "0%{?rhel}" != "06"
-# Enabled
-%bcond_without notmuch
-%endif
-
-# Autocrypt, IDN2 and Lua don't work in rhel6/7
-%if "0%{?rhel}" != "06" && "0%{?rhel}" != "07"
+# Autocrypt, IDN2 and Lua don't work in rhel7
+%if "0%{?rhel}" != "07"
 # Enabled
 %bcond_without autocrypt
 %bcond_without idn2
 %bcond_without lua
 %bcond_without lz4
+%bcond_without notmuch
 %bcond_without pcre2
 %bcond_without zstd
 %endif
@@ -109,7 +109,7 @@ install -p -m644 %{SOURCE1} mutt_ldap_query
     %{?with_gnutls:       --gnutls} \
     %{?with_gpgme:        --gpgme} \
     %{?with_gss:          --gss} \
-    %{!?with_idn:         --without-idn} \
+    %{!?with_idn:         --disable-idn} \
     %{?with_idn2:         --disable-idn --idn2} \
     %{?with_kyotocabinet: --kyotocabinet} \
     %{?with_lmdb:         --lmdb} \
@@ -169,6 +169,80 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Apr 08 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220408
+- Features
+  - Compose multipart emails
+- Bug Fixes
+  - Fix screen mode after attempting decryption
+  - imap: increase max size of oauth2 token
+  - Fix autocrypt
+  - Unify Alias/Query workflow
+  - Fix colours
+  - Say which file exists when saving attachments
+  - Force SMTP authentication if `smtp_user` is set
+  - Fix selecting the right email after limiting
+  - Make sure we have enough memory for a new email
+  - Don't overwrite with zeroes after unlinking the file
+  - Fix crash when forwarding attachments
+  - Fix help reformatting on window resize
+  - Fix poll to use PollFdsCount and not PollFdsLen
+  - regex: range check arrays strictly
+  - Fix Coverity defects
+  - Fix out of bounds write with long log lines
+  - Apply `fast_reply` to 'to', 'cc', or 'bcc'
+  - Prevent warning on empty emails
+- Changed Config
+  - New default: `set rfc2047_parameters = yes`
+- Translations
+  - 100% German
+  - 100% Lithuanian
+  - 100% Serbian
+  - 100% Czech
+  - 100% Turkish
+  - 72% Hungarian
+- Docs
+  - Improve header cache explanation
+  - Improve description of some notmuch variables
+  - Explain how timezones and `!`s work inside `{}`, `[]` and `()`
+  - Document config synonyms and deprecations
+- Build
+  - Create lots of GitHub Actions
+  - Drop TravisCI
+  - Add automated Fuzzing tests
+  - Add automated ASAN tests
+  - Create Dockers for building Centos/Fedora
+  - Build fixes for Solaris 10
+  - New libraries: browser, enter, envelope
+  - New configure options: `--fuzzing` `--debug-color` `--debug-queue`
+- Code
+  - Split Index/Pager GUIs/functions
+  - Add lots of function dispatchers
+  - Eliminate `menu_loop()`
+  - Refactor function opcodes
+  - Refactor cursor setting
+  - Unify Alias/Query functions
+  - Refactor Compose/Envelope functions
+  - Modernise the Colour handling
+  - Refactor the Attachment View
+  - Eliminate the global `Context`
+  - Upgrade `mutt_get_field()`
+  - Refactor the `color quoted` code
+  - Fix lots of memory leaks
+  - Refactor Index resolve code
+  - Refactor PatternList parsing
+  - Refactor Mailbox freeing
+  - Improve key mapping
+  - Factor out charset hooks
+  - Expose mutt_file_seek API
+  - Improve API of `strto*` wrappers
+- Upstream
+  - imap QRESYNC fixes
+  - Allow an empty To: address prompt
+  - Fix argc==0 handling
+  - Don't queue IMAP close commands
+  - Fix IMAP UTF-7 for code points >= U+10000
+  - Don't include inactive messages in msgset generation
+
 * Fri Oct 29 2021 Richard Russon <rich@flatcap.org> - NeoMutt-20211029
 - Features
   - Notmuch: support separate database and mail roots without .notmuch
