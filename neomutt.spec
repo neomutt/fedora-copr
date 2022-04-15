@@ -1,6 +1,6 @@
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20220408
+Version: 20220415
 Release: 1%{?dist}
 Epoch: 5
 License: GPLv2+
@@ -169,6 +169,35 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Apr 15 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220415
+- Security
+  - Fix uudecode buffer overflow (CVE-2022-1328)
+- Features
+  - Colours, colours, colours
+- Bug Fixes
+  - Pager: fix pager_stop
+  - Merge colours with normal
+  - Color: disable mono command
+  - Fix forwarding text attachments when honor_disposition is set
+  - Pager: drop the nntp change-group bindings
+  - Use mailbox_check flags coherently, add IMMEDIATE flag
+  - Fix: tagging in attachment list
+  - Fix: misalignment of mini-index
+  - Make sure to update the menu size after a resort
+- Translations
+  - 100% Hungarian
+- Build
+  - Update acutest
+- Code
+  - Unify pipe functions
+  - Index: notify if navigation fails
+  - Gui: set colour to be merged with normal
+  - Fix: leak in tls_check_one_certificate()
+- Upstream
+  - Flush iconv() in mutt_convert_string()
+  - Fix integer overflow in mutt_convert_string()
+  - Fix uudecode cleanup on unexpected eof
+
 * Fri Apr 08 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220408
 - Features
   - Compose multipart emails
