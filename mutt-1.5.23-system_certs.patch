@@ -1,4 +1,4 @@
-From 8fd83f9b96861e0b9363063cc51d4f4165abf4b5 Mon Sep 17 00:00:00 2001
+From dea077139662430f369d7fe67fee386458a007d4 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:43 +0100
 Subject: [PATCH 4/5] mutt-1.5.23-system_certs

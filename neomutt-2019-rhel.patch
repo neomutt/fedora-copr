@@ -1,4 +1,4 @@
-From b64e0f006fa4554da58f5ce705900b0b01ca5075 Mon Sep 17 00:00:00 2001
+From a46957a8adf943da30c9bf7d7a461d1c90978608 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Tue, 3 Dec 2019 15:58:06 +0000
 Subject: [PATCH 5/5] neomutt-2019-rhel
@@ -8,7 +8,7 @@ Subject: [PATCH 5/5] neomutt-2019-rhel
  1 file changed, 4 deletions(-)
 
 diff --git a/auto.def b/auto.def
-index 5d9f676dd..1bb28c44d 100644
+index d3badd36d..45f4c7250 100644
 --- a/auto.def
 +++ b/auto.def
 @@ -504,10 +504,6 @@ if {[get-define want-gpgme]} {
