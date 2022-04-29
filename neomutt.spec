@@ -1,6 +1,6 @@
 Summary: A text mode mail user agent
 Name: neomutt
-Version: 20220415
+Version: 20220429
 Release: 1%{?dist}
 Epoch: 5
 License: GPLv2+
@@ -169,6 +169,35 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/neomutt
 %{_mandir}/man5/neomuttrc.*
 
 %changelog
+* Fri Apr 29 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220429
+- Bug Fixes
+  - Do not crash on an invalid use_threads/sort combination
+  - Fix: stuck browser cursor
+  - Resolve (move) the cursor after <edit-label>
+  - Index: fix menu size on new mail
+  - Don't overlimit LMDB mmap size
+  - OpenBSD y/n translation fix
+  - Generic: split out OP_EXIT binding
+  - Fix parsing of sendmail cmd
+  - Fix: crash with menu_move_off=no
+  - Newsrc: bugfix; nntp_user and nntp_pass ignored
+  - Menu: ensure config changes cause a repaint
+  - Mbox: fix sync duplicates
+  - Make sure the index redraws all that's needed
+- Translations
+  - 100% Chinese (Simplified)
+  - 100% Czech
+  - 100% German
+  - 100% Hungarian
+  - 100% Lithuanian
+  - 100% Serbian
+  - 100% Turkish
+- Docs
+  - add missing pattern modifier ~I for external_search_command
+- Code
+  - menu: eliminate custom_redraw()
+  - modernise mixmaster
+ 
 * Fri Apr 15 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220415
 - Security
   - Fix uudecode buffer overflow (CVE-2022-1328)
