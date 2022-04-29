@@ -1,4 +1,4 @@
-From dd6cae1285e37695a9ecb2f92705cf37fbad3481 Mon Sep 17 00:00:00 2001
+From e227db2da5b4ab83124f1a9168b49378b6008b7d Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:05 +0100
 Subject: [PATCH 2/5] mutt-1.5.21-cabundle
