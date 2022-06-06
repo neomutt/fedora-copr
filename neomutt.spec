@@ -14,9 +14,9 @@ License: GPLv2+ and BSD and MIT and Unlicense and Public Domain
 
 Source: https://github.com/neomutt/neomutt/archive/%{version}/%{name}-%{version}.tar.gz
 # Use system certificate bundle
-Patch1: mutt-1.5.23-system_certs.patch
+Patch1: neomutt-system_certs.patch
 # Use system ciphers (@SYSTEM)
-Patch2: mutt-1.5.23-ssl_ciphers.patch
+Patch2: neomutt-ssl_ciphers.patch
 
 Requires: mailcap, urlview
 
