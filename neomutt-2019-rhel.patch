@@ -4,19 +4,20 @@ Date: Tue, 3 Dec 2019 15:58:06 +0000
 Subject: [PATCH 5/5] neomutt-2019-rhel
 
 ---
- auto.def | 4 ----
- 1 file changed, 4 deletions(-)
+ auto.def | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/auto.def b/auto.def
-index d3badd36d..45f4c7250 100644
+index e06ed17bf..b9404ad30 100644
 --- a/auto.def
 +++ b/auto.def
-@@ -504,10 +504,6 @@ if {[get-define want-gpgme]} {
-       if {$gpgme_maj < 1 || $gpgme_min < 8} {
+@@ -506,11 +506,6 @@ if {[get-define want-gpgme]} {
+         # GPGME v1.8.0 was released on 2016-11-16
          user-error "Found GPGME version $gpgme_version, need 1.8.0 for AutoCrypt"
        }
 -    } else {
 -      if {$gpgme_maj < 1 || $gpgme_min < 4} {
+-        # GPGME v1.4.0 was released on 2013-02-26
 -        user-error "Found GPGME version $gpgme_version, need 1.4.0"
 -      }
      }
