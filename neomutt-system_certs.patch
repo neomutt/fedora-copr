@@ -1,7 +1,7 @@
 From e7869c7e8ba48c957620665f5944d13fb328dfcc Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:43 +0100
-Subject: [PATCH 2/2] neomutt-system_certs
+Subject: neomutt-system_certs
 
 ---
  conn/config.c | 2 +-

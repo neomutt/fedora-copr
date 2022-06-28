@@ -1,7 +1,7 @@
 From 04b770c6c70c20b2b5a4e62ab1fb151bb9883ad3 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:22 +0100
-Subject: [PATCH 1/2] neomutt-ssl_ciphers
+Subject: neomutt-ssl_ciphers
 
 ---
  conn/config.c |  2 +-

@@ -1,0 +1,38 @@
+From 840d684f74ce7886246af1b6374b2d3d18e89eee Mon Sep 17 00:00:00 2001
+From: Richard Russon <rich@flatcap.org>
+Date: Tue, 28 Jun 2022 12:04:50 +0100
+Subject: neomutt-fedora_colors
+
+---
+ contrib/fedora_colors.rc | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+ create mode 100644 contrib/fedora_colors.rc
+
+diff --git a/contrib/fedora_colors.rc b/contrib/fedora_colors.rc
+new file mode 100644
+index 000000000..bddc5294a
+--- /dev/null
++++ b/contrib/fedora_colors.rc
+@@ -0,0 +1,22 @@
++#
++# Color definitions
++#
++
++color hdrdefault red           default
++color quoted     brightblue    default
++color signature  red           default
++color indicator  brightyellow  red
++color error      brightred     default
++color status     yellow        blue
++color tree       magenta       default	# the thread tree in the index menu
++color tilde      magenta       default
++color message    brightcyan    default
++color markers    brightcyan    default
++color attachment brightmagenta default
++color search     default       green	# how to hilite search patterns in the pager
++color warning    brightyellow  default
++
++color header    brightred   default "^(From|Subject):"
++color body      magenta     default "(ftp|http|https)://[^ ]+"	# point out URLs
++color body      magenta     default "[-a-z_0-9.\+]+@[-a-z_0-9.]+"	# e-mail addresses
++color underline brightgreen default

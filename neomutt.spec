@@ -1,22 +1,23 @@
 Summary: Text mode Mail Client
 Name: neomutt
-Version: 20220606
+Version: 20220628
 Release: 1%{?dist}
 Epoch: 5
 Url: https://neomutt.org/
 
 # Source, docs and contrib: GPLv2+, except for:
-# BSD: Autosetup build system, queue.h, neomutt-hcache-bench.sh
+# BSD: Autosetup build system, queue.h
 # MIT: Acutest unit test framework, some themes
-# Unlicense: Keybase scripts
 # Public Domain: pgpewrap.c, mbox.5, some themes
-License: GPLv2+ and BSD and MIT and Unlicense and Public Domain
+License: GPLv2+ and BSD and MIT and Public Domain
 
 Source: https://github.com/neomutt/neomutt/archive/%{version}/%{name}-%{version}.tar.gz
 # Use system certificate bundle
 Patch1: neomutt-system_certs.patch
 # Use system ciphers (@SYSTEM)
 Patch2: neomutt-ssl_ciphers.patch
+# Fedora color scheme
+Patch3: neomutt-fedora_colors.patch
 
 Requires: mailcap, urlview
 
@@ -40,6 +41,7 @@ messages.
 %setup -q -n %{name}-%{version}
 %patch1 -p1 -b .system_certs
 %patch2 -p1 -b .ssl_ciphers
+%patch3 -p1 -b .fedora_colors
 
 %build
 %{configure} \
@@ -56,8 +58,8 @@ sed -i -r 's/<a id="id[a-z0-9]\+">/<a id="id">/g' docs/manual.html
 
 %install
 %{make_install}
-
-grep -C5 "^color" contrib/samples/sample.neomuttrc >> %{buildroot}%{_sysconfdir}/neomuttrc
+rm %{buildroot}%{_pkgdocdir}/INSTALL.md %{buildroot}%{_pkgdocdir}/LICENSE.md
+cat contrib/fedora_colors.rc >> %{buildroot}%{_sysconfdir}/neomuttrc
 
 %find_lang %{name}
 
@@ -66,30 +68,17 @@ grep -C5 "^color" contrib/samples/sample.neomuttrc >> %{buildroot}%{_sysconfdir}
 %{_bindir}/neomutt
 %{_libexecdir}/neomutt
 %license LICENSE.md
-%doc LICENSE.md
-%doc AUTHORS.md ChangeLog.md INSTALL.md README.md SECURITY.md
-%doc docs/CODE_OF_CONDUCT.md docs/CONTRIBUTING.md
-%doc docs/*.txt
-%doc docs/*.html
-%doc docs/mime.types
-%doc contrib/account-command
-%doc contrib/colorschemes
-%doc contrib/hcache-bench
-%doc contrib/keybase
-%doc contrib/logo
-%doc contrib/lua
-%doc contrib/samples
-%doc contrib/vim-keys
-%doc contrib/oauth2
+%{_pkgdocdir}
 %{_mandir}/man1/neomutt.*
 %{_mandir}/man1/pgpewrap_neomutt.*
 %{_mandir}/man1/smime_keys_neomutt.*
 %{_mandir}/man5/mbox_neomutt.*
 %{_mandir}/man5/mmdf_neomutt.*
 %{_mandir}/man5/neomuttrc.*
+%{_datadir}
 
 %changelog
-* Mon Jun 06 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220606
+* Tue Jun 28 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220628
 - Testing
 
 * Fri Apr 29 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220429
