@@ -1,6 +1,6 @@
 Summary: Text mode Mail Client
 Name: neomutt
-Version: 20220628
+Version: 20220629
 Release: 1%{?dist}
 Epoch: 5
 Url: https://neomutt.org/
@@ -12,12 +12,12 @@ Url: https://neomutt.org/
 License: GPLv2+ and BSD and MIT and Public Domain
 
 Source: https://github.com/neomutt/neomutt/archive/%{version}/%{name}-%{version}.tar.gz
+Source1: fedora-colors.rc
+
 # Use system certificate bundle
 Patch1: neomutt-system_certs.patch
 # Use system ciphers (@SYSTEM)
 Patch2: neomutt-ssl_ciphers.patch
-# Fedora color scheme
-Patch3: neomutt-fedora_colors.patch
 
 Requires: mailcap, urlview
 
@@ -41,7 +41,6 @@ messages.
 %setup -q -n %{name}-%{version}
 %patch1 -p1 -b .system_certs
 %patch2 -p1 -b .ssl_ciphers
-%patch3 -p1 -b .fedora_colors
 
 %build
 %{configure} \
@@ -59,7 +58,7 @@ sed -i -r 's/<a id="id[a-z0-9]\+">/<a id="id">/g' docs/manual.html
 %install
 %{make_install}
 rm %{buildroot}%{_pkgdocdir}/INSTALL.md %{buildroot}%{_pkgdocdir}/LICENSE.md
-cat contrib/fedora_colors.rc >> %{buildroot}%{_sysconfdir}/neomuttrc
+cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 
 %find_lang %{name}
 
@@ -75,10 +74,10 @@ cat contrib/fedora_colors.rc >> %{buildroot}%{_sysconfdir}/neomuttrc
 %{_mandir}/man5/mbox_neomutt.*
 %{_mandir}/man5/mmdf_neomutt.*
 %{_mandir}/man5/neomuttrc.*
-%{_datadir}
+%{_datadir}/neomutt
 
 %changelog
-* Tue Jun 28 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220628
+* Wed Jun 29 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220629
 - Testing
 
 * Fri Apr 29 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220429
