@@ -1,6 +1,6 @@
 Summary: Text mode Mail Client
 Name: neomutt
-Version: 20220629
+Version: 20230322
 Release: 1%{?dist}
 Epoch: 5
 Url: https://neomutt.org/
@@ -77,8 +77,108 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 %{_datadir}/neomutt
 
 %changelog
-* Wed Jun 29 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220629
-- Testing
+* Wed Mar 22 2023 Richard Russon <rich@flatcap.org> - NeoMutt-20230322
+- Features
+  - #3372 - use DT_SLIST for charset variables
+  - #3383 - support viewing html with embedded images, #3383
+  - #3408 - account command, see the [feature page](https://neomutt.org/feature/account-cmd)
+  - #3411 - check that `sendmail` and `inews` don't contain shell meta characters
+  - #3412 - browser: add mailbox_folder_format config variable
+  - #3421 - enter: add function kill-whole-line
+  - #3414 - account command: add macOS keychain sample provider
+  - #3430 - account command: add GPG+JSON sample provider
+  - #3474 - expose italics attribute for colour scheme
+  - #3471 - allow `source` in hooks to point to relative paths
+  - #3506 - resolve alternates when subscribing/unsubscribing
+  - #3492 - notmuch: allow specifying configuration file
+  - #3547 - notmuch: allow usage of notmuch profiles
+  - #3524 - add GNU SASL support for authentication (`--gsasl` configure option)
+  - #3548 - extend colour objects to support patterns
+  - #3586 - detect and fixup maildirs with missing "new" and "tmp" directories
+  - #3634 - generate standard MIME types as application/pkcs7-* instead of legacy application/x-pkcs7-*
+  - #3639 - compose: add Smime: pseudo header
+  - #3641 - handle more X-Mutt pseudo-headers with `edit_headers`
+  - #3702 - use `socket_timeout` to time out read/write operations
+  - #3717 - allow `[fmt]` in `$folder_format`
+  - #3719 - respect `attribution_locale` in `indent_string` and `post_indent_string`
+  - #3720 - pattern: add `~K` to search Bcc, include Bcc in `~C`, `%C`, `~L`, and `~p`
+  - #3726 - colour postponed emails list
+  - #3734 - allow querying user-defined variables (`$my_var`) with `-Q`
+  - #3737 - dump user-defined variables (`$my_var`) with `-D`
+  - #3655 - generate purely random `Message-ID` headers
+  - #3752 - allow an empty `sidebar_divider_char`
+  - #3745 - fix handling and display of group addresses
+- Bug Fixes
+  - #3386 - fix `status_on_top` to work on complex windows, e.g., attach
+  - #3397 - imap: fix off-by-one error causing bogus "Progress message 10/9" message
+  - #3423 - attach: fix segfault when viewing HTML attachment in compose mode
+  - #3434 - allow for longer expansions in e.g., `index_format`
+  - #3450 - accept unpadded base64-encoded data, as some mailers produce
+  - #3465 - fix hangup when trying to add email address from help screens
+  - #3468 - handle corrupted header caches
+  - #3518 - fix slowdown when changing folders
+  - #3828 - improve error detection for invalid `color` regexes
+  - #3533 - distinguish between old/new with mark_old unset
+  - #3539 - parse mboxes with unconventional `From` lines
+  - #3572 - fix hostname detection for hostname ending with a "."
+  - #3596 - fix truncated SMTP lines in case of very long lines
+  - #3600 - use `smime_sign_as` instead of `pgp_sign_as` when signing S/MIME messages
+  - #3697 - set `smime_sign_as` instead of `smime_default_key` when signing 
+  - #3609 - fix wrong message being marked as read with `$pager_read_delay = 1`
+  - #3653 - fix negative new-mail count on maildir
+  - #3656 - skip zero width non-joiner character in the pager 
+  - #3664 - handle text/vcard as not being an attachment, same as for text/x-vcard
+  - #3666 - fix `hdr_order` not sorting last header correctly
+  - #3673 - make exiting via SIGINT more graceful
+  - #3700 - fix `unhook index-format-hook`
+  - #3709 - send: delete signature when sending fails #3709 
+  - #3727 - SMTP: try all available methods even if SASL is not compiled in
+  - #3730 - fix decryption issue when postponing S/MIME encrypted mails
+  - avoid unnecessary refreshes
+  - fixed a number of memory leaks and crashes
+- Config
+  - #3604 - rename `ask_follow_up` to `ask_followup_to`
+  - #3659 - rename `sidebar_whitelist`/`unsidebar_whitelist` to `sidebar_pin`/`sidebar_unpin`
+  - #3629 - skip line rest of line after a warning
+  - #3670 - `vfolder_format` is now deprecated, use `folder_format`
+  - #3702 - rename `connect_timeout` to `socket_timeout`
+  - #3697 - `pgp_entry_format`: add %i expand for the key fingerprint 
+  - #3724 - rename `attribution` to `attribution_intro` and
+    `post_indent_string` to `attribution_trailer`
+  - config variables are now properly spelled with underscores between names,
+    e.g., `implicit_autoview` -> `implicit_auto_view`, `message_cachedir` ->
+    `message_cache_dir`; the old names were kept as synonyms
+- Translations
+  - 100% Czech
+  - 100% German
+  - 100% Hungarian
+  - 100% Lithuanian
+  - 100% Portuguese (Brazil)
+  - 100% Serbian
+  - 100% Slovak
+  - 100% Turkish
+  - 99% Spanish
+  - 99% Ukrainian
+  - 94% Polish
+  - 72% Catalan
+- Docs
+  - lots of documentation cleanups and updates
+- Code
+  - a lot of refactor to make the code more organizes, especially in these
+    areas: windowing, menu, browser, enter, function dispatching, key handling,
+    auto-completion
+  - fewer global variables
+  - removal of some unmaintained contrib code
+  - new maintained sample config and examples are in the `data` directory
+  - the contrib script mutt_oauth2.py received a lot of love
+- Build
+  - #3548 - support building with Undefined Behaviour Sanitizer (`--ubsan` configure option)
+  - #3722 - generate compile_commands.json (`--compile-commands` configure option)
+  - use pkg-config to locate most of the 3rd party dependencies
+  - fix curses for netbsd
+  - improve our CI stack
+  - create libparse - parsing functions that can be easily tested
+  - refactor commands / icommands
 
 * Fri Apr 29 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220429
 - Bug Fixes

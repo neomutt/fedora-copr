@@ -1,4 +1,4 @@
-From e7869c7e8ba48c957620665f5944d13fb328dfcc Mon Sep 17 00:00:00 2001
+From 8605dd6b2076e22e79b1c876eedd90d5c45a92c5 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:43 +0100
 Subject: neomutt-system_certs
@@ -8,11 +8,11 @@ Subject: neomutt-system_certs
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/conn/config.c b/conn/config.c
-index 0a446eee3..9d99b066c 100644
+index 45dc34db0..106af1236 100644
 --- a/conn/config.c
 +++ b/conn/config.c
-@@ -99,7 +99,7 @@ static struct ConfigDef ConnVarsSsl[] = {
- #if defined(USE_SSL_GNUTLS)
+@@ -110,7 +110,7 @@ static struct ConfigDef ConnVarsSsl[] = {
+  */
  static struct ConfigDef ConnVarsGnutls[] = {
    // clang-format off
 -  { "ssl_ca_certificates_file", DT_PATH|DT_PATH_FILE, 0, 0, NULL,

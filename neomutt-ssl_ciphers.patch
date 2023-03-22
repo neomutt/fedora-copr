@@ -1,4 +1,4 @@
-From 04b770c6c70c20b2b5a4e62ab1fb151bb9883ad3 Mon Sep 17 00:00:00 2001
+From 6cc49a7bdaec98559526aa0b72fb54c95f7465f9 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:22 +0100
 Subject: neomutt-ssl_ciphers
@@ -9,10 +9,10 @@ Subject: neomutt-ssl_ciphers
  2 files changed, 32 insertions(+), 29 deletions(-)
 
 diff --git a/conn/config.c b/conn/config.c
-index 58fbc3462..0a446eee3 100644
+index 62e6b9da8..45dc34db0 100644
 --- a/conn/config.c
 +++ b/conn/config.c
-@@ -58,7 +58,7 @@ static struct ConfigDef ConnVarsSsl[] = {
+@@ -66,7 +66,7 @@ static struct ConfigDef ConnVarsSsl[] = {
    { "certificate_file", DT_PATH|DT_PATH_FILE, IP "~/.mutt_certificates", 0, NULL,
      "File containing trusted certificates"
    },
@@ -22,7 +22,7 @@ index 58fbc3462..0a446eee3 100644
    },
    { "ssl_client_cert", DT_PATH|DT_PATH_FILE, 0, 0, NULL,
 diff --git a/conn/gnutls.c b/conn/gnutls.c
-index 90ab98cef..fba3feb15 100644
+index 5650e1d53..b0c0ebbb6 100644
 --- a/conn/gnutls.c
 +++ b/conn/gnutls.c
 @@ -761,35 +761,38 @@ static int tls_set_priority(struct TlsSockData *data)
