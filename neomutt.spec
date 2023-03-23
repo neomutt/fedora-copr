@@ -2,7 +2,7 @@ Summary: Text mode Mail Client
 Name: neomutt
 Version: 20230322
 Release: 1%{?dist}
-Epoch: 5
+Epoch: 6
 Url: https://neomutt.org/
 
 # Source, docs and contrib: GPLv2+, except for:
@@ -77,7 +77,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 %{_datadir}/neomutt
 
 %changelog
-* Wed Mar 22 2023 Richard Russon <rich@flatcap.org> - NeoMutt-20230322
+* Wed Mar 22 2023 Richard Russon <rich@flatcap.org> - 20230322-1
 - Features
   - #3372 - use DT_SLIST for charset variables
   - #3383 - support viewing html with embedded images, #3383
@@ -180,7 +180,19 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - create libparse - parsing functions that can be easily tested
   - refactor commands / icommands
 
-* Fri Apr 29 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220429
+* Tue Feb 14 2023 Carl George <carl@george.computer> - 6:20220429^1.ef0cb55-1
+- Fix versioning
+
+* Thu Jan 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 5:20220629-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
+* Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 5:20220629-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Wed Jun 29 2022 Richard Russon <rich@flatcap.org> - 20220629-1
+- Testing
+
+* Fri Apr 29 2022 Richard Russon <rich@flatcap.org> - 20220429-1
 - Bug Fixes
   - Do not crash on an invalid use_threads/sort combination
   - Fix: stuck browser cursor
@@ -209,7 +221,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - menu: eliminate custom_redraw()
   - modernise mixmaster
  
-* Fri Apr 15 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220415
+* Fri Apr 15 2022 Richard Russon <rich@flatcap.org> - 20220415-1
 - Security
   - Fix uudecode buffer overflow (CVE-2022-1328)
 - Features
@@ -238,7 +250,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Fix integer overflow in mutt_convert_string()
   - Fix uudecode cleanup on unexpected eof
 
-* Fri Apr 08 2022 Richard Russon <rich@flatcap.org> - NeoMutt-20220408
+* Fri Apr 08 2022 Richard Russon <rich@flatcap.org> - 20220408-1
 - Features
   - Compose multipart emails
 - Bug Fixes
@@ -312,7 +324,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Fix IMAP UTF-7 for code points >= U+10000
   - Don't include inactive messages in msgset generation
 
-* Fri Oct 29 2021 Richard Russon <rich@flatcap.org> - NeoMutt-20211029
+* Fri Oct 29 2021 Richard Russon <rich@flatcap.org> - 20211029-1
 - Features
   - Notmuch: support separate database and mail roots without .notmuch
 - Bug Fixes
@@ -330,7 +342,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - fix leak after trash to hidden mailbox
   - fix leak restoring postponed emails
 
-* Fri Oct 22 2021 Richard Russon <rich@flatcap.org> - NeoMutt-20211022
+* Fri Oct 22 2021 Richard Russon <rich@flatcap.org> - 20211022-1
 - Bug Fixes
   - fix new mail notifications
   - fix pattern compilation error for ~( !~>(~P) )
@@ -357,7 +369,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Remove Slang from the build
   - Warn about deprecated configure options
 
-* Fri Oct 15 2021 Richard Russon <rich@flatcap.org> - NeoMutt-20211015
+* Fri Oct 15 2021 Richard Russon <rich@flatcap.org> - 20211015-1
 - Security
   - Fix CVE-2021-32055
 - Features
@@ -415,7 +427,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - 74% Esperanto
   - 66% Greek
 
-* Fri Feb 05 2021 Richard Russon <rich@flatcap.org> - NeoMutt-20210205
+* Fri Feb 05 2021 Richard Russon <rich@flatcap.org> - 20210205-1
 - Features
   - Add <skip-headers> to skip past message headers in pager
   - Add <view-pager> function to attachment menu
@@ -443,7 +455,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Update to latest autosetup
   - Make the location of /tmp configurable
 
-* Fri Nov 27 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20201127
+* Fri Nov 27 2020 Richard Russon <rich@flatcap.org> - 20201127-1
 - Bug Fixes
   - Fix crash when saving an alias
 - Translations
@@ -451,7 +463,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 - Code
   - Remove redundant function call
 
-* Fri Nov 20 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20201120
+* Fri Nov 20 2020 Richard Russon <rich@flatcap.org> - 20201120-1
 - Security
   - imap: close connection on all failures
 - Features
@@ -491,7 +503,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 * Sat Oct 03 2020 Richard Russon <rich@flatcap.org>
 - tidy and lint the spec file
 
-* Fri Sep 25 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200925
+* Fri Sep 25 2020 Richard Russon <rich@flatcap.org> - 20200925-1
 - Features
   - Compose: display user-defined headers
   - Address Book / Query: live sorting
@@ -534,7 +546,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Use the Email's IMAP UID instead of an increasing number as index
   - debug: log window focus
 
-* Fri Aug 21 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200821
+* Fri Aug 21 2020 Richard Russon <rich@flatcap.org> - 20200821-1
 - Bug Fixes
   - fix maildir flag generation
   - fix query notmuch if file is missing
@@ -546,7 +558,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - 96% Lithuanian
   - 90% Polish
 
-* Fri Aug 14 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200814
+* Fri Aug 14 2020 Richard Russon <rich@flatcap.org> - 20200814-1
 - Security
   - Add mitigation against DoS from thousands of parts
 - Features
@@ -610,10 +622,10 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Change postpone mode to write Date header too
   - Unstuff `format=flowed`
 
-* Fri Aug 07 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200807
+* Fri Aug 07 2020 Richard Russon <rich@flatcap.org> - 20200807-1
   - Devel release - see NeoMutt-20200814
 
-* Fri Jun 26 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200626
+* Fri Jun 26 2020 Richard Russon <rich@flatcap.org> - 20200626-1
 - Bug Fixes
   - Avoid opening the same hcache file twice
   - Re-open Mailbox after folder-hook
@@ -625,7 +637,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Don't check IMAP PREAUTH encryption if $tunnel is in use
   - Add recommendation to use $ssl_force_tls
 
-* Fri Jun 19 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200619
+* Fri Jun 19 2020 Richard Russon <rich@flatcap.org> - 20200619-1
 - Security
   - Abort GnuTLS certificate check if a cert in the chain is rejected
   - TLS: clear data after a starttls acknowledgement
@@ -685,7 +697,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - prex: convert `is_from()` to use regex
   - Refactor IMAP's search routines
 
-* Fri May 01 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200501
+* Fri May 01 2020 Richard Russon <rich@flatcap.org> - 20200501-1
 - Bug Fixes
   - Make sure buffers are initialized on error
   - fix(sidebar): use abbreviated path if possible
@@ -694,7 +706,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 - Docs
   - make header cache config more explicit
 
-* Fri Apr 24 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200424
+* Fri Apr 24 2020 Richard Russon <rich@flatcap.org> - 20200424-1
 - Bug Fixes
   -Fix history corruption
   -Handle pretty much anything in a URL query part
@@ -711,7 +723,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   -Fix finding pcre2 w/o pkgconf
   -build: tdb.h needs size_t, bring it in with stddef.h
 
-* Fri Apr 17 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200417
+* Fri Apr 17 2020 Richard Russon <rich@flatcap.org> - 20200417-1
 - Features
   - Fluid layout for Compose Screen, see: https://vimeo.com/407231157
   - Trivial Database (TDB) header cache backend
@@ -755,7 +767,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Try to respect MUTT_QUIET for IMAP contexts too
   - Limit recurse depth when parsing mime messages
 
-* Fri Mar 20 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200320
+* Fri Mar 20 2020 Richard Russon <rich@flatcap.org> - 20200320-1
 - Bug Fixes
   - Fix COLUMNS env var
   - Fix sync after delete
@@ -782,7 +794,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Use mutt_file_fopen() on config variables
   - Change commands to use intptr_t for data
 
-* Fri Mar 13 2020 Richard Russon <rich@flatcap.org> - NeoMutt-20200313
+* Fri Mar 13 2020 Richard Russon <rich@flatcap.org> - 20200313-1
 - Features
   - UI: add number of old messages to sidebar_format
   - UI: support ISO 8601 calendar date
@@ -860,7 +872,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Fix rendering of replacement_char when Charset_is_utf8
   - Update to latest acutest.h
 
-* Sat Dec 07 2019 Richard Russon <rich@flatcap.org> - NeoMutt-20191207
+* Sat Dec 07 2019 Richard Russon <rich@flatcap.org> - 20191207-1
 - Features
   - compose: draw status bar with highlights
 - Bug Fixes
@@ -887,7 +899,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 - Add lua support (rhel8, fedora)
 - Fix web links
 
-* Fri Nov 29 2019 Richard Russon <rich@flatcap.org> - NeoMutt-20191129
+* Fri Nov 29 2019 Richard Russon <rich@flatcap.org> - 20191129-1
 - Features
   - Add raw mailsize expando (%cr)
 - Bug Fixes
@@ -925,7 +937,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - tests: fix test that would fail soon
   - tests: fix context for failing idna tests
 
-* Mon Nov 11 2019 Richard Russon <rich@flatcap.org> - NeoMutt-2019-11-11
+* Mon Nov 11 2019 Richard Russon <rich@flatcap.org> - 2019-1-11-11
 - Features
   - 'sidebar_unread' color
 - Bug Fixes
@@ -946,7 +958,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - fix icommand parsing
   - fix new mail interaction with mail_check_recent
 
-* Sat Nov 02 2019 Richard Russon <rich@flatcap.org> - NeoMutt-2019-02-11
+* Sat Nov 02 2019 Richard Russon <rich@flatcap.org> - 2019-1-02-11
 - Bug Fixes
   - Mailboxes command with empty backticks
   - Mbox save-to-trash
@@ -965,7 +977,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - 100% German
   - 100% Czech 
 
-* Fri Oct 25 2019 Richard Russon <rich@flatcap.org> - NeoMutt-2019-10-25
+* Fri Oct 25 2019 Richard Russon <rich@flatcap.org> - 2019-1-10-25
 - Features
   - Add $fcc_before_send, defaulting unset
   - Deprecate TLS 1.0 and 1.1 by default
@@ -1069,7 +1081,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - "Message Composition Flow" section to manual
   - OAUTH support
 
-* Mon Jul 16 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180716
+* Mon Jul 16 2018 Richard Russon <rich@flatcap.org> - 20180716-1
 - Features
   - <check-stats> function
 - Contrib
@@ -1077,7 +1089,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 - Bug Fixes
   - Lots
 
-* Fri Jun 22 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180622
+* Fri Jun 22 2018 Richard Russon <rich@flatcap.org> - 20180622-1
 - Features
   - Expand variables inside backticks
   - Honour SASL-IR IMAP capability in SASL PLAIN
@@ -1104,7 +1116,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Add doxygen docs for more functions
   - Refactor more structs to use STAILQ
 
-* Sat May 12 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180512
+* Sat May 12 2018 Richard Russon <rich@flatcap.org> - 20180512-1
 - Features
   - echo command
   - Add $browser_abbreviate_mailboxes
@@ -1156,7 +1168,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Add a comment in auth_gss about RFCs and null-termination
   - Change prompt string for $crypt_verify_sig
 
-* Fri Mar 23 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180323
+* Fri Mar 23 2018 Richard Russon <rich@flatcap.org> - 20180323-1
 - Features
   - unify logging/messaging
   - add alert (blink) colors
@@ -1191,7 +1203,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Refactor to reduce variables' scope
   - Sort functions/config to make docs more legible
 
-* Fri Feb 23 2018 Richard Russon <rich@flatcap.org> - NeoMutt-20180223
+* Fri Feb 23 2018 Richard Russon <rich@flatcap.org> - 20180223-1
 - Features
   - browser: `<goto-parent>` function bound to "p"
   - editor: `<history-search>` function bound to "Ctrl-r"
@@ -1249,11 +1261,11 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Add history-search function, bound to ctrl-r
   - Avoid a potential integer overflow if a Content-Length value is huge
 
-* Fri Dec 15 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20171215
+* Fri Dec 15 2017 Richard Russon <rich@flatcap.org> - 20171215-1
 - Bug Fixes
   - Fix some regressions in the previous release
 
-* Fri Dec 08 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20171208
+* Fri Dec 08 2017 Richard Russon <rich@flatcap.org> - 20171208-1
 - Features
   - Enhance ifdef feature to support my_ vars
   - Add <edit-or-view-raw-message>
@@ -1316,7 +1328,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Remove useless else branch in the $smart_wrap code
   - Fix ansi escape sequences with both reset and color parameters
 
-* Fri Oct 27 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20171027
+* Fri Oct 27 2017 Richard Russon <rich@flatcap.org> - 20171027-1
 - Bug Fixes
   - variable type when using fread
   - prevent timezone overflow
@@ -1371,7 +1383,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - url: make notmuch query string parser generic
   - Wrap dirname(3) inside a mutt_dirname() function
 
-* Fri Oct 13 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20171013
+* Fri Oct 13 2017 Richard Russon <rich@flatcap.org> - 20171013-1
 - Features
   - Add IMAP keywords support
 - Bug Fixes
@@ -1421,7 +1433,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Make cmd_parse_fetch() more precise about setting reopen/check flags
   - Enable $reply_self for group-reply, even with $metoo unset
 
-* Tue Sep 12 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170912
+* Tue Sep 12 2017 Richard Russon <rich@flatcap.org> - 20170912-1
 - Bug Fixes
   - broken check on resend message
   - crash in vfolder-from-query
@@ -1430,7 +1442,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - fix warnings raised by gcc7
   - notmuch: add support for the v5 API
 
-* Thu Sep 07 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170907
+* Thu Sep 07 2017 Richard Russon <rich@flatcap.org> - 20170907-1
 - Contrib
   - Add guix build support
 - Bug Fixes
@@ -1473,7 +1485,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Add option to run command to query attachment mime type
   - Add warning about using inline pgp with format=flowed
 
-* Fri Jul 14 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170714
+* Fri Jul 14 2017 Richard Russon <rich@flatcap.org> - 20170714-1
 - Translations
   - Update German translation
 - Docs
@@ -1485,7 +1497,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 - Upstream
   - Fix crash when $postponed is on another server.
 
-* Fri Jul 07 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170707
+* Fri Jul 07 2017 Richard Russon <rich@flatcap.org> - 20170707-1
 - Features
   - Support Gmail's X-GM-RAW server-side search
   - Include pattern for broken threads
@@ -1569,7 +1581,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Make GPGME key selection behavior the same as classic-PGP
   - Rename 'sign as' to 'Sign as'; makes compose menu more consistent
   - Change the compose menu fields to be dynamically padded
-* Fri Jun 09 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170609
+* Fri Jun 09 2017 Richard Russon <rich@flatcap.org> - 20170609-1
 - Contrib
   - unbind mappings before overwriting in vim-keys
 - Bug Fixes
@@ -1596,7 +1608,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Enable TEXTDOMAINDIR override to make translation testing easier
   - Fix "format string is not a string literal" warnings
 
-* Fri Jun 02 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170602
+* Fri Jun 02 2017 Richard Russon <rich@flatcap.org> - 20170602-1
 - Features
   - Warn on bindkey aliasing
   - Drop PATCHES, tidy 'mutt -v' output
@@ -1704,7 +1716,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Automatic post-release commit for mutt-1.8.3
   - Add note about message scoring and thread patterns
 
-* Fri Apr 28 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170428
+* Fri Apr 28 2017 Richard Russon <rich@flatcap.org> - 20170428-1
 - Bug Fixes
   - Fix and simplify handling of GPGME in configure.ac (@gahr)
 - Docs
@@ -1713,7 +1725,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Fix km_error_key() infinite loop and unget buffer pollution
   - Fix error message when opening a mailbox with no read permission
 
-* Fri Apr 21 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170421
+* Fri Apr 21 2017 Richard Russon <rich@flatcap.org> - 20170421-1
 - Features
   - add lua scripting
   - add command-line batch mode
@@ -1902,10 +1914,10 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Fix GPG_TTY to be added to envlist
   - automatic post-release commit for mutt-182
 
-* Fri Apr 14 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170414
+* Fri Apr 14 2017 Richard Russon <rich@flatcap.org> - 20170414-1
 - Devel Release
 
-* Mon Mar 06 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170306
+* Mon Mar 06 2017 Richard Russon <rich@flatcap.org> - 20170306-1
 - Bug Fixes
   - Get the correct buffer size under fmemopen/torify (#441)
   - Use static inlines to make gcc 4.2.1 happy
@@ -1922,7 +1934,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Prevent segv if open-appending to an mbox fails. (closes #3918)
   - Clear out extraneous errors before SSL_connect() (see #3916)
 
-* Sat Feb 25 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170225
+* Sat Feb 25 2017 Richard Russon <rich@flatcap.org> - 20170225-1
 - Features
   - Add option $show_multipart_alternative
   - notmuch: Allow to use untransformed tag for color
@@ -2020,7 +2032,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Filter expired local certs for OpenSSL verification.
   - Change "allow_dups" into a flag at hash creation.
 
-* Mon Feb 06 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170206
+* Mon Feb 06 2017 Richard Russon <rich@flatcap.org> - 20170206-1
 - Bug Fixes
   - Unicode 0x202F is a non-break space too (#358)
   - improve readability of find_subject()
@@ -2036,7 +2048,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 - Docs
   - Update documentation about modify-labels-then-hide
 
-* Sat Jan 28 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170128
+* Sat Jan 28 2017 Richard Russon <rich@flatcap.org> - 20170128-1
 - Features
   - Add option for missing subject replacement
   - notmuch: Allow <modify-labels> to toggle labels
@@ -2068,7 +2080,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - reformat the source to mutt standards
   - appease check_sec.sh
 
-* Fri Jan 13 2017 Richard Russon <rich@flatcap.org> - NeoMutt-20170113
+* Fri Jan 13 2017 Richard Russon <rich@flatcap.org> - 20170113-1
 - Features
   - Allow custom status flags in index_format
   - $from_chars highlights differences in authorship
@@ -2127,7 +2139,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Create mbchar_table type for multibyte character arrays. (see #3024)
   - Make to_chars and status_chars accept mulitibyte characters. (closes #3024)
 
-* Sat Nov 26 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161126
+* Sat Nov 26 2016 Richard Russon <rich@flatcap.org> - 20161126-1
 - Features
   - Upstream adoption of compress
   - Multiple hcache backends and run-time selection
@@ -2181,7 +2193,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Minor resource and error logic cleanup in tunnel_socket_open()
   - Make sure that the output of X509_NAME_oneline is null-terminated
 
-* Fri Nov 04 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161104
+* Fri Nov 04 2016 Richard Russon <rich@flatcap.org> - 20161104-1
 - Bug Fixes
   - don't crash when the imap connection dies
 - Upstream
@@ -2196,7 +2208,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Fixed issue from changeset 4da647a80c55. (closes #3892)
   - Define PATH_MAX, it's missing on the GNU Hurd. (closes #3815)
 
-* Fri Oct 28 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161028
+* Fri Oct 28 2016 Richard Russon <rich@flatcap.org> - 20161028-1
 - Features
   - nntp: use safe_{fopen,fclose}
   - nntp: fix resource leak
@@ -2233,7 +2245,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Change sidebar to only match $folder prefix on a $sidebar_divider_char. (closes #3887)
   - Actually fix gpgme segfault in create_recipient_set().
 
-* Fri Oct 14 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161014
+* Fri Oct 14 2016 Richard Russon <rich@flatcap.org> - 20161014-1
 - Features
   - sidebar: Make sure INBOX appears first in the list.
   - notmuch: Synchronise tags to flags
@@ -2255,11 +2267,11 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Updated Czech translation.
   - Preserve forwarded attachment names in d_filename.
 
-* Mon Oct 03 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161003
+* Mon Oct 03 2016 Richard Russon <rich@flatcap.org> - 20161003-1
 - Build
   - Fix install and dist targets
 
-* Sun Oct 02 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20161002
+* Sun Oct 02 2016 Richard Russon <rich@flatcap.org> - 20161002-1
 - Features
   - Kyoto Cabinet header cache
   - Compose to Sender
@@ -2298,7 +2310,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Use body color for gpgme output. (closes #3872)
   - Fix gpgme segfault when querying candidates with a '+' in the address. (closes #3873)
 
-* Fri Sep 16 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160916
+* Fri Sep 16 2016 Richard Russon <rich@flatcap.org> - 20160916-1
 - Bug Fixes
   - Avoid segfault when listing mailboxes on startup
     John Swinbank
@@ -2332,7 +2344,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Preserve message-id and mft headers for recalled messages
   - Fix openssl 1.1 compilation issues
 
-* Sat Sep 10 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160910
+* Sat Sep 10 2016 Richard Russon <rich@flatcap.org> - 20160910-1
 - New Features
   - Colouring Attachments with Regexp
     Guillaume Brogi (guiniol)
@@ -2373,10 +2385,10 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Autoconf: always check for getaddrinfo().
   - Add missing sidebar contrib sample files to dist tarball.
 
-* Sat Aug 27 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160827
+* Sat Aug 27 2016 Richard Russon <rich@flatcap.org> - 20160827-1
 - Ported to Mutt-1.7.0
 
-* Fri Aug 26 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160826
+* Fri Aug 26 2016 Richard Russon <rich@flatcap.org> - 20160826-1
 - Build
   - Disable fmemopen until bug is fixed
 - Contrib
@@ -2386,7 +2398,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Fix notmuch crash toggling virtual folders 
   - Fix display of pager index when sidebar toggled
 
-* Sun Aug 21 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160821
+* Sun Aug 21 2016 Richard Russon <rich@flatcap.org> - 20160821-1
 - Contrib
   - Updates to Keybase Support
     Joshua Jordi (JakkinStewart)
@@ -2410,7 +2422,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Create Distribution Tarballs with autogen sources
     Darshit Shah (darnir)
 
-* Mon Aug 08 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160808
+* Mon Aug 08 2016 Richard Russon <rich@flatcap.org> - 20160808-1
 - New Features
   - Timeout Hook - Run a command periodically
   - Multiple fcc - Save multiple copies of outgoing mail
@@ -2437,7 +2449,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Big overhaul of the build
     Darshit Shah (darnir)
 
-* Sat Jul 23 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160723
+* Sat Jul 23 2016 Richard Russon <rich@flatcap.org> - 20160723-1
 - New Motto: "Teaching an Old Dog New Tricks"
   - Thanks to Alok Singh
 - New Features
@@ -2471,11 +2483,11 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
     https://github.com/neomutt/travis-build
     Now we have central control over what gets built
 
-* Sat Jul 09 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160709
+* Sat Jul 09 2016 Richard Russon <rich@flatcap.org> - 20160709-1
 - Bug-fixes
   - This release was a temporary measure
 
-* Sat Jun 11 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160611
+* Sat Jun 11 2016 Richard Russon <rich@flatcap.org> - 20160611-1
 - Change in behaviour
   - Temporarily disable $sidebar_refresh_time
     Unfortunately, this was causing too many problems.
@@ -2496,7 +2508,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - Use the new notmuch functions that return a status
   - Rename sidebar functions sb_* -> mutt_sb_*
 
-* Mon May 23 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160523
+* Mon May 23 2016 Richard Russon <rich@flatcap.org> - 20160523-1
 - New Features:
   - Keywords: Email Label/Keywords/Tagging
   - Compress: Compressed mailboxes support
@@ -2505,7 +2517,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - New configure option: --enable-quick-build
   - Various build fixes
 
-* Mon May 02 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160502
+* Mon May 02 2016 Richard Russon <rich@flatcap.org> - 20160502-1
 - Update for Mutt-1.6.0
 - Bug Fixes:
   - Build for Notmuch works if Sidebar is disabled
@@ -2513,7 +2525,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - sidebar-next-new, etc, only find *new* mail, as documented
   - Notmuch supports *very* long queries
 
-* Sat Apr 16 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160416
+* Sat Apr 16 2016 Richard Russon <rich@flatcap.org> - 20160416-1
 - Big Bugfix Release
 - Bug Fixes:
   - Fix crash caused by sidebar_folder_indent
@@ -2536,26 +2548,26 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
     (it is dependent on it, for now)
   - A couple of bug fixes from mutt/stable
 
-* Mon Apr 04 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160404
+* Mon Apr 04 2016 Richard Russon <rich@flatcap.org> - 20160404-1
 - Update for Mutt-1.6.0
 - No other changes in this release
 
-* Mon Mar 28 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160328
+* Mon Mar 28 2016 Richard Russon <rich@flatcap.org> - 20160328-1
 - New Features
   - skip-quoted          - skip quoted text
   - limit-current-thread - limit index view to current thread
 - Sidebar Intro - A Gentle Introduction to the Sidebar (with pictures).
 
-* Sun Mar 20 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160320
+* Sun Mar 20 2016 Richard Russon <rich@flatcap.org> - 20160320-1
 - Numerous small bugfixes
 - TravisCI integration
 
-* Thu Mar 17 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160317
+* Thu Mar 17 2016 Richard Russon <rich@flatcap.org> - 20160317-1
 - New Features
   - notmuch - email search support
   - ifdef   - improvements
 
-* Mon Mar 07 2016 Richard Russon <rich@flatcap.org> - NeoMutt-20160307
+* Mon Mar 07 2016 Richard Russon <rich@flatcap.org> - 20160307-1
 - First NeoMutt release
 - List of Features:
   - bug-fixes    - various bug fixes
