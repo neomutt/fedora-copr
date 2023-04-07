@@ -1,6 +1,6 @@
 Summary: Text mode Mail Client
 Name: neomutt
-Version: 20230322
+Version: 20230407
 Release: 1%{?dist}
 Epoch: 6
 Url: https://neomutt.org/
@@ -77,6 +77,40 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 %{_datadir}/neomutt
 
 %changelog
+* Fri Apr 07 2023 Richard Russon <rich@flatcap.org> - 20230407-1
+- Features
+  - imap : support IMAP4 ID extension (RFC2971)
+  - parse: query all changed (`set`) / all (`set all`) config variables
+- Bug Fixes
+  - lua: fix command registration
+  - postpone: use colours from the right mailbox
+  - smtp: ignore oauth if it isn't configured and not requested
+- Changed Config
+  - New: `imap_send_id` - Send IMAP ID command when logging in
+- Translations
+  - 100% Czech
+  - 100% German
+  - 100% Hungarian
+  - 100% Lithuanian
+  - 100% Portuguese (Brazil)
+  - 100% Serbian
+  - 100% Slovak
+  - 99% Polish
+- Docs
+  - Recommend GPGME
+- Build
+  - fix race condition in `make install`
+  - fallback to detect SASL manually if pkg-config fails, e.g., homebew
+- Code
+  - libmutt: eliminate use of config variables
+  - fix ubsan warning
+  - mutt: optimize and inline mutt_str_is_email_wsp()
+  - progress: update ncurses only when there is actual progress
+  - email: Read assumed_charset outside loops
+  - hcache: do less work when not in use
+  - pager: add helper for getting $pager
+  - hcache: remove spurious +1 from Buffer serialization.
+
 * Wed Mar 22 2023 Richard Russon <rich@flatcap.org> - 20230322-1
 - Features
   - #3372 - use DT_SLIST for charset variables
