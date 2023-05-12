@@ -1,6 +1,6 @@
 Summary: Text mode Mail Client
 Name: neomutt
-Version: 20230407
+Version: 20230512
 Release: 1%{?dist}
 Epoch: 6
 Url: https://neomutt.org/
@@ -39,8 +39,8 @@ messages.
 
 %prep
 %setup -q -n %{name}-%{version}
-%patch1 -p1 -b .system_certs
-%patch2 -p1 -b .ssl_ciphers
+%patch 1 -p1 -b .system_certs
+%patch 2 -p1 -b .ssl_ciphers
 
 %build
 %{configure} \
