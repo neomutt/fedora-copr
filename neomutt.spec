@@ -15,9 +15,9 @@ Source: https://github.com/neomutt/neomutt/archive/%{version}/%{name}-%{version}
 Source1: fedora-colors.rc
 
 # Use system certificate bundle
-Patch1: neomutt-system_certs.patch
+Patch0: neomutt-system_certs.patch
 # Use system ciphers (@SYSTEM)
-Patch2: neomutt-ssl_ciphers.patch
+Patch1: neomutt-ssl_ciphers.patch
 
 Requires: mailcap, urlview
 
@@ -39,8 +39,8 @@ messages.
 
 %prep
 %setup -q -n %{name}-%{version}
-%patch 1 -p1 -b .system_certs
-%patch 2 -p1 -b .ssl_ciphers
+%patch -P 0 -p1 -b .system_certs
+%patch -P 1 -p1 -b .ssl_ciphers
 
 %build
 %{configure} \
