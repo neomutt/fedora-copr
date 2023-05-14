@@ -77,6 +77,36 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 %{_datadir}/neomutt
 
 %changelog
+* Fri May 12 2023 Richard Russon <rich@flatcap.org> - 20230512-1
+- Features
+  - #3699 - Support 24bit colors, aka truecolor
+  - #3738 - Show complete MIME structure in attachments
+  - #3842 - Allow percentages to be localized
+- Bug Fixes
+  - #3813 - Fix crash in op_browser_subscribe
+  - #3844 - Select the first email when coming from an empty limit
+  - #3848 - Fix counting new mails in maildir
+  - Fix sorting of labels
+- Build
+ - #3798 - Build with libidn2 by default, remove support for libidn1
+- Code
+  - config: dynamically create/delete variables
+  - config: unify handling of NeoMutt and user (my_) variables
+  - config: cache config variables used often
+  - speed: various speedups in parsing emails
+  - cleanups: lots of code cleanups
+- Translations
+  - 100% :serbia: Serbian
+  - 100% :tr: Turkish
+  - 100% :lithuania: Lithuanian
+  - 100% :hungary: Hungarian
+  - 100% :de: German
+  - 99% :norway: Norwegian (Bokmål)
+  - 99% :slovakia: Slovak
+  - 99% :brazil: Portuguese (Brazil)
+  - 99% :czech_republic: Czech
+  - 95% :fr: French
+
 * Fri Apr 07 2023 Richard Russon <rich@flatcap.org> - 20230407-1
 - Features
   - imap : support IMAP4 ID extension (RFC2971)
