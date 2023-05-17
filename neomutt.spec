@@ -19,7 +19,8 @@ Patch0: neomutt-system_certs.patch
 # Use system ciphers (@SYSTEM)
 Patch1: neomutt-ssl_ciphers.patch
 
-Requires: mailcap, urlview
+Requires: mailcap
+Recommends: urlview
 
 # Build NeoMutt
 BuildRequires: cyrus-sasl-devel, gcc, gettext, gettext-devel, gnutls-devel
