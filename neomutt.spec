@@ -1,6 +1,6 @@
 Summary: Text mode Mail Client
 Name: neomutt
-Version: 20230512
+Version: 20230517
 Release: 1%{?dist}
 Epoch: 6
 Url: https://neomutt.org/
@@ -78,7 +78,7 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 %{_datadir}/neomutt
 
 %changelog
-* Fri May 12 2023 Richard Russon <rich@flatcap.org> - 20230512-1
+* Wed May 17 2023 Richard Russon <rich@flatcap.org> - 20230517-1
 - Features
   - #3699 - Support 24bit colors, aka truecolor
   - #3738 - Show complete MIME structure in attachments
@@ -87,26 +87,35 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
   - #3813 - Fix crash in op_browser_subscribe
   - #3844 - Select the first email when coming from an empty limit
   - #3848 - Fix counting new mails in maildir
+  - #3759 - bind: fix incorrect conflict report
+  - #3781 - index: only refresh the menu on non-focus window changes
+  - #3856 - tunnel: fix reconnection with `ssl_force=true`
+  - #3860 - maildir: stop parsing headers at the end of the headers section
+  - #3864 - Fix handling of bright colours
   - Fix sorting of labels
+- Translations
+  - 100% Serbian
+  - 100% Turkish
+  - 100% Lithuanian
+  - 100% Hungarian
+  - 100% German
+  - 99% Norwegian (Bokmål)
+  - 99% Slovak
+  - 99% Portuguese (Brazil)
+  - 99% Czech
+  - 95% French
 - Build
- - #3798 - Build with libidn2 by default, remove support for libidn1
+  - #3798 - Build with libidn2 by default, remove support for libidn1
 - Code
   - config: dynamically create/delete variables
   - config: unify handling of NeoMutt and user (my_) variables
   - config: cache config variables used often
   - speed: various speedups in parsing emails
   - cleanups: lots of code cleanups
-- Translations
-  - 100% :serbia: Serbian
-  - 100% :tr: Turkish
-  - 100% :lithuania: Lithuanian
-  - 100% :hungary: Hungarian
-  - 100% :de: German
-  - 99% :norway: Norwegian (Bokmål)
-  - 99% :slovakia: Slovak
-  - 99% :brazil: Portuguese (Brazil)
-  - 99% :czech_republic: Czech
-  - 95% :fr: French
+  - Huge refactoring towards a separation of Mailbox/MailboxView
+
+* Fri May 12 2023 Richard Russon <rich@flatcap.org> - 20230512-1
+- BROKEN - Please use 2023-05-17 instead
 
 * Fri Apr 07 2023 Richard Russon <rich@flatcap.org> - 20230407-1
 - Features
