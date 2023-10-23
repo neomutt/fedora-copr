@@ -1,6 +1,6 @@
 Summary: Text mode Mail Client
 Name: neomutt
-Version: 20231006
+Version: 20231023
 Release: 1%{?dist}
 Epoch: 6
 Url: https://neomutt.org/
@@ -78,6 +78,16 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 %{_datadir}/neomutt
 
 %changelog
+* Mon Oct 23 2023 Richard Russon <rich@flatcap.org> - 20231023-1
+- Bug Fixes
+  - #4060 fix crash on exit
+  - #4061 fix header colour
+  - #4064 fix 32-bit date overflow
+  - #4078 fix new mail in limited view
+  - nntp: fix use-after-free
+  - color: fix ansi colours
+  - color: add +truecolor to version string
+
 * Fri Oct 06 2023 Richard Russon <rich@flatcap.org> - 20231006-1
 - Features
   - #3870 - color: allow 'alert', 'bright', 'light' prefix for colorNNN
