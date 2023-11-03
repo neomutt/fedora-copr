@@ -1,6 +1,6 @@
 Summary: Text mode Mail Client
 Name: neomutt
-Version: 20231023
+Version: 20231103
 Release: 1%{?dist}
 Epoch: 6
 Url: https://neomutt.org/
@@ -78,6 +78,39 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 %{_datadir}/neomutt
 
 %changelog
+* Fri Nov 03 2023 Richard Russon <rich@flatcap.org> - 20231103-1
+- Features
+  - #4080 - info screen: enable <save-message>
+  - #4075 - add color command
+  - color: add ANSI RGB support
+  - color: Support ANSI 2x clear sequences
+- Bug Fixes
+  - #4074 - color: fix palette conversion
+  - #4081 - fix logging on error
+  - #4081 - log: vim-style
+  - #4082 - fix file auto-completion
+  - #4090 - improve logic for growing mailbox memory
+- Translations
+  - 100% Czech
+  - 100% German
+  - 100% Lithuanian
+  - 100% Serbian
+  - 100% Slovak
+  - 100% Turkish
+- Build
+  - #4085 - fix CFLAGS/LDFLAGS for ncurses
+  - #4085 - configure --with-iconv
+- Code
+  - #4067 - remove unused count of new mails from index private data
+  - #4086 - smtp: Simplify the API of smtp_code()
+  - #4091 - simplify CLAMP by expressing it with MIN/MAX
+  - color: introduce ColorElement
+  - color: log gui info on startup
+  - color: move business logic out of parsers
+  - color: tidy OptNoCurses cases
+  - log: add log_multiline()
+  - test: increase coverage
+
 * Mon Oct 23 2023 Richard Russon <rich@flatcap.org> - 20231023-1
 - Bug Fixes
   - #4060 fix crash on exit
