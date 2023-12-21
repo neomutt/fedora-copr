@@ -1,6 +1,6 @@
 Summary: Text mode Mail Client
 Name: neomutt
-Version: 20231103
+Version: 20231221
 Release: 1%{?dist}
 Epoch: 6
 Url: https://neomutt.org/
@@ -78,6 +78,93 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 %{_datadir}/neomutt
 
 %changelog
+* Thu Dec 21 2023 Richard Russon <rich@flatcap.org> - 20231221-1
+- Features
+  - #4126 - add alias 'tags:'
+- Bug Fixes
+  - #4115 - create HelpBar after colours
+  - #4116 - Fix Batch Sending of Emails
+  - #4119 - Fix Header Cache Key Handling
+  - #4121 - mutt_oauth2.py: error out if ENCRYPTION_PIPE was not supplied
+  - #4124 - config: fix flag overlaps
+  - #4125 - compose: restore view-text/pager/mailcap
+  - color: fix attr_color_copy()
+  - fix :color dump
+  - fix leak in completion
+  - force mail check on current mailbox after `<imap-fetch-mail>`
+  - Allow sending an empty mail
+  - mutt_oauth2.py: Use readline to overcome macOS input() restrictions
+- Changed Config
+  - add $history_format: '%s'
+- Translations
+  - 100% Czech
+  - 100% German
+  - 100% Lithuanian
+  - 100% Serbian
+  - 100% Slovak
+  - 100% Turkish
+  - 99% Spanish
+  - 99% Hungarian
+- Coverity defects
+  - #4111 Educate Coverity about ARRAYs
+  - fix defects
+- Build
+  - #4098 - build: use fallthrough attribute
+  - #4100 - build: split maildir and mh types
+  - #4101 - version: drop default features
+  - #4108 - strip non-conditionals
+  - #4122 - add github action to check for unused functions (xunused)
+  - update fedora action
+  - coverage: fix build for lcov v2
+  - tests: fix error cases
+- Code
+  - #4097 - config: add DT_ON_STARTUP
+  - #4104 - Change mutt_default_save() and addr_hook() to take a buffer
+  - #4105 - Use buffer pool in tests
+  - #4106 - Switch some buffers to use the buffer pool
+  - #4109 - Improve the Progress Bar
+  - #4117 - remove MxOps::path_parent() and mutt_path_parent()
+  - #4120 - remove unused functions
+  - #4131 - move editor test code
+  - #4133 - move log_disp_null() into test folder
+  - #4137 - move config string name functions into tests
+  - add: hook_new()/hook_free()
+  - fix more printf-style params
+  - rename compare to equal
+  - hcache: renaming for clarity
+* Fri Nov 03 2023 Richard Russon <rich@flatcap.org> - 20231103-1
+- Features
+  - #4080 - info screen: enable <save-message>
+  - #4075 - add color command
+  - color: add ANSI RGB support
+  - color: Support ANSI 2x clear sequences
+- Bug Fixes
+  - #4074 - color: fix palette conversion
+  - #4081 - fix logging on error
+  - #4081 - log: vim-style
+  - #4082 - fix file auto-completion
+  - #4090 - improve logic for growing mailbox memory
+- Translations
+  - 100% Czech
+  - 100% German
+  - 100% Lithuanian
+  - 100% Serbian
+  - 100% Slovak
+  - 100% Turkish
+- Build
+  - #4085 - fix CFLAGS/LDFLAGS for ncurses
+  - #4085 - configure --with-iconv
+- Code
+  - #4067 - remove unused count of new mails from index private data
+  - #4086 - smtp: Simplify the API of smtp_code()
+  - #4091 - simplify CLAMP by expressing it with MIN/MAX
+  - color: introduce ColorElement
+  - color: log gui info on startup
+  - color: move business logic out of parsers
+  - color: tidy OptNoCurses cases
+  - log: add log_multiline()
+  - test: increase coverage
+
 * Fri Nov 03 2023 Richard Russon <rich@flatcap.org> - 20231103-1
 - Features
   - #4080 - info screen: enable <save-message>
