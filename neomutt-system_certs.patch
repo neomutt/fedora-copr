@@ -1,4 +1,4 @@
-From 4fdb47bea7eda0e37da7e40679467a99f2b612e7 Mon Sep 17 00:00:00 2001
+From 4645eb88e381c69e0c8a8a164f04b61bf4ea2542 Mon Sep 17 00:00:00 2001
 From: Richard Russon <rich@flatcap.org>
 Date: Wed, 1 Jun 2016 21:38:43 +0100
 Subject: neomutt-system_certs
@@ -8,15 +8,15 @@ Subject: neomutt-system_certs
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/conn/config.c b/conn/config.c
-index 45dc34db0..106af1236 100644
+index 4627b260c..ef0530e7d 100644
 --- a/conn/config.c
 +++ b/conn/config.c
 @@ -110,7 +110,7 @@ static struct ConfigDef ConnVarsSsl[] = {
   */
  static struct ConfigDef ConnVarsGnutls[] = {
    // clang-format off
--  { "ssl_ca_certificates_file", DT_PATH|DT_PATH_FILE, 0, 0, NULL,
-+  { "ssl_ca_certificates_file", DT_PATH|DT_PATH_FILE, IP "/etc/ssl/certs/ca-bundle.crt", 0, NULL,
+-  { "ssl_ca_certificates_file", DT_PATH|D_PATH_FILE, 0, 0, NULL,
++  { "ssl_ca_certificates_file", DT_PATH|D_PATH_FILE, IP "/etc/ssl/certs/ca-bundle.crt", 0, NULL,
      "File containing trusted CA certificates"
    },
-   { "ssl_min_dh_prime_bits", DT_NUMBER|DT_NOT_NEGATIVE, 0, 0, NULL,
+   { "ssl_min_dh_prime_bits", DT_NUMBER|D_INTEGER_NOT_NEGATIVE, 0, 0, NULL,
