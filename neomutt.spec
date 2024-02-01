@@ -1,6 +1,6 @@
 Summary: Text mode Mail Client
 Name: neomutt
-Version: 20231221
+Version: 20240201
 Release: 1%{?dist}
 Epoch: 6
 Url: https://neomutt.org/
@@ -78,6 +78,42 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 %{_datadir}/neomutt
 
 %changelog
+* Thu Feb 01 2024 Richard Russon <rich@flatcap.org> - 20240201-1
+- Features
+  - #4134 Command-line Crypto (neomutt -C)
+- Bug Fixes
+  - #4065 track new-mail check time per mailbox
+  - #4141 fix(change-folder): don't exclude notmuch
+  - #4147 envelope: manage subject/real_subj together
+  - #4155 fix parsing of $REPLYTO
+  - #4158 status: fix refresh after sync-mailbox
+  - #4166 Fix two memory leaks in notmuch support
+  - progress: fix percentages
+- Translations
+  - 100% Czech
+  - 100% German
+  - 100% Lithuanian
+  - 100% Serbian
+  - 100% Slovak
+  - 100% Turkish
+- Docs
+  - #4172 Several fixes for the manual pages
+- Build
+  - build: openbsd workarounds
+- Code
+  - #4142 add mutt_time_now()
+  - #4146 config: factor out R_ flags
+  - #4154 file: upgrade mutt_file_fopen/fclose()
+  - #4159 upgrade mutt_str_append_item() to use struct Buffer
+  - #4161 maildir: encapsulate the header cache
+  - #4162 remove mutt_str_dequote_comment()
+  - #4165 bufferize mutt_str_inline_replace() as buf_inline_replace()
+  - #4167 bufferize mutt_strn_rfind() as buf_rfind()
+  - #4168 replace buf_len() checks with buf_is_empty()
+  - config: drop unused flags
+  - use message_new()/message_free()
+  - Reconsider the config type bitmap entirely
+
 * Thu Dec 21 2023 Richard Russon <rich@flatcap.org> - 20231221-1
 - Features
   - #4126 - add alias 'tags:'
