@@ -1,7 +1,7 @@
 Summary: Text mode Mail Client
 Name: neomutt
 Version: 20250404
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 6
 Url: https://neomutt.org/
 
@@ -30,6 +30,9 @@ BuildRequires: pcre2-devel, sqlite-devel, tokyocabinet-devel, zlib-devel
 
 # Generate Documentation
 BuildRequires: /usr/bin/xsltproc, docbook-dtds, docbook-style-xsl, perl, lynx
+
+# https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
+ExcludeArch: %{ix86}
 
 %description
 NeoMutt is a small but very powerful text-based MIME mail client.  NeoMutt is
@@ -78,6 +81,9 @@ cat %{SOURCE1} >> %{buildroot}%{_sysconfdir}/neomuttrc
 %{_datadir}/neomutt
 
 %changelog
+* Wed Apr 16 2025 Michael J Gruber <mjg@fedoraproject.org> - 6:20250404-2
+- exclude i686 arch for i686 leaf package
+
 * Fri Apr 04 2025 Richard Russon <rich@flatcap.org> - 20250404-1
 - Features
   - #4493 config: don't quote enums
